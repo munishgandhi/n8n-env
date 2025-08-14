@@ -72,7 +72,13 @@
     },
     "Filter": {
       "main": [
-        []
+        [
+          {
+            "node": "Create a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -213,18 +219,21 @@
     {
       "parameters": {
         "authentication": "oAuth2",
-        "messageUi": {},
+        "spaceId": "spaces/AAQAKmirGT0",
+        "messageUi": {
+          "text": ""
+        },
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.googleChat",
       "typeVersion": 1,
       "position": [
-        1904,
-        224
+        1936,
+        208
       ],
-      "id": "3ff110c0-9191-44ed-a643-8ce8ff864211",
+      "id": "45a25d31-6c4d-4dbb-a506-80c3ed2c547a",
       "name": "Create a message",
-      "webhookId": "a5174270-284c-43b6-90dd-fadf578909b6",
+      "webhookId": "5c84b076-0026-47a7-9dc4-5d576a070574",
       "credentials": {
         "googleChatOAuth2Api": {
           "id": "7j4LhPmqBQDNg98j",
@@ -245,6 +254,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-14T04:49:04.000Z",
-  "versionId": "63dc2844-5345-467a-862c-41cd50e2d388"
+  "updatedAt": "2025-08-14T05:20:08.000Z",
+  "versionId": "ebe73bde-c486-4e89-9744-f76fc1f58730"
 }
