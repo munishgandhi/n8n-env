@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Config": {
       "main": [
@@ -1346,9 +1346,13 @@
   "repo_owner": "munishgandhi",
   "repo_path": "",
   "settings": {},
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2025-08-14T02:35:18.000Z",
+  "triggerCount": 1,
+  "updatedAt": "2025-08-14T02:36:59.000Z",
   "versionId": "1b08ea47-932d-4f8a-aeef-e8f746fa36f8"
 }
