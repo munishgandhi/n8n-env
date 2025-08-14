@@ -203,7 +203,7 @@
               }
             }
           ],
-          "combinator": "and"
+          "combinator": "or"
         },
         "options": {}
       },
@@ -221,7 +221,7 @@
         "authentication": "oAuth2",
         "spaceId": "spaces/AAQAKmirGT0",
         "messageUi": {
-          "text": ""
+          "text": "={{ $json.file }} is {{ $json.status }}"
         },
         "additionalFields": {}
       },
@@ -254,6 +254,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-14T05:20:08.000Z",
-  "versionId": "ebe73bde-c486-4e89-9744-f76fc1f58730"
+  "updatedAt": "2025-08-14T05:25:47.000Z",
+  "versionId": "f0533b4d-03ea-448c-a1af-b29d5b9bc87b"
 }
