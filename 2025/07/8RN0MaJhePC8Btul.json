@@ -1,0 +1,1121 @@
+{
+  "active": false,
+  "connections": {
+    "N01: Webhook Input": {
+      "main": [
+        [
+          {
+            "node": "N02: Input Validation & Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N02: Input Validation & Processing": {
+      "main": [
+        [
+          {
+            "node": "N03: Validation Success Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N03: Validation Success Check": {
+      "main": [
+        [
+          {
+            "node": "N04: Gmail Date Format Conversion",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "N18: Success Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N04: Gmail Date Format Conversion": {
+      "main": [
+        [
+          {
+            "node": "N05: Search Gmail Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N05: Search Gmail Messages": {
+      "main": [
+        [
+          {
+            "node": "N05.5: Email Not Found?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "N18: Success Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N05.6: No Emails Found": {
+      "main": [
+        [
+          {
+            "node": "N14: Update Backlog Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N08: Process Gmail Results & Extract Data": {
+      "main": [
+        [
+          {
+            "node": "N09: Check Emails Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N09: Check Emails Found": {
+      "main": [
+        [
+          {
+            "node": "N10.a: Split Emails",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "N10.b: Split Persons",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "N10.c: Split Firms",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "N18: Success Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N13: Create Cross-References": {
+      "main": [
+        [
+          {
+            "node": "N14: Update Backlog Status",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "N15.a: Split Email IDs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "N15.b: Split Person IDs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "N15.c: Split Firm IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N14: Update Backlog Status": {
+      "main": [
+        [
+          {
+            "node": "N17: Merge Cross-Reference Updates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N15.a: Split Email IDs": {
+      "main": [
+        [
+          {
+            "node": "N16.a: Update PlannerEmail Relations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N16.a: Update PlannerEmail Relations": {
+      "main": [
+        [
+          {
+            "node": "N17: Merge Cross-Reference Updates",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "N15.b: Split Person IDs": {
+      "main": [
+        [
+          {
+            "node": "N16.b: Update PlannerPerson Relations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N16.b: Update PlannerPerson Relations": {
+      "main": [
+        [
+          {
+            "node": "N17: Merge Cross-Reference Updates",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "N15.c: Split Firm IDs": {
+      "main": [
+        [
+          {
+            "node": "N16.c: Update PlannerFirm Relations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N16.c: Update PlannerFirm Relations": {
+      "main": [
+        [
+          {
+            "node": "N17: Merge Cross-Reference Updates",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "N17: Merge Cross-Reference Updates": {
+      "main": [
+        [
+          {
+            "node": "N18: Success Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N12: Merge Planner Creates": {
+      "main": [
+        [
+          {
+            "node": "N13: Create Cross-References",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N10.a: Split Emails": {
+      "main": [
+        [
+          {
+            "node": "N11.a: Call PlannerEmail Create",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N10.b: Split Persons": {
+      "main": [
+        [
+          {
+            "node": "N11.b: Call PlannerPerson Create",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N10.c: Split Firms": {
+      "main": [
+        [
+          {
+            "node": "N11.c: Call PlannerFirm Create",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N11.a: Call PlannerEmail Create": {
+      "main": [
+        [
+          {
+            "node": "N12: Merge Planner Creates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N11.b: Call PlannerPerson Create": {
+      "main": [
+        [
+          {
+            "node": "N12: Merge Planner Creates",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "N11.c: Call PlannerFirm Create": {
+      "main": [
+        [
+          {
+            "node": "N12: Merge Planner Creates",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "N06: Get Gmail Thread": {
+      "main": [
+        [
+          {
+            "node": "N07: Split Thread Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N07: Split Thread Messages": {
+      "main": [
+        [
+          {
+            "node": "N08: Process Gmail Results & Extract Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N05.5: Email Not Found?": {
+      "main": [
+        [
+          {
+            "node": "N05.6: No Emails Found",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "N06: Get Gmail Thread",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-21T18:36:34.270Z",
+  "id": "8RN0MaJhePC8Btul",
+  "isArchived": true,
+  "meta": null,
+  "name": "Backlog to Planners v20250724-000215-crossref-v2",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "backlog-to-planners",
+        "options": {}
+      },
+      "id": "webhook-input",
+      "name": "N01: Webhook Input",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        -550
+      ],
+      "webhookId": "backlog-to-planners"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Node 2: Input Validation & Processing\n// Based on workflow-algorithm.md Step 1 Node 2: lines 57-112\n// Context: webhook data comes in $json.body\n\nfunction validateInput(webhookData) {\n  console.log('🔍 Webhook input received:', JSON.stringify(webhookData, null, 2));\n  \n  // Handle webhook data structure - data is in body\n  const record = webhookData.body || webhookData.query || webhookData;\n  \n  // Extract date and status with fallback patterns\n  const dateStr = record.Date || record.date || record.properties?.[\"Gmail Date\"]?.title?.[0]?.text?.content;\n  const status = record.Status || record.status || record.properties?.Status?.select?.name;\n  const backlogId = record.id || record.backlogId || webhookData.id || 'temp-id';\n  \n  // Check required fields (following existing validation patterns)\n  if (!dateStr || dateStr === '' || dateStr.trim() === '' || !status || status === '' || status.trim() === '') {\n    console.error('❌ Missing required fields');\n    console.error('dateStr:', dateStr, 'status:', status);\n    return {\n      success: false,\n      error: \"Invalid backlog record: missing Date or Status\",\n      details: \"Backlog record must have both Date and Status fields\"\n    };\n  }\n  \n  // Check status is not complete (following 3soZAbHUm8vgIkXp pattern)\n  if (status === \"complete\") {\n    console.log('ℹ️ Backlog already complete, skipping');\n    return { \n      success: true, \n      skip: true, \n      reason: \"Already complete\" \n    };\n  }\n  \n  // Validate date format (YYYY-MM-DD as used in context)\n  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(dateStr)) {\n    console.error('❌ Invalid date format:', dateStr);\n    return {\n      success: false,\n      error: \"Invalid date format\",\n      details: \"Date must be in YYYY-MM-DD format\"\n    };\n  }\n  \n  console.log(`✅ Valid backlog record for date: ${dateStr}`);\n  return { \n    success: true, \n    valid: true, \n    gmailDate: dateStr,\n    backlogId: backlogId\n  };\n}\n\n// Execute validation\nconst result = validateInput($json);\nreturn result;"
+      },
+      "id": "input-validation",
+      "name": "N02: Input Validation & Processing",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        -550
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "validation_success",
+              "leftValue": "={{$json.success}}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEquals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "validation-check",
+      "name": "N03: Validation Success Check",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        640,
+        -550
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Node 4: Gmail Date Format Conversion\n// Based on workflow-algorithm.md Step 2 Node 4: lines 123-148\n// Context: workflow-s9WyUIs3imhnnkzr.json Gmail query construction patterns\n\nfunction convertGmailDate(gmailDate) {\n  // Convert YYYY-MM-DD to YYYY/MM/DD format for Gmail API\n  const formattedDate = gmailDate.replace(/-/g, '/');\n  \n  // Calculate next day for range query (exact pattern from s9WyUIs3imhnnkzr)\n  const dateObj = new Date(gmailDate + 'T12:00:00');\n  const nextDay = new Date(dateObj);\n  nextDay.setDate(dateObj.getDate() + 1);\n  const nextDayFormatted = `${nextDay.getFullYear()}/${String(nextDay.getMonth() + 1).padStart(2, '0')}/${String(nextDay.getDate()).padStart(2, '0')}`;\n  \n  // Build Gmail query exactly as in existing workflow\n  const gmailQuery = `after:${formattedDate} before:${nextDayFormatted} in:\\\"--Watch/VC\\\"`;\n  console.log(`📧 Gmail query: ${gmailQuery}`);\n  \n  return {\n    gmailQuery: gmailQuery,\n    originalDate: gmailDate,\n    backlogId: $json.backlogId\n  };\n}\n\n// Execute conversion\nconst result = convertGmailDate($json.gmailDate);\nreturn result;"
+      },
+      "id": "date-conversion",
+      "name": "N04: Gmail Date Format Conversion",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        860,
+        -625
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 100,
+        "filters": {
+          "q": "={{$('N04: Gmail Date Format Conversion').first().json.gmailQuery}}"
+        }
+      },
+      "id": "gmail-search",
+      "name": "N05: Search Gmail Messages",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1080,
+        -625
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "webhookId": "3c0dcd74-eb0d-471e-a9f3-89ee37cf03be",
+      "alwaysOutputData": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pxtxj61wdCzGXITa",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Node 6: Process Gmail Results & Extract Data\n// Based on workflow-algorithm.md Step 3 Node 6: lines 151-200\n// Context: workflow-s9WyUIs3imhnnkzr.json message processing patterns\n// Schema: context/notion-schema-planneremail.json\n\nfunction processEmailData(gmailMessages, originalData, internalDateLookup) {\n  console.log(`📧 Processing ${gmailMessages.length} Gmail messages`);\n  \n  const processedEmails = [];\n  const processedPersons = [];\n  const processedFirms = [];\n  const seenEmails = new Set();\n  const seenDomains = new Set();\n  \n  // Helper function to extract email address from \"Name <email@domain.com>\" format\n  function extractEmailAddress(fromValue) {\n    if (!fromValue) return null;\n    const match = fromValue.match(/<([^>]+)>/) || fromValue.match(/^([\\w\\.-]+@[\\w\\.-]+\\.[\\w]+)$/);\n    return match ? match[1] : fromValue;\n  }\n  \n  // Helper function to extract domain from email\n  function extractDomain(email) {\n    if (!email || !email.includes('@')) return null;\n    return email.split('@')[1];\n  }\n  \n  // Helper function to decode base64 content\n  function decodeBase64(data) {\n    try {\n      return Buffer.from(data, 'base64').toString('utf-8');\n    } catch (e) {\n      return data;\n    }\n  }\n  \n  // Helper function to extract fresh content (remove reply chains)\n  function extractFreshContent(payload) {\n    let content = '';\n    \n    if (payload.parts) {\n      // Multi-part message\n      for (const part of payload.parts) {\n        if (part.mimeType === 'text/plain' && part.body?.data) {\n          content += decodeBase64(part.body.data);\n        }\n      }\n    } else if (payload.body?.data) {\n      // Single part message\n      content = decodeBase64(payload.body.data);\n    }\n    \n    // Remove reply chains (content after \"On ... wrote:\" or similar patterns)\n    const replyPatterns = [\n      /\\n\\s*On\\s+.*wrote:/i,\n      /\\n\\s*From:\\s+.*\\n/i,\n      /\\n\\s*---+\\s*Original Message\\s*---+/i,\n      /\\n\\s*>+/m\n    ];\n    \n    for (const pattern of replyPatterns) {\n      const match = content.match(pattern);\n      if (match) {\n        content = content.substring(0, match.index).trim();\n        break;\n      }\n    }\n    \n    return content.trim();\n  }\n  \n  // Process each Gmail message\n  for (const message of gmailMessages) {\n    // Handle both header format (full API) and direct format (webhook API)\n    let fromValue, subjectValue;\n    \n    if (message.payload?.headers) {\n      // Full Gmail API format\n      const headers = message.payload.headers;\n      const fromHeader = headers.find(h => h.name === 'From');\n      const subjectHeader = headers.find(h => h.name === 'Subject');\n      if (!fromHeader || !subjectHeader) continue;\n      fromValue = fromHeader.value;\n      subjectValue = subjectHeader.value;\n    } else {\n      // Direct format (From/Subject at root level)\n      fromValue = message.From;\n      subjectValue = message.Subject;\n    }\n    \n    if (!fromValue || !subjectValue) continue;\n    \n    // Extract email data\n    const fromEmail = extractEmailAddress(fromValue);\n    const domain = extractDomain(fromEmail);\n    const freshContent = message.snippet || extractFreshContent(message.payload);\n    // Extract Gmail timestamp from internalDate lookup (Unix milliseconds) or fall back to date only\n    let gmailDate = originalData.originalDate; // fallback to date only\n    const internalDate = internalDateLookup[message.id];\n    console.log(`🔍 Message ${message.id}: lookup=${internalDate}, fallback=${gmailDate}`);\n    if (internalDate) {\n      gmailDate = new Date(parseInt(internalDate)).toISOString();\n      console.log(`✅ Updated timestamp: ${gmailDate}`);\n    } else {\n      console.log(`❌ No internalDate found for message ${message.id}`);\n    }\n    const currentTimestamp = new Date().toISOString();\n    \n    if (!fromEmail || !domain) continue;\n    \n    // Create email record for each message\n    processedEmails.push({\n      gmailId: message.id,\n      fromEmail: fromEmail,\n      subject: subjectValue,\n      freshContent: freshContent,\n      threadId: message.threadId,\n      gmailDate: gmailDate,\n      dateCreated: currentTimestamp,\n      status: 'pending',\n      backlogId: originalData.backlogId\n    });\n    \n    // Create person record (deduplicated)\n    if (!seenEmails.has(fromEmail)) {\n      processedPersons.push({\n        emailAddress: fromEmail,\n        status: 'pending',\n        backlogId: originalData.backlogId\n      });\n      seenEmails.add(fromEmail);\n    }\n    \n    // Create firm record (deduplicated)\n    if (!seenDomains.has(domain)) {\n      processedFirms.push({\n        domain: domain,\n        status: 'pending',\n        backlogId: originalData.backlogId\n      });\n      seenDomains.add(domain);\n    }\n  }\n  \n  console.log(`✅ Processed: ${processedEmails.length} emails, ${processedPersons.length} persons, ${processedFirms.length} firms`);\n  \n  return {\n    emails: processedEmails,\n    persons: processedPersons,\n    firms: processedFirms,\n    emailCount: processedEmails.length,\n    originalDate: originalData.originalDate,\n    backlogId: originalData.backlogId\n  };\n}\n\n// Get Gmail messages from input\nconst gmailData = $input.all();\nconst gmailMessages = gmailData.length > 0 ? gmailData.map(item => item.json) : [];\n\n// Get original Gmail data with internalDate from Node 5 for timestamp extraction\nconst originalGmailData = $('N05: Search Gmail Messages').all();\nconst originalMessages = originalGmailData.length > 0 ? originalGmailData.map(item => item.json) : [];\n\n// Create lookup map for internalDate by message ID\nconst internalDateLookup = {};\noriginalMessages.forEach(msg => {\n  if (msg.id && msg.internalDate) {\n    internalDateLookup[msg.id] = msg.internalDate;\n    console.log(`📊 Lookup: ${msg.id} -> ${msg.internalDate}`);\n  }\n});\nconsole.log(`📊 Total lookup entries: ${Object.keys(internalDateLookup).length}`);\n\n// Get original data from previous node\nconst originalData = {\n  originalDate: $('N04: Gmail Date Format Conversion').first().json.originalDate,\n  backlogId: $('N04: Gmail Date Format Conversion').first().json.backlogId\n};\n\n// Check for empty results using reference workflow pattern\n// Gmail returns empty object {} when no messages found\nif (!gmailMessages || gmailMessages.length === 0 || \n    (gmailMessages.length === 1 && (!gmailMessages[0] || !gmailMessages[0].id))) {\n  console.log(\"ℹ️ No messages found for the specified date\");\n  return {\n    emails: [],\n    persons: [],\n    firms: [],\n    emailCount: 0,\n    originalDate: originalData.originalDate,\n    backlogId: originalData.backlogId\n  };\n}\n\n// Process the data with lookup map\nconst result = processEmailData(gmailMessages, originalData, internalDateLookup);\nreturn result;\n"
+      },
+      "id": "gmail-processing",
+      "name": "N08: Process Gmail Results & Extract Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1960,
+        -610
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "emails_found",
+              "leftValue": "={{$json.emailCount}}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "email-check",
+      "name": "N09: Check Emails Found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2180,
+        -610
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Node 9: Create Cross-References with Merged Input\n// Based on workflow-algorithm.md Step 5 Node 9: lines 272-290\n// Updated: Process merged input from Merge node and identify records by properties\n// Context: Merge node combines outputs from Node 8A/8B/8C - need to classify by properties\n\nfunction createCrossReferencesFromMergedInput() {\n  console.log('🔗 Creating cross-references from merged input data');\n  \n  // Get original processed data from Node 6 for backlogId and context\n  const processedData = $('N08: Process Gmail Results & Extract Data').first().json;\n  const { emails, persons, firms, backlogId } = processedData;\n  \n  // Get merged input data from the Merge node\n  const mergedInputs = $input.all();\n  console.log(`📥 Received ${mergedInputs.length} inputs from Merge node`);\n  \n  // Extract UUIDs from all merged inputs\n  const emailRecords = [];\n  const personRecords = [];\n  const firmRecords = [];\n  \n  // Process each input from the merge node\n  mergedInputs.forEach((input, index) => {\n    const record = input.json;\n    console.log(`Processing merge input ${index + 1}:`, record.id);\n    \n    // Determine record type based on properties (not index)\n    // Email records have property_gmail_id\n    // Person records have property_email_address\n    // Firm records have property_domain\n    if (record.property_gmail_id) {\n      emailRecords.push(record);\n      console.log(`  → Identified as EMAIL record: ${record.property_gmail_id}`);\n    } else if (record.property_email_address) {\n      personRecords.push(record);\n      console.log(`  → Identified as PERSON record: ${record.property_email_address}`);\n    } else if (record.property_domain) {\n      firmRecords.push(record);\n      console.log(`  → Identified as FIRM record: ${record.property_domain}`);\n    } else {\n      console.log(`  → UNKNOWN record type:`, Object.keys(record));\n    }\n  });\n  \n  console.log(`📧 Email UUIDs: ${emailRecords.map(e => e.id).join(', ')}`);\n  console.log(`👤 Person UUIDs: ${personRecords.map(p => p.id).join(', ')}`);\n  console.log(`🏢 Firm UUIDs: ${firmRecords.map(f => f.id).join(', ')}`);\n  \n  // Build relation arrays for the backlog record\n  const plannerEmailIds = emailRecords.map(record => record.id);\n  const plannerPersonIds = personRecords.map(record => record.id);\n  const plannerFirmIds = firmRecords.map(record => record.id);\n  \n  console.log(`✅ Relations for backlog ${backlogId}:`);\n  console.log(`  rel:PlannerEmail: [${plannerEmailIds.join(', ')}]`);\n  console.log(`  rel:PlannerPerson: [${plannerPersonIds.join(', ')}]`);\n  console.log(`  rel:PlannerFirm: [${plannerFirmIds.join(', ')}]`);\n  \n  return {\n    backlogId: backlogId,\n    originalDate: processedData.originalDate,\n    emailCount: emails.length,\n    relations: {\n      plannerEmailIds: plannerEmailIds,\n      plannerPersonIds: plannerPersonIds,\n      plannerFirmIds: plannerFirmIds\n    },\n    // Keep original data for context\n    createdEmails: emailRecords,\n    createdPersons: personRecords,\n    createdFirms: firmRecords\n  };\n}\n\n// Execute cross-reference creation from merged input\nconst result = createCrossReferencesFromMergedInput();\nreturn result;"
+      },
+      "id": "cross-references",
+      "name": "N13: Create Cross-References",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3060,
+        -700
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{$json.backlogId}}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|select",
+              "selectValue": "={{$json.status || 'planning'}}"
+            },
+            {
+              "key": "Date Started|date",
+              "date": "={{ $now }}",
+              "timezone": "US/Eastern"
+            },
+            {
+              "key": "rel:PlannerEmail|relation",
+              "relationValue": "={{$json.relations.plannerEmailIds}}"
+            },
+            {
+              "key": "rel:PlannerPerson|relation",
+              "relationValue": "={{$json.relations.plannerPersonIds}}"
+            },
+            {
+              "key": "rel:PlannerFirm|relation",
+              "relationValue": "={{$json.relations.plannerFirmIds}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "update-backlog-status",
+      "name": "N14: Update Backlog Status",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        3280,
+        -1080
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// N15.a: Split PlannerEmail IDs with proper relationship mapping\n// Purpose: Transform N13 email records with their specific person/firm relationships\n\nconst crossRefData = $('N13: Create Cross-References').first().json;\nconst createdEmails = crossRefData.createdEmails || [];\nconst createdPersons = crossRefData.createdPersons || [];\nconst createdFirms = crossRefData.createdFirms || [];\n\nconsole.log(`📧 Processing ${createdEmails.length} emails with specific relationships`);\n\n// Create email→person→firm mapping based on actual email data\nconst results = createdEmails.map(emailRecord => {\n  // Find the person who sent this email\n  const emailAddress = emailRecord.property_from_email;\n  const personRecord = createdPersons.find(p => p.property_email_address === emailAddress);\n  \n  // Find the firm for this person's domain\n  const domain = emailAddress ? emailAddress.split('@')[1] : null;\n  const firmRecord = createdFirms.find(f => f.property_domain === domain);\n  \n  console.log(`📧 Email ${emailRecord.property_gmail_id}:`);\n  console.log(`  → From: ${emailAddress}`);\n  console.log(`  → Person: ${personRecord?.id || 'NOT_FOUND'}`);\n  console.log(`  → Domain: ${domain}`);\n  console.log(`  → Firm: ${firmRecord?.id || 'NOT_FOUND'}`);\n  \n  return {\n    recordId: emailRecord.id,\n    specificPersonId: personRecord?.id || null,\n    specificFirmId: firmRecord?.id || null,\n    emailAddress: emailAddress,\n    domain: domain\n  };\n});\n\nconsole.log(`📧 Created ${results.length} emails with specific relationships`);\nreturn results.map(item => ({json: item}));"
+      },
+      "id": "create-email-updates",
+      "name": "N15.a: Split Email IDs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3280,
+        -860
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{$json.recordId}}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "rel:Backlog|relation",
+              "relationValue": "={{[$('N13: Create Cross-References').first().json.backlogId]}}"
+            },
+            {
+              "key": "rel:PlannerPerson|relation",
+              "relationValue": "={{$json.specificPersonId ? [$json.specificPersonId] : []}}"
+            },
+            {
+              "key": "rel:PlannerFirm|relation",
+              "relationValue": "={{$json.specificFirmId ? [$json.specificFirmId] : []}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "update-planner-email-xrefs",
+      "name": "N16.a: Update PlannerEmail Relations",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        3500,
+        -860
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// N15.b: Split PlannerPerson IDs with specific email/firm relationships\n// Purpose: Transform N13 person records with their specific email/firm relationships\n\nconst crossRefData = $('N13: Create Cross-References').first().json;\nconst createdEmails = crossRefData.createdEmails || [];\nconst createdPersons = crossRefData.createdPersons || [];\nconst createdFirms = crossRefData.createdFirms || [];\n\nconsole.log(`🧑 Processing ${createdPersons.length} persons with specific relationships`);\n\n// Create person→emails→firm mapping\nconst results = createdPersons.map(personRecord => {\n  // Find all emails from this person\n  const personEmail = personRecord.property_email_address;\n  const personEmails = createdEmails.filter(e => e.property_from_email === personEmail);\n  \n  // Find the firm for this person's domain\n  const domain = personEmail ? personEmail.split('@')[1] : null;\n  const firmRecord = createdFirms.find(f => f.property_domain === domain);\n  \n  console.log(`🧑 Person ${personEmail}:`);\n  console.log(`  → Emails: [${personEmails.map(e => e.id).join(', ')}]`);\n  console.log(`  → Domain: ${domain}`);\n  console.log(`  → Firm: ${firmRecord?.id || 'NOT_FOUND'}`);\n  \n  return {\n    recordId: personRecord.id,\n    specificEmailIds: personEmails.map(e => e.id),\n    specificFirmId: firmRecord?.id || null,\n    emailAddress: personEmail,\n    domain: domain\n  };\n});\n\nconsole.log(`🧑 Created ${results.length} persons with specific relationships`);\nreturn results.map(item => ({json: item}));"
+      },
+      "id": "create-person-updates",
+      "name": "N15.b: Split Person IDs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3280,
+        -610
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{$json.recordId}}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "rel:Backlog|relation",
+              "relationValue": "={{[$('N13: Create Cross-References').first().json.backlogId]}}"
+            },
+            {
+              "key": "rel:PlannerEmail|relation",
+              "relationValue": "={{$json.specificEmailIds || []}}"
+            },
+            {
+              "key": "rel:PlannerFirm|relation",
+              "relationValue": "={{$json.specificFirmId ? [$json.specificFirmId] : []}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "update-planner-person-xrefs",
+      "name": "N16.b: Update PlannerPerson Relations",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        3500,
+        -610
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// N15.c: Split PlannerFirm IDs with specific email/person relationships\n// Purpose: Transform N13 firm records with their specific email/person relationships\n\nconst crossRefData = $('N13: Create Cross-References').first().json;\nconst createdEmails = crossRefData.createdEmails || [];\nconst createdPersons = crossRefData.createdPersons || [];\nconst createdFirms = crossRefData.createdFirms || [];\n\nconsole.log(`🏢 Processing ${createdFirms.length} firms with specific relationships`);\n\n// Create firm→persons→emails mapping\nconst results = createdFirms.map(firmRecord => {\n  // Find all persons from this firm domain\n  const firmDomain = firmRecord.property_domain;\n  const firmPersons = createdPersons.filter(p => {\n    const personDomain = p.property_email_address ? p.property_email_address.split('@')[1] : null;\n    return personDomain === firmDomain;\n  });\n  \n  // Find all emails from persons at this firm\n  const firmEmails = createdEmails.filter(e => {\n    const emailDomain = e.property_from_email ? e.property_from_email.split('@')[1] : null;\n    return emailDomain === firmDomain;\n  });\n  \n  console.log(`🏢 Firm ${firmDomain}:`);\n  console.log(`  → Persons: [${firmPersons.map(p => p.id).join(', ')}]`);\n  console.log(`  → Emails: [${firmEmails.map(e => e.id).join(', ')}]`);\n  \n  return {\n    recordId: firmRecord.id,\n    specificPersonIds: firmPersons.map(p => p.id),\n    specificEmailIds: firmEmails.map(e => e.id),\n    domain: firmDomain\n  };\n});\n\nconsole.log(`🏢 Created ${results.length} firms with specific relationships`);\nreturn results.map(item => ({json: item}));"
+      },
+      "id": "create-firm-updates",
+      "name": "N15.c: Split Firm IDs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3280,
+        -410
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{$json.recordId}}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "rel:Backlog|relation",
+              "relationValue": "={{[$('N13: Create Cross-References').first().json.backlogId]}}"
+            },
+            {
+              "key": "rel:PlannerEmail|relation",
+              "relationValue": "={{$json.specificEmailIds || []}}"
+            },
+            {
+              "key": "rel:PlannerPerson|relation",
+              "relationValue": "={{$json.specificPersonIds || []}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "update-planner-firm-xrefs",
+      "name": "N16.c: Update PlannerFirm Relations",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        3500,
+        -410
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3720,
+        -820
+      ],
+      "id": "merge2-cross-references",
+      "name": "N17: Merge Cross-Reference Updates"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Node 11: Success Output\n// Based on workflow-algorithm.md Step 7 Node 11: lines 312-320\n// Context: workflow-3soZAbHUm8vgIkXp.json success response patterns\n// Fixed: Handle both TRUE branch (from Node 10) and FALSE branch (from Node 7) cases\n\nfunction generateSuccessResponse() {\n  // Check if we came from the TRUE branch (Node 9/10 executed) or FALSE branch (Node 7 direct)\n  let crossRefData = null;\n  let processedData = null;\n  \n  try {\n    // Try to get Node 9 data (TRUE branch - emails were processed)\n    crossRefData = $('N13: Create Cross-References').first().json;\n    console.log('📊 TRUE branch: Using Node 9 cross-reference data');\n  } catch (e) {\n    // Node 9 wasn't executed - we're in FALSE branch\n    console.log('📊 FALSE branch: Node 9 not executed, using Node 6 data');\n  }\n  \n  if (crossRefData) {\n    // TRUE branch: Use Node 9 data with actual creation counts\n    const response = {\n      success: true,\n      plannerEmailsCreated: crossRefData.createdEmails?.length || 0,\n      plannerPersonsCreated: crossRefData.createdPersons?.length || 0,\n      plannerFirmsCreated: crossRefData.createdFirms?.length || 0,\n      backlogStatus: 'planning',\n      timestamp: new Date().toISOString(),\n      processedDate: crossRefData.originalDate,\n      backlogId: crossRefData.backlogId\n    };\n    console.log('✅ TRUE branch completed - records created');\n    return response;\n  } else {\n    // FALSE branch: Use Node 6 data with zero counts\n    processedData = $('N08: Process Gmail Results & Extract Data').first().json;\n    const response = {\n      success: true,\n      plannerEmailsCreated: 0,\n      plannerPersonsCreated: 0,\n      plannerFirmsCreated: 0,\n      backlogStatus: 'complete',\n      timestamp: new Date().toISOString(),\n      processedDate: processedData.originalDate,\n      backlogId: processedData.backlogId\n    };\n    console.log('✅ FALSE branch completed - no emails found');\n    return response;\n  }\n}\n\n// Generate success response for both TRUE and FALSE branch cases\nconst result = generateSuccessResponse();\nreturn result;"
+      },
+      "id": "success-output",
+      "name": "N18: Success Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3760,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2840,
+        -700
+      ],
+      "id": "309b054c-1bed-4ae7-ba89-b88e1d30db86",
+      "name": "N12: Merge Planner Creates"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "emails",
+        "options": {}
+      },
+      "id": "split-emails",
+      "name": "N10.a: Split Emails",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        -1010
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "persons",
+        "options": {}
+      },
+      "id": "split-persons",
+      "name": "N10.b: Split Persons",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        -700
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "firms",
+        "options": {}
+      },
+      "id": "split-firms",
+      "name": "N10.c: Split Firms",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        -425
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "4c1RPy0PYoxFCCxj",
+          "mode": "list",
+          "cachedResultName": "PlannerEmail: Create v20250723-012314"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "gmailId": "={{ $json.gmailId }}",
+            "fromEmail": "={{ $json.fromEmail }}",
+            "subject": "={{ $json.subject }}",
+            "freshContent": "={{ $json.freshContent }}",
+            "threadId": "={{ $json.threadId }}",
+            "gmailDate": "={{ $json.gmailDate }}"
+          },
+          "matchingColumns": [
+            "gmailId",
+            "fromEmail",
+            "subject",
+            "freshContent",
+            "threadId",
+            "gmailDate"
+          ],
+          "schema": [
+            {
+              "id": "gmailId",
+              "displayName": "gmailId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "fromEmail",
+              "displayName": "fromEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "freshContent",
+              "displayName": "freshContent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "threadId",
+              "displayName": "threadId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "gmailDate",
+              "displayName": "gmailDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2620,
+        -1010
+      ],
+      "name": "N11.a: Call PlannerEmail Create",
+      "id": "9688569a-98e5-4b57-bc35-2825eb7f6739"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "6Noi3vqZOdQm1uOY",
+          "mode": "list",
+          "cachedResultName": "PlannerPerson: Create v20250723-014847"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "emailAddress": "={{ $json.emailAddress }}"
+          },
+          "matchingColumns": [
+            "emailAddress"
+          ],
+          "schema": [
+            {
+              "id": "emailAddress",
+              "displayName": "emailAddress",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2620,
+        -700
+      ],
+      "name": "N11.b: Call PlannerPerson Create",
+      "id": "62b1bef6-42f1-4c27-8097-82a61d5ad4e8"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "AdTfnAEHPvMzlETS",
+          "mode": "list",
+          "cachedResultName": "PlannerFirm: Create v20250723-014632"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "domain": "={{ $json.domain }}"
+          },
+          "matchingColumns": [
+            "domain"
+          ],
+          "schema": [
+            {
+              "id": "domain",
+              "displayName": "domain",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2620,
+        -425
+      ],
+      "name": "N11.c: Call PlannerFirm Create",
+      "id": "3557afff-25df-4a46-bde5-b46bf00f4092"
+    },
+    {
+      "parameters": {
+        "jsCode": "// N05.6: No Emails Found - Create Empty Success Output\n// Purpose: Generate N13-compatible output for zero emails case\n// Routes directly to N14 to update Backlog status as complete\n\nconst originalData = $('N04: Gmail Date Format Conversion').first().json;\nconst backlogId = originalData.backlogId;\nconst originalDate = originalData.originalDate;\n\nconsole.log(`ℹ️ No emails found for ${originalDate}, creating empty success output`);\n\n// Create N13-compatible output with empty relations and complete status\nconst result = {\n  backlogId: backlogId,\n  originalDate: originalDate,\n  emailCount: 0,\n  status: 'complete',\n  relations: {\n    plannerEmailIds: [],\n    plannerPersonIds: [],\n    plannerFirmIds: []\n  },\n  createdEmails: [],\n  createdPersons: [],\n  createdFirms: []\n};\n\nconsole.log(`✅ Created empty success output for backlog ${backlogId} with status: complete`);\nreturn result;"
+      },
+      "id": "no-emails-found",
+      "name": "N05.6: No Emails Found",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3060,
+        -1160
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "get",
+        "threadId": "={{ $json.threadId }}",
+        "options": {
+          "returnOnlyMessages": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1560,
+        -700
+      ],
+      "id": "fcb487c2-402c-404a-8481-481c711b6410",
+      "name": "N06: Get Gmail Thread",
+      "webhookId": "c98908fe-82ba-4170-acc8-3c0df92de373",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pxtxj61wdCzGXITa",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "messages",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1740,
+        -610
+      ],
+      "id": "1172f547-6e90-4bb8-b450-b2f095fa5ce8",
+      "name": "N07: Split Thread Messages"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "emails_found",
+              "leftValue": "={{$json.id}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "emails-found-check",
+      "name": "N05.5: Email Not Found?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        -860
+      ]
+    }
+  ],
+  "pinData": {
+    "N01: Webhook Input": [
+      {
+        "json": {
+          "headers": {
+            "host": "localhost:5678",
+            "user-agent": "curl/8.5.0",
+            "accept": "*/*",
+            "content-type": "application/json",
+            "content-length": "84"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "Date": "2025-07-13",
+            "Status": "pending",
+            "id": "2381db9b-a441-8138-afcf-c10df0e96f80"
+          },
+          "webhookUrl": "http://localhost:5678/webhook/backlog-to-planners",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "repo_name": "n8n-hyly-ai-backup",
+  "repo_owner": "munishgandhi",
+  "repo_path": "",
+  "settings": {},
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-07-31T05:11:36.000Z",
+  "versionId": "6313a870-bad6-4324-8cb6-5444389f8b03"
+}
