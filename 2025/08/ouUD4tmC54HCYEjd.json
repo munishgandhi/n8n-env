@@ -238,14 +238,26 @@
         368
       ],
       "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 1
+      "typeVersion": 1,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "psUJfPffy3IsMJGV",
+          "name": "Google Drive account 4"
+        }
+      }
     },
     {
       "parameters": {
         "resource": "fileFolder",
         "queryString": "=={{ '.txt' }}\n",
         "returnAll": true,
-        "filter": {},
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $json.id }}",
+            "mode": "id"
+          }
+        },
         "options": {}
       },
       "id": "d560041e-a65c-4b9e-93cd-549708a9549e",
@@ -257,7 +269,13 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "alwaysOutputData": true,
-      "executeOnce": false
+      "executeOnce": false,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "psUJfPffy3IsMJGV",
+          "name": "Google Drive account 4"
+        }
+      }
     },
     {
       "parameters": {
@@ -647,10 +665,14 @@
         "operation": "download",
         "fileId": {
           "__rl": true,
-          "value": "={{ $('Sanitize file name').item.json.id }}",
-          "mode": "id"
+          "value": "1EJ9ZA0Xrc6gTvjrpxU4fjLkUVnj0mN5c",
+          "mode": "list",
+          "cachedResultName": "10LouderHarmoniq.2024.12.02-DiscoveryCall-transcript.txt",
+          "cachedResultUrl": "https://drive.google.com/file/d/1EJ9ZA0Xrc6gTvjrpxU4fjLkUVnj0mN5c/view?usp=drivesdk"
         },
-        "options": {}
+        "options": {
+          "binaryPropertyName": "data"
+        }
       },
       "id": "e7520106-d902-406b-9c0d-52be5d8f9dd1",
       "name": "Download File",
@@ -659,7 +681,13 @@
       "position": [
         1536,
         576
-      ]
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "psUJfPffy3IsMJGV",
+          "name": "Google Drive account 4"
+        }
+      }
     },
     {
       "parameters": {
@@ -714,6 +742,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-13T10:59:34.270Z",
-  "versionId": "8ca6cc92-b996-4050-be19-e281570c4fad"
+  "updatedAt": "2025-08-14T04:24:40.000Z",
+  "versionId": "61dea4a9-7356-4935-8000-46da142af497"
 }
