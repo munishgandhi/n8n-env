@@ -121,7 +121,13 @@
     },
     "Loop Over Items": {
       "main": [
-        [],
+        [
+          {
+            "node": "Evaluation",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Execute Workflow",
@@ -721,6 +727,28 @@
           "name": "n8n account"
         }
       }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "type": "n8n-nodes-base.evaluation",
+      "typeVersion": 4.7,
+      "position": [
+        1680,
+        304
+      ],
+      "id": "bd80bb11-7592-4318-ae07-8daa015f852f",
+      "name": "Evaluation"
     }
   ],
   "pinData": {
@@ -2095,6 +2123,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-14T02:39:56.000Z",
-  "versionId": "65f2645b-e32f-40eb-bbbf-36a504935fde"
+  "updatedAt": "2025-08-14T02:49:12.000Z",
+  "versionId": "63873927-29f0-41f9-8e59-6f0f6e2114c9"
 }
