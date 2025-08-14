@@ -1,0 +1,294 @@
+{
+  "active": false,
+  "connections": {
+    "N03: Get Thread": {
+      "main": [
+        [
+          {
+            "node": "N04: Split Out Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N04: Split Out Messages": {
+      "main": [
+        [
+          {
+            "node": "N05: Get Full Message Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N05: Get Full Message Details": {
+      "main": [
+        [
+          {
+            "node": "N06: Execute PlannerEmail Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N02: Get Initial Message": {
+      "main": [
+        [
+          {
+            "node": "N03: Get Thread",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N06: Execute PlannerEmail Workflow": {
+      "main": [
+        []
+      ]
+    },
+    "N00: Subworkflow Start": {
+      "main": [
+        [
+          {
+            "node": "N02: Get Initial Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-23T18:42:48.012Z",
+  "id": "7f3OziDCCYtWwM4W",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Backlog2Planners v20250730-111220",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "query",
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "id": "subworkflow-trigger",
+      "typeVersion": 1.1,
+      "name": "N00: Subworkflow Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -80,
+        -848
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "messages",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        592,
+        -848
+      ],
+      "id": "a318f417-addc-4988-bd32-993840cd1900",
+      "name": "N04: Split Out Messages"
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "get",
+        "threadId": "={{ $json.threadId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        368,
+        -848
+      ],
+      "id": "12504a36-6ef6-4e44-b3fa-b5f12aedf419",
+      "name": "N03: Get Thread",
+      "webhookId": "c98908fe-82ba-4170-acc8-3c0df92de373",
+      "executeOnce": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pxtxj61wdCzGXITa",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $json.id }}",
+        "simple": false,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        816,
+        -848
+      ],
+      "id": "752ccd3c-fcf2-4d1b-b17c-691cac03b764",
+      "name": "N05: Get Full Message Details",
+      "webhookId": "f3bd0993-f68a-4ce8-85d2-f6caeec0558f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pxtxj61wdCzGXITa",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $json?.query?.id || $input.first()?.json?.query?.id || $('N00: Subworkflow Start').first()?.json?.query?.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        144,
+        -848
+      ],
+      "id": "2245942e-ac6b-41c6-8ce2-825b4e1c1502",
+      "name": "N02: Get Initial Message",
+      "webhookId": "60adbfcb-b1e3-49ca-9e94-27b60a135804",
+      "alwaysOutputData": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pxtxj61wdCzGXITa",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "4c1RPy0PYoxFCCxj",
+          "mode": "list",
+          "cachedResultName": "PlannerEmail: Create v20250725-020702"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "gmailId": "={{ $json.id }}",
+            "subject": "={{ $json.subject }}",
+            "threadId": "={{ $json.threadId }}",
+            "gmailDate": "={{ $json.date }}",
+            "fromEmail": "={{ $json.from.value[0].address }}",
+            "freshContent": "={{ $json.text }}",
+            "backlogId": "={{ $input.first()?.json?.query?.backlogId || $('N00: Subworkflow Start').first()?.json?.query?.backlogId || $json?.query?.backlogId }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "gmailId",
+              "displayName": "gmailId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fromEmail",
+              "displayName": "fromEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "freshContent",
+              "displayName": "freshContent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "threadId",
+              "displayName": "threadId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "gmailDate",
+              "displayName": "gmailDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "backlogId",
+              "displayName": "backlogId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1040,
+        -848
+      ],
+      "id": "c0547dd4-29e8-4a15-a872-e8e75a600ee4",
+      "name": "N06: Execute PlannerEmail Workflow"
+    }
+  ],
+  "pinData": {
+    "N00: Subworkflow Start": [
+      {
+        "json": {
+          "query": {
+            "id": "197f63d0bff9ad49",
+            "backlogId": "2371db9b-a441-81f5-9d6e-d4e258bfa4f1"
+          }
+        }
+      }
+    ]
+  },
+  "repo_name": "n8n-hyly-ai-backup",
+  "repo_owner": "munishgandhi",
+  "repo_path": "",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-07-30T15:49:34.000Z",
+  "versionId": "75f31444-fabb-479b-90c6-ed0d0399998a"
+}
