@@ -221,7 +221,7 @@
         "authentication": "oAuth2",
         "spaceId": "spaces/AAQAKmirGT0",
         "messageUi": {
-          "text": "=Workflow Backup: {{ $json.name }} ({{ $json.file }}) was "
+          "text": "=Workflow \"{{ $json.name }}\" committed to {{ $json.file }}"
         },
         "additionalFields": {}
       },
@@ -254,6 +254,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-14T06:09:17.000Z",
-  "versionId": "54e8cf92-5ca8-465d-802b-bbcbc238cb47"
+  "updatedAt": "2025-08-14T06:20:04.000Z",
+  "versionId": "b48cea2e-fb31-4acc-9da7-38168089f754"
 }
