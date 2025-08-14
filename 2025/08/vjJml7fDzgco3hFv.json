@@ -119,36 +119,18 @@
         ]
       ]
     },
-    "Loop Over Items": {
-      "main": [
-        [
-          {
-            "node": "Evaluation",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Execute Workflow",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Execute Workflow": {
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "Loop Over Items1",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Loop Over Items",
+            "node": "Loop Over Items1",
             "type": "main",
             "index": 0
           }
@@ -243,7 +225,19 @@
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Execute Workflow",
             "type": "main",
             "index": 0
           }
@@ -533,19 +527,6 @@
     },
     {
       "parameters": {
-        "options": {}
-      },
-      "id": "806db72c-c9f6-461d-be1a-1e6867a25382",
-      "name": "Loop Over Items",
-      "type": "n8n-nodes-base.splitInBatches",
-      "position": [
-        1456,
-        432
-      ],
-      "typeVersion": 3
-    },
-    {
-      "parameters": {
         "rule": {
           "interval": [
             {
@@ -634,6 +615,7 @@
         448
       ],
       "typeVersion": 1,
+      "alwaysOutputData": false,
       "onError": "continueErrorOutput"
     },
     {
@@ -730,25 +712,16 @@
     },
     {
       "parameters": {
-        "documentId": {
-          "__rl": true,
-          "mode": "list",
-          "value": ""
-        },
-        "sheetName": {
-          "__rl": true,
-          "mode": "list",
-          "value": ""
-        }
+        "options": {}
       },
-      "type": "n8n-nodes-base.evaluation",
-      "typeVersion": 4.7,
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
       "position": [
-        1680,
-        304
+        1472,
+        432
       ],
-      "id": "bd80bb11-7592-4318-ae07-8daa015f852f",
-      "name": "Evaluation"
+      "id": "bb920d44-2cb0-4aee-afef-b889e2e7db7c",
+      "name": "Loop Over Items1"
     }
   ],
   "pinData": {
@@ -2123,6 +2096,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-14T02:49:12.000Z",
-  "versionId": "63873927-29f0-41f9-8e59-6f0f6e2114c9"
+  "updatedAt": "2025-08-14T02:57:19.000Z",
+  "versionId": "17ea61ec-135e-4505-9af9-9702b4efea16"
 }
