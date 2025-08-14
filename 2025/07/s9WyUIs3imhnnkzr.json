@@ -1,0 +1,186 @@
+{
+  "active": false,
+  "connections": {
+    "Get Gmail Latest Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate & Prepare Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate & Prepare Query": {
+      "main": [
+        [
+          {
+            "node": "Validation Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validation Check": {
+      "main": [
+        [
+          {
+            "node": "Search Gmail Messages",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Gmail Messages": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-18T22:12:32.690Z",
+  "id": "s9WyUIs3imhnnkzr",
+  "isArchived": true,
+  "meta": null,
+  "name": "Get Gmail Latest v20250719-011050",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "get-gmail-latest",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Get Gmail Latest Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "e45c2f99-785e-4094-a209-21dd504bcc5c"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract date parameter from webhook query\nconst query = $json.query || {};\nconst dateParam = query.date;\n\nconsole.log('🔍 Webhook query received:', JSON.stringify(query, null, 2));\n\n// Validate date parameter\nif (!dateParam) {\n  console.error('❌ Missing date parameter');\n  return [{\n    json: {\n      success: false,\n      error: \"Missing required parameter: date\",\n      details: \"Please provide date parameter (format: YYYYMMDD)\"\n    }\n  }];\n}\n\n// Validate date format (YYYYMMDD)\nconst dateRegex = /^\\d{8}$/;\nif (!dateRegex.test(dateParam)) {\n  console.error('❌ Invalid date format:', dateParam);\n  return [{\n    json: {\n      success: false,\n      error: \"Invalid date format\",\n      details: \"Date must be in YYYYMMDD format (e.g., 20250713)\"\n    }\n  }];\n}\n\n// Parse date\nconst year = dateParam.substring(0, 4);\nconst month = dateParam.substring(4, 6);\nconst day = dateParam.substring(6, 8);\nconst formattedDate = `${year}/${month}/${day}`;\n\nconsole.log(`✅ Valid date: ${formattedDate}`);\n\n// Build Gmail query for specific date and folder\n// For emails ON the specified date: after the same date, before the next day\nconst dateObj = new Date(year, month - 1, day); // month is 0-indexed\nconst nextDay = new Date(dateObj);\nnextDay.setDate(dateObj.getDate() + 1);\n\nconst afterDate = formattedDate; // Same as input date\nconst beforeDate = `${nextDay.getFullYear()}/${String(nextDay.getMonth() + 1).padStart(2, '0')}/${String(nextDay.getDate()).padStart(2, '0')}`;\n\nconst gmailQuery = `after:${afterDate} before:${beforeDate} in:\"--Watch/VC\"`;\n\nconsole.log(`📧 Gmail query: ${gmailQuery}`);\n\n// Return success with Gmail query\nreturn [{\n  json: {\n    success: true,\n    date: formattedDate,\n    gmailQuery: gmailQuery,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "validate-prepare",
+      "name": "Validate & Prepare Query",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        470,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition-1",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "validation-check",
+      "name": "Validation Check",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        690,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 100,
+        "filters": {
+          "q": "={{$node[\"Validate & Prepare Query\"].json[\"gmailQuery\"]}}"
+        }
+      },
+      "id": "gmail-search",
+      "name": "Search Gmail Messages",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        910,
+        220
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "webhookId": "81f51666-b9c4-4b3a-8f1c-a87ad9dc01d8",
+      "alwaysOutputData": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pxtxj61wdCzGXITa",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Unified response handler for both validation errors and Gmail results\nconst validationResult = $('Validate & Prepare Query').first().json;\n\n// If validation failed, return error response\nif (!validationResult.success) {\n  console.log('❌ Returning validation error');\n  return [{\n    json: {\n      error: validationResult.error,\n      details: validationResult.details\n    }\n  }];\n}\n\n// If validation passed, check if we have Gmail results\ntry {\n  const gmailMessages = $('Search Gmail Messages').all();\n  \n  // Handle Gmail API errors\n  if (gmailMessages.length === 1 && gmailMessages[0].json.error) {\n    const error = gmailMessages[0].json.error;\n    console.error('❌ Gmail API error:', error);\n    \n    if (error.message?.includes(\"auth\")) {\n      return [{\n        json: {\n          error: \"Gmail authentication failed\",\n          details: \"Unable to authenticate with Gmail API\"\n        }\n      }];\n    }\n    \n    return [{\n      json: {\n        error: \"Gmail API request failed\",\n        details: \"Failed to retrieve messages from Gmail API\"\n      }\n    }];\n  }\n  \n  // Check for empty results - Gmail returns empty object {} when no messages found\n  if (!gmailMessages || gmailMessages.length === 0 || \n      (gmailMessages.length === 1 && !gmailMessages[0].json.id)) {\n    console.log(\"ℹ️ No messages found for the specified date\");\n    return [{\n      json: {\n        error: \"No email found for date \" + validationResult.date.replace(/\\//g, \"\"),\n        details: \"No emails were found in the --Watch/VC folder for the specified date\"\n      }\n    }];\n  }\n  \n  // Process and format messages\n  const formattedMessages = gmailMessages.map(item => {\n    const msg = item.json;\n    \n    return {\n      messageId: msg.id,\n      threadId: msg.threadId,\n      from: msg.From || \"Unknown\",\n      subject: msg.Subject || \"No Subject\"\n    };\n  });\n  \n  console.log(`✅ Found ${formattedMessages.length} messages`);\n  \n  // Return formatted messages as individual items\n  return formattedMessages.map(msg => ({ json: msg }));\n  \n} catch (error) {\n  // Gmail node didn't execute - this is validation error path\n  console.log('ℹ️ Gmail node not executed - validation error path');\n  return [{\n    json: {\n      error: validationResult.error,\n      details: validationResult.details\n    }\n  }];\n}"
+      },
+      "id": "format-response",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1130,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-hyly-ai-backup",
+  "repo_owner": "munishgandhi",
+  "repo_path": "",
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-07-31T05:17:03.000Z",
+  "versionId": "6d091a38-3447-4e60-ae4b-01365bd9bd91"
+}
