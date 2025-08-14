@@ -403,7 +403,7 @@
             {
               "id": "312390a7-805f-46d8-9284-d2e1c369dfe2",
               "name": "file",
-              "value": "={{ $('Check Status').item.json.path }}",
+              "value": "={{ $json.html_url }}",
               "type": "string"
             },
             {
@@ -1933,6 +1933,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-14T06:06:56.000Z",
-  "versionId": "f2d534b6-3729-4cb0-8e5f-e194bc11fda2"
+  "updatedAt": "2025-08-14T06:17:47.000Z",
+  "versionId": "538fa02e-8b12-4afe-b7bf-64f765573a9b"
 }
