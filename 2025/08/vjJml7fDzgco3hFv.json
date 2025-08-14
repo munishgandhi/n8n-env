@@ -221,7 +221,7 @@
         "authentication": "oAuth2",
         "spaceId": "spaces/AAQAKmirGT0",
         "messageUi": {
-          "text": "=New version of {{ $json.file }} was saved"
+          "text": "=Workflow Backup: {{ $json.name }} ({{ $json.file }}) was "
         },
         "additionalFields": {}
       },
@@ -254,6 +254,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-14T05:26:58.000Z",
-  "versionId": "fce3ea93-91c2-4067-8bbf-52de5e9e121d"
+  "updatedAt": "2025-08-14T06:09:17.000Z",
+  "versionId": "54e8cf92-5ca8-465d-802b-bbcbc238cb47"
 }
