@@ -1,0 +1,307 @@
+{
+  "active": true,
+  "connections": {
+    "N00: Start": {
+      "main": [
+        [
+          {
+            "node": "N01: Query AI Review Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N01: Query AI Review Records": {
+      "main": [
+        [
+          {
+            "node": "N02: Transform Notion Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N02: Transform Notion Data": {
+      "main": [
+        [
+          {
+            "node": "Guidelines Missing?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guidelines Missing?": {
+      "main": [
+        [
+          {
+            "node": "N05: Calculate Updates",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "N04: Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N03: Ollama Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "N04: Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N04: Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "N05: Calculate Updates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N05: Calculate Updates": {
+      "main": [
+        [
+          {
+            "node": "N06: Update Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N06: Update Notion": {
+      "main": [
+        []
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "N01: Query AI Review Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-08-08T22:57:28.124Z",
+  "id": "6TApNCFdO6tZkK9I",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "gates.qa v20250813-192731",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -608,
+        -548
+      ],
+      "id": "0859504e-0f35-44a9-8256-3325fe98f468",
+      "name": "N00: Start"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.body.data.id }}",
+          "mode": "id"
+        },
+        "simple": false
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -384,
+        -644
+      ],
+      "id": "notion-query-ai-review",
+      "name": "N01: Query AI Review Records",
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Extract clean data from Notion's flat property structure\nconst pageData = $json;\n\n// Extract text content using safe navigation and null checks\nconst answer = (pageData.properties?.Answer?.rich_text?.[0]?.text?.content) || \"\";\nconst question = (pageData.properties?.Question?.title?.[0]?.text?.content) || \"\";\nconst guidelines = (pageData.properties?.[\"Answer Guidelines\"]?.rich_text?.[0]?.text?.content) || \"\";\n\n// Extract other relevant properties (adjust based on actual available fields)\nconst reviewOwner = pageData.property_review_owner || null;\nconst salesOwner = pageData.property_sales_owner || null;\n\n// Check if guidelines are empty or meaningless\nif (!guidelines || guidelines.trim() === \"\") {\n  console.log(`No guidelines provided for: ${question}`);\n  // Return special marker for missing guidelines\n  return {\n    question: question,\n    answer: answer,\n    guidelines: \"MISSING\",\n    missingGuidelines: true,\n    \n    // Metadata for updates\n    pageId: pageData.id,\n    pageUrl: pageData.url,\n    reviewOwnerId: reviewOwner || null,\n    salesOwnerId: salesOwner || null,\n    \n    // Status tracking\n    currentStatus: \"AI Review\",\n    createdTime: pageData.property_created_time || pageData.created_time,\n    lastEditedTime: pageData.property_last_edited_time || pageData.last_edited_time\n  };\n}\n\n// Log for debugging\nconsole.log(`Processing: ${question}`);\nconsole.log(`Answer length: ${answer.length} chars`);\nconsole.log(`Guidelines: ${guidelines.substring(0, 50)}...`);\n\nreturn {\n  // Core data for assessment\n  question: question,\n  answer: answer,\n  guidelines: guidelines,\n  missingGuidelines: false,\n  \n  // Metadata for updates\n  pageId: pageData.id,\n  pageUrl: pageData.url,\n  reviewOwnerId: reviewOwner || null,\n  salesOwnerId: salesOwner || null,\n  \n  // Status tracking\n  currentStatus: \"AI Review\",\n  createdTime: pageData.property_created_time || pageData.created_time,\n  lastEditedTime: pageData.property_last_edited_time || pageData.last_edited_time\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        -644
+      ],
+      "id": "transform-notion-data",
+      "name": "N02: Transform Notion Data"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.missingGuidelines }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        64,
+        -644
+      ],
+      "id": "guidelines-missing-check",
+      "name": "Guidelines Missing?"
+    },
+    {
+      "parameters": {
+        "model": "gpt-oss:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "typeVersion": 1,
+      "position": [
+        384,
+        -296
+      ],
+      "id": "81f40736-4f7e-43b3-8e8b-928af2f45222",
+      "name": "N03: Ollama Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "i7QigsdBsQdZv3Mf",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Give your PASS/FAIL assessment on whether the provided answer responds to the question. If it fails, explain briefly why. Make the explanation scannable with emojis if needed. Use only the Guidelines to assess the answer. Sign off your answer on a new line as \"-- MG via AI\"  Format your response as: ASSESSMENT: [PASS/FAIL] EXPLANATION: [Brief explanation if FAIL, or confirmation if PASS]  -- MG via AI\n\n<Question> {{ $json.question }} </Question> <Answer> {{ $json.answer }} </Answer> <Guidelines> {{ $json.guidelines }} </Guidelines>",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        288,
+        -520
+      ],
+      "id": "4d7b6a07-8a53-430e-8064-175df835f230",
+      "name": "N04: Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Get input data from previous nodes\nconst notionData = $('N01: Query AI Review Records').item.json;\nconst transformedData = $('N02: Transform Notion Data').item.json;\n\n// Try to get LLM response - it may not exist if guidelines were missing\nlet llmResponse = {};\ntry {\n  // Only try to access N04 if it actually ran\n  if ($('N04: Basic LLM Chain').item) {\n    llmResponse = $('N04: Basic LLM Chain').item.json;\n  }\n} catch (e) {\n  // N04 didn't run (guidelines missing path)\n  llmResponse = null;\n}\n\n// User UUIDs\nconst MG_UUID = 'ffa8346a-444c-48dd-ac88-b87aa4c3a84f'; // mg@hy.ly\nconst BLAKE_UUID = 'f23cdeec-395e-4a46-9959-436567aae306'; // bw@hy.ly\n\n// Extract current values\nconst currentProperties = notionData.properties || {};\nconst pageId = notionData.id;\n\n// Get field values for validation\nconst question = currentProperties.Question?.title?.[0]?.text?.content || '';\nconst answer = currentProperties.Answer?.rich_text?.[0]?.text?.content || '';\nconst reviewOwner = currentProperties[\"Review Owner\"]?.people || [];\nconst salesOwner = currentProperties[\"Sales Owner\"]?.people || [];\nconst answerGuidelines = currentProperties[\"Answer Guidelines\"]?.rich_text?.[0]?.text?.content || '';\n\n// Initialize update object\nlet updates = {\n  pageId: pageId,\n  properties: {}\n};\n\n// BUSINESS LOGIC: Determine Review Owner and Status\nlet targetReviewOwner = null;\nlet targetStatus = null;\nlet reviewContent = \"\";\n\n// Check 1: If Answer Guidelines are empty -> MASTER Fix (HIGHEST PRIORITY)\nif (!answerGuidelines) {\n  targetReviewOwner = {\n    object: \"user\",\n    id: BLAKE_UUID\n  };\n  targetStatus = \"MASTER Fix\";\n  reviewContent = \"ASSESSMENT: FAIL\\nEXPLANATION: The MASTER Planner has not provided guidance. Please provide guidance and resubmit for AI Review.\\n-- MG via AI\";\n}\n// Check 2: If Question or Answer is empty -> Sales Revise (NO OWNER CHANGE)\nelse if (!question || !answer) {\n  // Keep existing Review Owner if present, don't change if empty\n  if (reviewOwner.length > 0) {\n    targetReviewOwner = reviewOwner[0];\n  } else {\n    targetReviewOwner = null; // Don't assign anyone - let it stay empty\n  }\n  targetStatus = \"Sales Revise\";\n  \n  // Generate appropriate review content\n  if (!question) {\n    reviewContent = \"ASSESSMENT: FAIL\\nEXPLANATION: Question is missing. Please provide the question.\\n-- MG via AI\";\n  } else if (!answer) {\n    reviewContent = \"ASSESSMENT: FAIL\\nEXPLANATION: Answer is missing. Please provide an answer.\\n-- MG via AI\";\n  }\n}\n// Otherwise: Process based on LLM response (regardless of Review Owner status)\nelse {\n  // Set initial Review Owner\n  if (reviewOwner.length > 0) {\n    targetReviewOwner = reviewOwner[0];\n  } else {\n    targetReviewOwner = null;\n  }\n  \n  // Get LLM content if available (use correct field name)\n  const llmText = llmResponse?.text || llmResponse?.review_notes || \"\";\n  \n  if (llmText && llmText.trim()) {\n    // We have LLM output - use it\n    reviewContent = llmText;\n    // Extract status from LLM response if it contains PASS/FAIL\n    if (llmText.includes(\"ASSESSMENT: PASS\")) {\n      targetStatus = \"MGR Review\";\n      // Only assign MG UUID if Review Owner is empty\n      if (reviewOwner.length === 0) {\n        targetReviewOwner = {\n          object: \"user\",\n          id: MG_UUID\n        };\n      }\n    } else if (llmText.includes(\"ASSESSMENT: FAIL\")) {\n      targetStatus = \"Sales Revise\";\n      // Keep current Review Owner unchanged - do not reassign\n      targetReviewOwner = reviewOwner.length > 0 ? reviewOwner[0] : null;\n    } else {\n      targetStatus = currentProperties[\"Review Status\"]?.status?.name || \"AI Review\";\n    }\n  } else if (!llmResponse) {\n    // LLM didn't run (shouldn't happen in this branch, but be safe)\n    reviewContent = \"ASSESSMENT: FAIL\\nEXPLANATION: LLM review did not execute - workflow error\\n-- MG via AI\";\n    targetStatus = \"AI Review\";\n  } else {\n    // LLM ran but provided empty response\n    reviewContent = \"ASSESSMENT: FAIL\\nEXPLANATION: LLM provided empty review notes\\n-- MG via AI\";\n    targetStatus = \"AI Review\";\n  }\n}\n\n// Build properties update object\nupdates.properties = {\n  // Always update Review Status\n  \"Review Status\": {\n    status: {\n      name: targetStatus\n    }\n  },\n  // Always update Review Notes with meaningful content\n  \"Review Notes\": {\n    rich_text: [{\n      text: {\n        content: reviewContent\n      }\n    }]\n  }\n};\n\n// Only set Review Owner property if we have a valid target (not null)\nif (targetReviewOwner !== null && targetReviewOwner.id) {\n  // CRITICAL: Only send the ID, not the full object\n  updates.properties[\"Review Owner\"] = {\n    people: [{\n      id: targetReviewOwner.id\n    }]\n  };\n}\n// If targetReviewOwner is null, don't include Review Owner in properties at all\n\n// Add validation flags for debugging\nupdates.validationInfo = {\n  questionEmpty: !question,\n  answerEmpty: !answer,\n  reviewOwnerEmpty: reviewOwner.length === 0,\n  guidelinesEmpty: !answerGuidelines,\n  assignedTo: targetReviewOwner?.id || 'none',\n  status: targetStatus,\n  llmRan: !!llmResponse,\n  reviewContentLength: reviewContent.length\n};\n\nreturn updates;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        688,
+        -644
+      ],
+      "id": "calculate-updates",
+      "name": "N05: Calculate Updates"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('N05: Calculate Updates').item.json.pageId }}",
+          "mode": "id"
+        },
+        "simple": false,
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Review Status|status",
+              "statusValue": "={{ $('N05: Calculate Updates').item.json.properties[\"Review Status\"].status.name }}"
+            },
+            {
+              "key": "Review Notes|rich_text",
+              "textContent": "={{ $('N05: Calculate Updates').item.json.properties[\"Review Notes\"].rich_text[0].text.content }}"
+            },
+            {
+              "key": "Review Owner|people",
+              "peopleValue": "={{ $('N05: Calculate Updates').item.json.properties[\"Review Owner\"]?.people?.length > 0 ? $('N05: Calculate Updates').item.json.properties[\"Review Owner\"].people.map(person => person.id) : [] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        912,
+        -644
+      ],
+      "id": "update-notion",
+      "name": "N06: Update Notion",
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "7c7d669d-0fd2-438e-986e-15fe9a30c825",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -608,
+        -740
+      ],
+      "id": "6c7fe9bc-de8f-4344-bff0-86f317eb1fb8",
+      "name": "Webhook",
+      "webhookId": "7c7d669d-0fd2-438e-986e-15fe9a30c825"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-hyly-ai-backup",
+  "repo_owner": "munishgandhi",
+  "repo_path": "",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-08-13T23:27:31.000Z",
+  "versionId": "935b1d65-59b8-43f9-be98-85a681bd2cf5"
+}
