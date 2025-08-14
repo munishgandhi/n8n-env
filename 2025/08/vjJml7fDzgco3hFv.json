@@ -36,7 +36,13 @@
     },
     "Loop Over Items": {
       "main": [
-        [],
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Execute Workflow1",
@@ -62,6 +68,11 @@
             "index": 0
           }
         ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        []
       ]
     }
   },
@@ -165,6 +176,61 @@
       "id": "cdcae72e-1918-447e-b8d3-e2b67725e117",
       "name": "Execute Workflow1",
       "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "973dedd1-5fd1-41ac-a79f-f95bcd425772",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "same",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1696,
+        224
+      ],
+      "id": "4d115baf-a86c-4271-a60b-92bd692c4b13",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "messageUi": {},
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.googleChat",
+      "typeVersion": 1,
+      "position": [
+        1904,
+        224
+      ],
+      "id": "3ff110c0-9191-44ed-a643-8ce8ff864211",
+      "name": "Create a message",
+      "webhookId": "a5174270-284c-43b6-90dd-fadf578909b6",
+      "credentials": {
+        "googleChatOAuth2Api": {
+          "id": "7j4LhPmqBQDNg98j",
+          "name": "Chat account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -179,6 +245,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-14T04:28:24.000Z",
-  "versionId": "b7542363-9338-412f-94a9-012105d7413c"
+  "updatedAt": "2025-08-14T04:49:04.000Z",
+  "versionId": "63dc2844-5345-467a-862c-41cd50e2d388"
 }
