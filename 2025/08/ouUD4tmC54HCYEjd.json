@@ -186,14 +186,14 @@
       "main": [
         [
           {
-            "node": "Get the notion page",
+            "node": "If",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "If",
+            "node": "Get the notion page",
             "type": "main",
             "index": 0
           }
@@ -560,7 +560,7 @@
           "cachedResultName": "DB.Client Meeting Diary",
           "cachedResultUrl": "https://www.notion.so/f22d80836d1d4759a1c0c133a4cce8c9"
         },
-        "limit": 1,
+        "limit": 5,
         "filterType": "manual",
         "matchType": "allFilters",
         "filters": {
@@ -578,7 +578,22 @@
             {
               "key": "Meeting Subject|title",
               "condition": "contains",
-              "titleValue": "={{ $('Sanitize file name').item.json.expectedTitle }}"
+              "titleValue": "={{ $json.expectedTitle }}"
+            },
+            {
+              "key": "Status|status",
+              "condition": "does_not_equal",
+              "statusValue": "No Show"
+            },
+            {
+              "key": "Status|status",
+              "condition": "does_not_equal",
+              "statusValue": "Cancel"
+            },
+            {
+              "key": "Status|status",
+              "condition": "does_not_equal",
+              "statusValue": "Upcoming Meeting"
             }
           ]
         },
@@ -595,6 +610,12 @@
       "alwaysOutputData": true,
       "notesInFlow": true,
       "executeOnce": true,
+      "credentials": {
+        "notionApi": {
+          "id": "1irJTXhoFNvETAJ1",
+          "name": "Notion account 2"
+        }
+      },
       "notes": "Retrieve all possible pages "
     },
     {
@@ -718,7 +739,6 @@
     },
     {
       "parameters": {
-        "batchSize": 3,
         "options": {}
       },
       "type": "n8n-nodes-base.splitInBatches",
@@ -742,6 +762,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-14T04:24:40.000Z",
-  "versionId": "61dea4a9-7356-4935-8000-46da142af497"
+  "updatedAt": "2025-08-14T06:42:40.000Z",
+  "versionId": "f3ce75fb-9b14-4735-9349-aee42dcac757"
 }
