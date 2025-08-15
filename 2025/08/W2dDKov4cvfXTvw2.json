@@ -16,17 +16,6 @@
       "main": [
         [
           {
-            "node": "Limit & Sort Pages",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Limit & Sort Pages": {
-      "main": [
-        [
-          {
             "node": "Loop Over Pages",
             "type": "main",
             "index": 0
@@ -36,10 +25,16 @@
     },
     "Loop Over Pages": {
       "main": [
-        [],
         [
           {
-            "node": "Extract Page Data",
+            "node": "Log Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download file",
             "type": "main",
             "index": 0
           }
@@ -48,24 +43,12 @@
     },
     "Extract Page Data": {
       "main": [
-        [
-          {
-            "node": "Fetch Zoom Transcript",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Fetch Zoom Transcript": {
       "main": [
-        [
-          {
-            "node": "Create Toggle Heading",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Create Toggle Heading": {
@@ -73,11 +56,6 @@
         [
           {
             "node": "Store Toggle Block ID",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Split Transcript into Blocks",
             "type": "main",
             "index": 0
           }
@@ -141,9 +119,14 @@
     },
     "Log Success": {
       "main": [
+        []
+      ]
+    },
+    "Download file": {
+      "main": [
         [
           {
-            "node": "Loop Over Pages",
+            "node": "Split Transcript into Blocks",
             "type": "main",
             "index": 0
           }
@@ -181,15 +164,14 @@
           "cachedResultName": "DB.Client Meeting Diary",
           "cachedResultUrl": "https://www.notion.so/f22d80836d1d4759a1c0c133a4cce8c9"
         },
-        "limit": 1,
+        "returnAll": true,
         "filterType": "manual",
         "matchType": "allFilters",
         "filters": {
           "conditions": [
             {
               "key": "Meeting Date|date",
-              "condition": "after",
-              "date": "2025-01-01T00:00:00"
+              "condition": "past_week"
             },
             {
               "key": "Status|status",
@@ -207,7 +189,7 @@
               "statusValue": "Upcoming Meeting"
             },
             {
-              "key": "Zoom.TranscriptURL|url",
+              "key": "GDrive Transcript URL|url",
               "condition": "is_not_empty"
             }
           ]
@@ -217,7 +199,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        192,
+        512,
         512
       ],
       "id": "968e1bae-1f59-43b8-bcfc-587bee5ced9b",
@@ -232,26 +214,12 @@
     },
     {
       "parameters": {
-        "jsCode": "const MAX = 5;  // Process this many pages at a time\nconst items = $input.all();\n\n// Sort by Meeting Date (most recent first)\nitems.sort((a, b) => {\n  const dateA = a.json?.property_meeting_date?.start || '';\n  const dateB = b.json?.property_meeting_date?.start || '';\n  return dateB.localeCompare(dateA);\n});\n\n// Take only MAX items\nreturn items.slice(0, MAX);"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        400,
-        512
-      ],
-      "id": "cef0421c-d837-4304-bdc4-9e77385632ee",
-      "name": "Limit & Sort Pages",
-      "alwaysOutputData": true
-    },
-    {
-      "parameters": {
         "options": {}
       },
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        608,
+        1024,
         512
       ],
       "id": "da6695eb-f40c-409d-a644-45b739d75bf5",
@@ -260,25 +228,31 @@
     },
     {
       "parameters": {
-        "jsCode": "const item = $input.first().json;\n\n// Extract properties with correct names (all lowercase with underscores)\nconst pageId = item.id;\nconst meetingSubject = item.property_meeting_subject || 'Meeting';\nconst transcriptUrl = item.property_zoom_transcript_url || '';\nconst passcode = item.property_zoom_passcode || '';\nconst meetingDate = item.property_meeting_date?.start || '';\nconst status = item.property_status || '';\n\n// Log what we found for debugging\nconsole.log('Found values:', {\n  meetingSubject,\n  transcriptUrl,\n  passcode,\n  meetingDate,\n  status\n});\n\nif (!transcriptUrl) {\n  throw new Error('No transcript URL found');\n}\n\nreturn [{\n  json: {\n    pageId,\n    meetingSubject,\n    transcriptUrl,\n    passcode,\n    meetingDate,\n    toggleTitle: `Transcript - ${meetingSubject}`\n  }\n}];"
+        "jsCode": "const item = $input.first().json;\n\n// Extract properties with correct names (all lowercase with underscores)\nconst pageId = item.id;\nconst meetingSubject = item.property_meeting_subject || 'Meeting';\nconst transcriptUrl = item.property_g_drive_transcript_url || '';\nconst passcode = item.property_zoom_passcode || '';\nconst meetingDate = item.property_meeting_date?.start || '';\nconst status = item.property_status || '';\n\n// Log what we found for debugging\nconsole.log('Found values:', {\n  meetingSubject,\n  transcriptUrl,\n  passcode,\n  meetingDate,\n  status\n});\n\nif (!transcriptUrl) {\n  throw new Error('No transcript URL found');\n}\n\nreturn [{\n  json: {\n    pageId,\n    meetingSubject,\n    transcriptUrl,\n    passcode,\n    meetingDate,\n    toggleTitle: `Transcript - ${meetingSubject}`\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        816,
-        512
+        1232,
+        352
       ],
       "id": "273608d6-a029-47f5-81a3-a757fd7a60a4",
       "name": "Extract Page Data",
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "disabled": true
     },
     {
       "parameters": {
-        "url": "={{ $json.transcriptUrl }}",
+        "url": "={{ $json.property_g_drive_transcript_url }}\n",
         "options": {
           "redirect": {
             "redirect": {
               "maxRedirects": 5
+            }
+          },
+          "response": {
+            "response": {
+              "responseFormat": "text"
             }
           },
           "timeout": 30000
@@ -287,12 +261,13 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1024,
-        512
+        1424,
+        192
       ],
       "id": "f2d144db-3242-48e3-b668-becfbe49a661",
       "name": "Fetch Zoom Transcript",
       "alwaysOutputData": true,
+      "disabled": true,
       "continueOnFail": true,
       "notes": "Fetches the transcript from Zoom URL"
     },
@@ -300,14 +275,14 @@
       "parameters": {
         "pageId": {
           "__rl": true,
-          "value": "={{ $('Extract Page Data').item.json.pageId }}",
+          "value": "={{ $json.id }}",
           "mode": "id"
         },
-        "title": "={{ $('Extract Page Data').item.json.toggleTitle }}",
+        "title": "=\"Trnascript\" - {{ $json.name }}",
         "blockUi": {
           "blockValues": [
             {
-              "type": "heading_2"
+              "type": "toggle"
             }
           ]
         },
@@ -316,8 +291,8 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        1232,
-        512
+        1952,
+        544
       ],
       "id": "06e86faf-9f88-4234-9523-9675997ec0fd",
       "name": "Create Toggle Heading",
@@ -353,8 +328,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1440,
-        512
+        2112,
+        544
       ],
       "id": "2d9928fb-2117-4b8d-806b-d7485efea473",
       "name": "Store Toggle Block ID",
@@ -364,13 +339,13 @@
     },
     {
       "parameters": {
-        "jsCode": "// Input: transcript content from HTTP request\nconst item = $input.first().json;\nconst transcriptData = $('Fetch Zoom Transcript').first().json;\nconst toggleData = $('Store Toggle Block ID').first().json;\n\nconst vtt = transcriptData.data || '';\nconst toggleBlockId = toggleData.toggleBlockId;\n\nconst blocks = [];\n\n// Match VTT format: number\\nstart --> end\\ntext\nconst cueRe = /(?:^|\\n)\\s*(\\d+)\\s*\\n\\s*(\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s*-->\\s*(\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s*\\n([\\s\\S]*?)(?=\\n\\s*\\d+\\s*\\n|\\n*$)/g;\n\nlet m;\nlet hasContent = false;\n\nwhile ((m = cueRe.exec(vtt)) !== null) {\n  const idx = m[1];\n  const start = m[2];\n  const end = m[3];\n  const body = m[4].trim().replace(/\\n+/g, ' ');\n  \n  if (body) {\n    hasContent = true;\n    let section = `${idx}. [${start} → ${end}] ${body}`;\n    \n    // Notion text block limit ~2000 chars\n    const limit = 1900;\n    if (section.length <= limit) {\n      blocks.push({\n        type: 'paragraph',\n        paragraph: { \n          rich_text: [{ \n            type: 'text', \n            text: { content: section } \n          }] \n        }\n      });\n    } else {\n      // Split long sections\n      for (let i = 0; i < section.length; i += limit) {\n        blocks.push({\n          type: 'paragraph',\n          paragraph: { \n            rich_text: [{ \n              type: 'text', \n              text: { content: section.slice(i, i + limit) } \n            }] \n          }\n        });\n      }\n    }\n  }\n}\n\n// If no VTT format found, try to process as plain text\nif (!hasContent && vtt.length > 0) {\n  const lines = vtt.split(/\\n\\n+/);\n  for (const line of lines) {\n    const trimmed = line.trim();\n    if (trimmed) {\n      const limit = 1900;\n      if (trimmed.length <= limit) {\n        blocks.push({\n          type: 'paragraph',\n          paragraph: { \n            rich_text: [{ \n              type: 'text', \n              text: { content: trimmed } \n            }] \n          }\n        });\n      } else {\n        for (let i = 0; i < trimmed.length; i += limit) {\n          blocks.push({\n            type: 'paragraph',\n            paragraph: { \n              rich_text: [{ \n                type: 'text', \n                text: { content: trimmed.slice(i, i + limit) } \n              }] \n            }\n          });\n        }\n      }\n    }\n  }\n}\n\nreturn [{ json: { toggleBlockId, blocks } }];"
+        "jsCode": "/**\n * Input: Google Drive Downloaded Transcript as a String (from Google Drive \"Download As String\" = ON)\n * Output: one item per VTT cue (1, 2, 3, ...), including start time, end time, and text.\n */\n\n// Decode base64 using TextDecoder (works in n8n Code node)\nfunction fromBinaryBase64(b64) {\n  try {\n    const decoded = Buffer.from(b64, 'base64'); // Use Node's Buffer here for decoding base64\n    return decoded.toString('utf8'); // Convert the decoded buffer into a string\n  } catch (error) {\n    console.error('Base64 decode error:', error);\n    return '';\n  }\n}\n\nfunction getVtt(item) {\n  const j = item.json || {};\n  // Check if 'data' or 'body' exists in the input, otherwise fall back to binary data\n  if (typeof j.data === 'string' && j.data.trim()) return j.data;\n  if (typeof j.body === 'string' && j.body.trim()) return j.body;\n  const bin = item.binary?.data?.data || item.binary?.data;\n  if (typeof bin === 'string') return fromBinaryBase64(bin); // Decode from base64 binary string\n  console.log('No valid data found in item:', item);\n  return '';\n}\n\nconst items = $input.all();\nconst result = [];\n\nitems.forEach(item => {\n  let vtt = getVtt(item);\n  if (!vtt) {\n    console.log('Split VTT: empty content for item');\n    return;\n  }\n\n  // Normalize line endings and trim whitespace\n  vtt = vtt.replace(/^\\uFEFF/, '').replace(/\\r\\n/g, '\\n').trim();\n\n  // Remove WEBVTT header and extra blank lines\n  if (/^WEBVTT/i.test(vtt)) {\n    vtt = vtt.replace(/^WEBVTT[^\\n]*\\n?/, '').trim();\n  }\n\n  // Parse VTT into cues\n  const lines = vtt.split('\\n');\n  let currentCue = {};\n  let cues = [];\n\n  lines.forEach((line, i) => {\n    line = line.trim();\n\n    if (/^\\d+$/.test(line)) {\n      if (currentCue.start && currentCue.end && currentCue.text) {\n        cues.push(currentCue);  // Push previous cue if available\n      }\n      currentCue = { cueNumber: line };  // Start new cue\n    } else if (/^\\d{2}:\\d{2}:\\d{2}\\.\\d{3}\\s*-->\\s*\\d{2}:\\d{2}:\\d{2}\\.\\d{3}/.test(line)) {\n      const times = line.match(/^(\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s*-->\\s*(\\d{2}:\\d{2}:\\d{2}\\.\\d{3})/);\n      currentCue.start = times[1];\n      currentCue.end = times[2];\n    } else if (line) {\n      if (!currentCue.text) currentCue.text = '';\n      currentCue.text += (currentCue.text ? ' ' : '') + line;\n    }\n  });\n\n  // Handle last cue\n  if (currentCue.start && currentCue.end && currentCue.text) {\n    cues.push(currentCue);\n  }\n\n  // Prepare output\n  const totalCues = cues.length;\n  cues.forEach((cue, idx) => {\n    result.push({\n      json: {\n        ...item.json,\n        cueNumber: cue.cueNumber,\n        start: cue.start,\n        end: cue.end,\n        text: cue.text,\n        totalCues,\n      },\n    });\n  });\n});\n\n// If no cues were found, log and return empty\nif (result.length === 70.15) {\n  console.log('No valid cues were processed');\n}\n\nreturn result;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1648,
-        736
+        1824,
+        720
       ],
       "id": "ab0fe015-2bd5-4f37-89e9-7327aebcdbed",
       "name": "Split Transcript into Blocks",
@@ -385,8 +360,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1856,
-        736
+        2208,
+        768
       ],
       "id": "5b6c9c96-73d2-4b16-9c15-62c4978f4238",
       "name": "Convert Blocks to Items",
@@ -403,7 +378,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        2064,
+        2688,
         624
       ],
       "id": "9a9ef0cf-9fee-4c87-8a88-1cfb2299196d",
@@ -429,7 +404,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        2272,
+        2896,
         624
       ],
       "id": "0f43e29f-0226-4c7a-903f-63830cb36ccc",
@@ -450,8 +425,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2480,
-        624
+        3168,
+        384
       ],
       "id": "7ee21bb6-deb4-406b-8857-d5df9b76add6",
       "name": "Log Success",
@@ -480,12 +455,38 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1648,
-        480
+        1616,
+        208
       ],
       "typeVersion": 1,
       "id": "a7c78397-71cd-452f-b634-7914afd69d75",
       "name": "Multi-Block Note"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.property_g_drive_transcript_url }}",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1408,
+        608
+      ],
+      "id": "d1498b0e-6536-465b-9646-8784b5be6d96",
+      "name": "Download file",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "psUJfPffy3IsMJGV",
+          "name": "Google Drive account 4"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -498,6 +499,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-13T14:01:23.000Z",
-  "versionId": "1ba6743e-d4c9-42e4-95dd-4f52e608bf30"
+  "updatedAt": "2025-08-14T16:19:23.000Z",
+  "versionId": "b4d4f85a-8a7b-4505-b5e9-e6a89cb5ea00"
 }
