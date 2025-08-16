@@ -1,0 +1,321 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get a database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a database": {
+      "main": [
+        [
+          {
+            "node": "Get many database pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many database pages": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a video": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Update a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a database page": {
+      "main": [
+        []
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get a video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "createdAt": "2025-08-15T22:52:22.658Z",
+  "id": "bDKwjMfCRePozg54",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "research",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -208
+      ],
+      "id": "6ed7a3ca-be6a-442f-93cc-f3c1a2d22615",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "database",
+        "databaseId": {
+          "__rl": true,
+          "value": "2501db9b-a441-80e6-b4ed-e2ea322b5053",
+          "mode": "list",
+          "cachedResultName": "MGDB.Helix.Research",
+          "cachedResultUrl": "https://www.notion.so/2501db9ba44180e6b4ede2ea322b5053"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        -208
+      ],
+      "id": "6b3d6f29-f37c-42d7-a64c-c946cb40d883",
+      "name": "Get a database",
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        -208
+      ],
+      "id": "92b93a8d-5825-4faa-97f0-3541ca247ec1",
+      "name": "Get many database pages",
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "get",
+        "videoId": "={{ $json.property_article_id }}",
+        "part": [
+          "id",
+          "snippet"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        896,
+        -208
+      ],
+      "id": "d1c991a8-80f9-4746-a2a8-147612793241",
+      "name": "Get a video",
+      "alwaysOutputData": true,
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "bbvqDyJw1ft8R0Ud",
+          "name": "YouTube account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ed65c30a-adb0-4b81-9638-498c602358b1",
+              "name": "ArticleTitle",
+              "value": "={{ $json.snippet.title }}",
+              "type": "string"
+            },
+            {
+              "id": "17555e70-f754-493f-adea-f8aa43cdd478",
+              "name": "URL",
+              "value": "={{\"https://www.youtube.com/watch?v=\"}}{{$json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "9b24a053-3098-45ea-9115-fe898abd5888",
+              "name": "ChannelId",
+              "value": "={{ $json.snippet.channelId }}",
+              "type": "string"
+            },
+            {
+              "id": "536143b4-3c86-4f19-9ed2-a29e9981fba5",
+              "name": "Channel",
+              "value": "={{ $json.snippet.channelTitle }}",
+              "type": "string"
+            },
+            {
+              "id": "2fe6fbcd-9a39-42f4-be17-4ff114c3dcc9",
+              "name": "Description",
+              "value": "={{ $json.snippet.description }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        -208
+      ],
+      "id": "91951416-2d22-4b1d-9696-de58896ae989",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Get many database pages').item.json.id }}",
+          "mode": "id"
+        },
+        "simple": false,
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "ArticleTitle|title",
+              "title": "={{ $json.ArticleTitle }}"
+            },
+            {
+              "key": "URL|url",
+              "ignoreIfEmpty": true,
+              "urlValue": "={{ $json.URL }}"
+            },
+            {
+              "key": "ChannelID|rich_text",
+              "textContent": "={{ $json.ChannelId }}"
+            },
+            {
+              "key": "Channel|rich_text",
+              "textContent": "={{ $json.Channel }}"
+            },
+            {
+              "key": "Description|rich_text",
+              "textContent": "=  {{$json.Description.substring(0,1900)}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1344,
+        -208
+      ],
+      "id": "b00fed55-f10a-4247-bd27-e3e56924548e",
+      "name": "Update a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "649ec7d2-b849-4bb4-802e-d4e4f0a2328e",
+              "leftValue": "={{ $json.property_article_title }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        -208
+      ],
+      "id": "ffeaaf2b-9270-4979-82d0-44f671137307",
+      "name": "If"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-hyly-ai-backup",
+  "repo_owner": "munishgandhi",
+  "repo_path": "",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-08-16T01:24:45.000Z",
+  "versionId": "cbdf08dc-0406-43a8-89a1-8b3b2d39d13f"
+}
