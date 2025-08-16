@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Get a video": {
       "main": [
@@ -114,6 +114,11 @@
             "index": 0
           }
         ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        []
       ]
     }
   },
@@ -426,9 +431,39 @@
         912,
         -528
       ]
+    },
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "httpMethod": [
+          "POST"
+        ],
+        "path": "n8n-transcribe",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        912,
+        -832
+      ],
+      "id": "17dfdff3-61d5-4fc7-8303-354e14fbe4f3",
+      "name": "Webhook",
+      "webhookId": "f7088ed8-c134-485a-87f2-63b7c7c30c23",
+      "notesInFlow": false,
+      "alwaysOutputData": true
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "property_article_id": "BmQ706_9wlQ",
+          "id": "2501db9b-a441-80e9-bcf4-d6a296caa1fd"
+        }
+      }
+    ]
+  },
   "repo_name": "n8n-hyly-ai-backup",
   "repo_owner": "munishgandhi",
   "repo_path": "",
@@ -437,7 +472,7 @@
   },
   "staticData": null,
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2025-08-16T05:31:08.000Z",
-  "versionId": "863c2b41-df19-43f9-b9da-5740153738e0"
+  "triggerCount": 1,
+  "updatedAt": "2025-08-16T18:17:43.000Z",
+  "versionId": "7ab8abd3-4180-4d13-a1d8-fca2f5e76984"
 }
