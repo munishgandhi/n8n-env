@@ -118,7 +118,20 @@
     },
     "Webhook": {
       "main": [
-        []
+        [
+          {
+            "node": "Get a video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a video",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -132,7 +145,7 @@
       "parameters": {
         "resource": "video",
         "operation": "get",
-        "videoId": "={{ $json.property_article_id }}",
+        "videoId": "={{ $json.query.article_id }}",
         "part": [
           "id",
           "snippet"
@@ -142,8 +155,8 @@
       "type": "n8n-nodes-base.youTube",
       "typeVersion": 1,
       "position": [
-        1120,
-        -528
+        1136,
+        -736
       ],
       "id": "d1c991a8-80f9-4746-a2a8-147612793241",
       "name": "Get a video",
@@ -202,8 +215,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1344,
-        -528
+        1360,
+        -736
       ],
       "id": "91951416-2d22-4b1d-9696-de58896ae989",
       "name": "Edit Fields"
@@ -248,8 +261,8 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        1568,
-        -528
+        1584,
+        -736
       ],
       "id": "b00fed55-f10a-4247-bd27-e3e56924548e",
       "name": "Update a database page",
@@ -267,8 +280,8 @@
       "type": "n8n-nodes-hyly-youtube.hylyYouTubeNode",
       "typeVersion": 1,
       "position": [
-        1792,
-        -528
+        1808,
+        -736
       ],
       "id": "51b27ec6-6235-45a7-96f0-1104b9b1b65f",
       "name": "Hyly YouTube Node"
@@ -280,8 +293,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2016,
-        -432
+        2032,
+        -640
       ],
       "id": "transcript-splitter-001",
       "name": "Split Transcript into Blocks",
@@ -296,8 +309,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2240,
-        -432
+        2256,
+        -640
       ],
       "id": "blocks-to-items-001",
       "name": "Convert Blocks to Items",
@@ -325,8 +338,8 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        2016,
-        -624
+        2032,
+        -832
       ],
       "id": "create-toggle-001",
       "name": "Create Toggle Block",
@@ -356,8 +369,8 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        2688,
-        -464
+        2704,
+        -736
       ],
       "id": "append-transcript-blocks-001",
       "name": "Append Transcript Block",
@@ -386,8 +399,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2240,
-        -624
+        2256,
+        -832
       ],
       "id": "extract-toggle-id-001",
       "name": "Extract Toggle ID"
@@ -401,8 +414,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        2464,
-        -528
+        2480,
+        -736
       ],
       "id": "merge-toggle-content-001",
       "name": "Merge Toggle ID with Content",
@@ -429,16 +442,13 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "position": [
         912,
-        -528
+        -640
       ]
     },
     {
       "parameters": {
         "multipleMethods": true,
-        "httpMethod": [
-          "POST"
-        ],
-        "path": "n8n-transcribe",
+        "path": "f7088ed8-c134-485a-87f2-63b7c7c30c23",
         "options": {}
       },
       "type": "n8n-nodes-base.webhook",
@@ -451,18 +461,11 @@
       "name": "Webhook",
       "webhookId": "f7088ed8-c134-485a-87f2-63b7c7c30c23",
       "notesInFlow": false,
-      "alwaysOutputData": true
+      "alwaysOutputData": false
     }
   ],
   "pinData": {
-    "Webhook": [
-      {
-        "json": {
-          "property_article_id": "BmQ706_9wlQ",
-          "id": "2501db9b-a441-80e9-bcf4-d6a296caa1fd"
-        }
-      }
-    ]
+    "Webhook": []
   },
   "repo_name": "n8n-hyly-ai-backup",
   "repo_owner": "munishgandhi",
@@ -473,6 +476,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-16T18:17:43.000Z",
-  "versionId": "7ab8abd3-4180-4d13-a1d8-fca2f5e76984"
+  "updatedAt": "2025-08-16T20:44:37.000Z",
+  "versionId": "8428f498-7759-4c66-be12-0eb9fec09e71"
 }
