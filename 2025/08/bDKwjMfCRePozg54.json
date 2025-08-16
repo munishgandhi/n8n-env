@@ -1,7 +1,7 @@
 {
   "active": false,
   "connections": {
-    "When clicking ‘Execute workflow’": {
+    "When clicking 'Execute workflow'": {
       "main": [
         [
           {
@@ -27,7 +27,7 @@
       "main": [
         [
           {
-            "node": "If",
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -39,6 +39,11 @@
         [
           {
             "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Search a page",
             "type": "main",
             "index": 0
           }
@@ -58,10 +63,110 @@
     },
     "Update a database page": {
       "main": [
-        []
+        [
+          {
+            "node": "Hyly YouTube Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
-    "If": {
+    "Hyly YouTube Node": {
+      "main": [
+        [
+          {
+            "node": "Create Toggle Block",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Transcript into Blocks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Transcript into Blocks": {
+      "main": [
+        [
+          {
+            "node": "Convert Blocks to Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Blocks to Items": {
+      "main": [
+        [
+          {
+            "node": "Merge Toggle ID with Content",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Create Toggle Block": {
+      "main": [
+        [
+          {
+            "node": "Extract Toggle ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Toggle ID": {
+      "main": [
+        [
+          {
+            "node": "Merge Toggle ID with Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Toggle ID with Content": {
+      "main": [
+        [
+          {
+            "node": "Append Transcript Block",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Transcript Block": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If ArticleTitle is Empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If ArticleTitle is Empty": {
       "main": [
         [
           {
@@ -70,7 +175,13 @@
             "index": 0
           }
         ],
-        []
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -80,7 +191,7 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "name": "research",
+  "name": "research v20250815-233559",
   "nodes": [
     {
       "parameters": {},
@@ -88,10 +199,10 @@
       "typeVersion": 1,
       "position": [
         0,
-        -208
+        -416
       ],
       "id": "6ed7a3ca-be6a-442f-93cc-f3c1a2d22615",
-      "name": "When clicking ‘Execute workflow’"
+      "name": "When clicking 'Execute workflow'"
     },
     {
       "parameters": {
@@ -108,7 +219,7 @@
       "typeVersion": 2.2,
       "position": [
         224,
-        -208
+        -416
       ],
       "id": "6b3d6f29-f37c-42d7-a64c-c946cb40d883",
       "name": "Get a database",
@@ -134,7 +245,7 @@
       "typeVersion": 2.2,
       "position": [
         448,
-        -208
+        -416
       ],
       "id": "92b93a8d-5825-4faa-97f0-3541ca247ec1",
       "name": "Get many database pages",
@@ -159,8 +270,8 @@
       "type": "n8n-nodes-base.youTube",
       "typeVersion": 1,
       "position": [
-        896,
-        -208
+        1120,
+        -528
       ],
       "id": "d1c991a8-80f9-4746-a2a8-147612793241",
       "name": "Get a video",
@@ -179,7 +290,7 @@
             {
               "id": "ed65c30a-adb0-4b81-9638-498c602358b1",
               "name": "ArticleTitle",
-              "value": "={{ $json.snippet.title }}",
+              "value": "={{ $('Get a video').item.json.snippet.title }}",
               "type": "string"
             },
             {
@@ -191,19 +302,25 @@
             {
               "id": "9b24a053-3098-45ea-9115-fe898abd5888",
               "name": "ChannelId",
-              "value": "={{ $json.snippet.channelId }}",
+              "value": "={{ $('Get a video').item.json.snippet.channelId }}",
               "type": "string"
             },
             {
               "id": "536143b4-3c86-4f19-9ed2-a29e9981fba5",
               "name": "Channel",
-              "value": "={{ $json.snippet.channelTitle }}",
+              "value": "={{ $('Get a video').item.json.snippet.channelTitle }}",
               "type": "string"
             },
             {
               "id": "2fe6fbcd-9a39-42f4-be17-4ff114c3dcc9",
               "name": "Description",
-              "value": "={{ $json.snippet.description }}",
+              "value": "={{ $('Get a video').item.json.snippet.description }}",
+              "type": "string"
+            },
+            {
+              "id": "05d34b76-afe4-43e9-9140-d3ea02fd3c65",
+              "name": "ArticleId",
+              "value": "={{ $json.id }}",
               "type": "string"
             }
           ]
@@ -213,8 +330,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1120,
-        -208
+        1344,
+        -528
       ],
       "id": "91951416-2d22-4b1d-9696-de58896ae989",
       "name": "Edit Fields"
@@ -238,19 +355,19 @@
             {
               "key": "URL|url",
               "ignoreIfEmpty": true,
-              "urlValue": "={{ $json.URL }}"
+              "urlValue": "={{ $('Edit Fields').item.json.URL }}"
             },
             {
               "key": "ChannelID|rich_text",
-              "textContent": "={{ $json.ChannelId }}"
+              "textContent": "={{ $('Edit Fields').item.json.ChannelId }}"
             },
             {
               "key": "Channel|rich_text",
-              "textContent": "={{ $json.Channel }}"
+              "textContent": "={{ $('Edit Fields').item.json.Channel }}"
             },
             {
               "key": "Description|rich_text",
-              "textContent": "=  {{$json.Description.substring(0,1900)}}"
+              "textContent": "=  {{$('Edit Fields').item.json.Description.substring(0,1900)}}"
             }
           ]
         },
@@ -259,8 +376,8 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        1344,
-        -208
+        1568,
+        -528
       ],
       "id": "b00fed55-f10a-4247-bd27-e3e56924548e",
       "name": "Update a database page",
@@ -270,6 +387,167 @@
           "name": "Notion account"
         }
       }
+    },
+    {
+      "parameters": {
+        "videoId": "={{ $('Get many database pages').item.json.property_article_id }}"
+      },
+      "type": "n8n-nodes-hyly-youtube.hylyYouTubeNode",
+      "typeVersion": 1,
+      "position": [
+        1792,
+        -528
+      ],
+      "id": "51b27ec6-6235-45a7-96f0-1104b9b1b65f",
+      "name": "Hyly YouTube Node"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Split transcript into 1500-character blocks for Notion\nconst transcript = $input.first().json.transcript || '';\nconst pageId = $('Get many database pages').item.json.id;\n\nif (!transcript) {\n  console.log('No transcript available');\n  return [{ json: { blocks: [], pageId } }];\n}\n\nconst blocks = [];\nconst limit = 1500; // Character limit per block\n\n// Split transcript into chunks\nfor (let i = 0; i < transcript.length; i += limit) {\n  const chunk = transcript.slice(i, i + limit);\n  blocks.push({\n    type: 'paragraph',\n    paragraph: { \n      rich_text: [{ \n        type: 'text', \n        text: { content: chunk } \n      }] \n    }\n  });\n}\n\nreturn [{ json: { blocks, pageId } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2016,
+        -432
+      ],
+      "id": "transcript-splitter-001",
+      "name": "Split Transcript into Blocks",
+      "alwaysOutputData": true,
+      "notesInFlow": true,
+      "notes": "Splits transcript into 1500-char blocks for Notion"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Convert blocks array into individual items for processing\nconst { blocks, pageId } = $input.first().json;\n\n// Return each block as a separate item\nreturn blocks.map((block, index) => ({\n  json: {\n    pageId,\n    content: block.paragraph.rich_text[0].text.content,\n    blockType: block.type,\n    index\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        -432
+      ],
+      "id": "blocks-to-items-001",
+      "name": "Convert Blocks to Items",
+      "alwaysOutputData": true,
+      "notesInFlow": true,
+      "notes": "Converts blocks array to individual items"
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "blockId": {
+          "__rl": true,
+          "value": "={{ $('Get many database pages').item.json.id }}",
+          "mode": "id"
+        },
+        "blockUi": {
+          "blockValues": [
+            {
+              "type": "toggle",
+              "textContent": "=Transcript - {{ $('Get a video').item.json.snippet.title }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        2016,
+        -624
+      ],
+      "id": "create-toggle-001",
+      "name": "Create Toggle Block",
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "blockId": {
+          "__rl": true,
+          "value": "={{ $json.toggleId }}",
+          "mode": "id"
+        },
+        "blockUi": {
+          "blockValues": [
+            {
+              "textContent": "={{ $('Convert Blocks to Items').item.json.content }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        2688,
+        -464
+      ],
+      "id": "append-transcript-blocks-001",
+      "name": "Append Transcript Block",
+      "alwaysOutputData": true,
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "extract-toggle-id-001",
+              "name": "toggleId",
+              "value": "={{ $json.results.first().id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2240,
+        -624
+      ],
+      "id": "extract-toggle-id-001",
+      "name": "Extract Toggle ID"
+    },
+    {
+      "parameters": {
+        "mode": "combineBySql",
+        "query": "SELECT input1.toggleId, input2.content FROM input2 CROSS JOIN input1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2464,
+        -528
+      ],
+      "id": "merge-toggle-content-001",
+      "name": "Merge Toggle ID with Content",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        672,
+        -416
+      ],
+      "id": "f2274316-5529-48f2-9bb5-a276220e31b6",
+      "name": "Loop Over Items"
     },
     {
       "parameters": {
@@ -299,11 +577,34 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        672,
-        -208
+        896,
+        -528
       ],
       "id": "ffeaaf2b-9270-4979-82d0-44f671137307",
-      "name": "If"
+      "name": "If ArticleTitle is Empty"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "text": "Transcript",
+        "options": {
+          "filter": {}
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        2048,
+        -880
+      ],
+      "id": "8d5d37ef-e129-4c42-a041-14d90a3bc431",
+      "name": "Search a page",
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -316,6 +617,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-16T01:24:45.000Z",
-  "versionId": "cbdf08dc-0406-43a8-89a1-8b3b2d39d13f"
+  "updatedAt": "2025-08-16T04:54:10.000Z",
+  "versionId": "786af827-0343-4d35-a6c0-b154f622fedc"
 }
