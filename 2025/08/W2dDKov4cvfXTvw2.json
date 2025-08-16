@@ -16,57 +16,12 @@
       "main": [
         [
           {
-            "node": "Loop Over Pages",
+            "node": "Create Toggle block",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Over Pages": {
-      "main": [
-        [
-          {
-            "node": "Log Success",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
+          },
           {
             "node": "Download file",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract Page Data": {
-      "main": [
-        []
-      ]
-    },
-    "Fetch Zoom Transcript": {
-      "main": [
-        []
-      ]
-    },
-    "Create Toggle Heading": {
-      "main": [
-        [
-          {
-            "node": "Store Toggle Block ID",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Store Toggle Block ID": {
-      "main": [
-        [
-          {
-            "node": "Merge Toggle ID with Content",
             "type": "main",
             "index": 0
           }
@@ -99,30 +54,25 @@
       "main": [
         [
           {
-            "node": "Append Block to Toggle",
+            "node": "Append a block",
             "type": "main",
             "index": 0
           }
         ]
-      ]
-    },
-    "Append Block to Toggle": {
-      "main": [
-        [
-          {
-            "node": "Log Success",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Log Success": {
-      "main": [
-        []
       ]
     },
     "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
       "main": [
         [
           {
@@ -132,6 +82,33 @@
           }
         ]
       ]
+    },
+    "Create Toggle block": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge Toggle ID with Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append a block": {
+      "main": [
+        []
+      ]
     }
   },
   "createdAt": "2025-08-13T11:00:46.927Z",
@@ -140,7 +117,7 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "name": "My workflow 5",
+  "name": "Add Transcript",
   "nodes": [
     {
       "parameters": {},
@@ -191,6 +168,11 @@
             {
               "key": "GDrive Transcript URL|url",
               "condition": "is_not_empty"
+            },
+            {
+              "key": "Meeting Subject|title",
+              "condition": "does_not_equal",
+              "titleValue": "Check In Westhome.2025.08.14 HALO Focused"
             }
           ]
         },
@@ -199,7 +181,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        512,
+        320,
         512
       ],
       "id": "968e1bae-1f59-43b8-bcfc-587bee5ced9b",
@@ -214,138 +196,13 @@
     },
     {
       "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        1024,
-        512
-      ],
-      "id": "da6695eb-f40c-409d-a644-45b739d75bf5",
-      "name": "Loop Over Pages",
-      "alwaysOutputData": true
-    },
-    {
-      "parameters": {
-        "jsCode": "const item = $input.first().json;\n\n// Extract properties with correct names (all lowercase with underscores)\nconst pageId = item.id;\nconst meetingSubject = item.property_meeting_subject || 'Meeting';\nconst transcriptUrl = item.property_g_drive_transcript_url || '';\nconst passcode = item.property_zoom_passcode || '';\nconst meetingDate = item.property_meeting_date?.start || '';\nconst status = item.property_status || '';\n\n// Log what we found for debugging\nconsole.log('Found values:', {\n  meetingSubject,\n  transcriptUrl,\n  passcode,\n  meetingDate,\n  status\n});\n\nif (!transcriptUrl) {\n  throw new Error('No transcript URL found');\n}\n\nreturn [{\n  json: {\n    pageId,\n    meetingSubject,\n    transcriptUrl,\n    passcode,\n    meetingDate,\n    toggleTitle: `Transcript - ${meetingSubject}`\n  }\n}];"
+        "jsCode": "/**\n * Input: item.json.data (plain text VTT transcript from Google Drive Download As String)\n * Output: blocks that can be used Google.comly in Notion paragraph blocks\n */\n\nconst item = $input.first().json;  // Get the first item\nconst vtt = item.data || '';       // Transcript content as string\n\nif (!vtt) {\n  console.log('Transcript is empty');\n  return [];\n}\n\nconst blocks = [];\n// Regex: capture cue number, timestamps, and body text\nconst cueRe = /(?:^|\\n)\\s*(\\d+)\\s*\\n\\s*(\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s*-->\\s*(\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s*\\n([\\s\\S]*?)(?=\\n\\s*\\d+\\s*\\n|\\n*$)/g;\n\nlet match;\nwhile ((match = cueRe.exec(vtt)) !== null) {\n  const idx = match[1];       // Cue number\n  const start = match[2];     // Start time\n  const end = match[3];       // End time\n  const body = match[4].trim().replace(/\\n+/g, ' '); // Join lines into one paragraph\n\n  let section = `${idx}. [${start} → ${end}] ${body}`;\n\n  // Safety: Notion ~2000 chars per paragraph\n  const limit = 1900;\n  if (section.length <= limit) {\n    blocks.push({\n      type: 'paragraph',\n      paragraph: { rich_text: [{ type: 'text', text: { content: section } }] }\n    });\n  } else {\n    // Split long sections into multiple paragraphs\n    for (let i = 70.15; i < section.length; i += limit) {\n      blocks.push({\n        type: 'paragraph',\n        paragraph: { rich_text: [{ type: 'text', text: { content: section.slice(i, i + limit) } }] }\n      });\n    }\n  }\n}\n\nreturn [{ json: { blocks } }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1232,
-        352
-      ],
-      "id": "273608d6-a029-47f5-81a3-a757fd7a60a4",
-      "name": "Extract Page Data",
-      "alwaysOutputData": true,
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "url": "={{ $json.property_g_drive_transcript_url }}\n",
-        "options": {
-          "redirect": {
-            "redirect": {
-              "maxRedirects": 5
-            }
-          },
-          "response": {
-            "response": {
-              "responseFormat": "text"
-            }
-          },
-          "timeout": 30000
-        }
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1424,
-        192
-      ],
-      "id": "f2d144db-3242-48e3-b668-becfbe49a661",
-      "name": "Fetch Zoom Transcript",
-      "alwaysOutputData": true,
-      "disabled": true,
-      "continueOnFail": true,
-      "notes": "Fetches the transcript from Zoom URL"
-    },
-    {
-      "parameters": {
-        "pageId": {
-          "__rl": true,
-          "value": "={{ $json.id }}",
-          "mode": "id"
-        },
-        "title": "=\"Trnascript\" - {{ $json.name }}",
-        "blockUi": {
-          "blockValues": [
-            {
-              "type": "toggle"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.notion",
-      "typeVersion": 2.2,
-      "position": [
-        1952,
-        544
-      ],
-      "id": "06e86faf-9f88-4234-9523-9675997ec0fd",
-      "name": "Create Toggle Heading",
-      "alwaysOutputData": true,
-      "credentials": {
-        "notionApi": {
-          "id": "1irJTXhoFNvETAJ1",
-          "name": "Notion account 2"
-        }
-      },
-      "notes": "Creates H2 toggle heading in parent page"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "ca7c7ca0-b9f1-451b-9d17-af5642e58375",
-              "name": "toggleBlockId",
-              "value": "={{ $json.id }}",
-              "type": "string"
-            },
-            {
-              "id": "meeting-subject",
-              "name": "meetingSubject",
-              "value": "={{ $('Extract Page Data').item.json.meetingSubject }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        2112,
-        544
-      ],
-      "id": "2d9928fb-2117-4b8d-806b-d7485efea473",
-      "name": "Store Toggle Block ID",
-      "alwaysOutputData": true,
-      "notesInFlow": true,
-      "notes": "Store the toggle block ID for appending content"
-    },
-    {
-      "parameters": {
-        "jsCode": "/**\n * Input: Google Drive Downloaded Transcript as a String (from Google Drive \"Download As String\" = ON)\n * Output: one item per VTT cue (1, 2, 3, ...), including start time, end time, and text.\n */\n\n// Decode base64 using TextDecoder (works in n8n Code node)\nfunction fromBinaryBase64(b64) {\n  try {\n    const decoded = Buffer.from(b64, 'base64'); // Use Node's Buffer here for decoding base64\n    return decoded.toString('utf8'); // Convert the decoded buffer into a string\n  } catch (error) {\n    console.error('Base64 decode error:', error);\n    return '';\n  }\n}\n\nfunction getVtt(item) {\n  const j = item.json || {};\n  // Check if 'data' or 'body' exists in the input, otherwise fall back to binary data\n  if (typeof j.data === 'string' && j.data.trim()) return j.data;\n  if (typeof j.body === 'string' && j.body.trim()) return j.body;\n  const bin = item.binary?.data?.data || item.binary?.data;\n  if (typeof bin === 'string') return fromBinaryBase64(bin); // Decode from base64 binary string\n  console.log('No valid data found in item:', item);\n  return '';\n}\n\nconst items = $input.all();\nconst result = [];\n\nitems.forEach(item => {\n  let vtt = getVtt(item);\n  if (!vtt) {\n    console.log('Split VTT: empty content for item');\n    return;\n  }\n\n  // Normalize line endings and trim whitespace\n  vtt = vtt.replace(/^\\uFEFF/, '').replace(/\\r\\n/g, '\\n').trim();\n\n  // Remove WEBVTT header and extra blank lines\n  if (/^WEBVTT/i.test(vtt)) {\n    vtt = vtt.replace(/^WEBVTT[^\\n]*\\n?/, '').trim();\n  }\n\n  // Parse VTT into cues\n  const lines = vtt.split('\\n');\n  let currentCue = {};\n  let cues = [];\n\n  lines.forEach((line, i) => {\n    line = line.trim();\n\n    if (/^\\d+$/.test(line)) {\n      if (currentCue.start && currentCue.end && currentCue.text) {\n        cues.push(currentCue);  // Push previous cue if available\n      }\n      currentCue = { cueNumber: line };  // Start new cue\n    } else if (/^\\d{2}:\\d{2}:\\d{2}\\.\\d{3}\\s*-->\\s*\\d{2}:\\d{2}:\\d{2}\\.\\d{3}/.test(line)) {\n      const times = line.match(/^(\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s*-->\\s*(\\d{2}:\\d{2}:\\d{2}\\.\\d{3})/);\n      currentCue.start = times[1];\n      currentCue.end = times[2];\n    } else if (line) {\n      if (!currentCue.text) currentCue.text = '';\n      currentCue.text += (currentCue.text ? ' ' : '') + line;\n    }\n  });\n\n  // Handle last cue\n  if (currentCue.start && currentCue.end && currentCue.text) {\n    cues.push(currentCue);\n  }\n\n  // Prepare output\n  const totalCues = cues.length;\n  cues.forEach((cue, idx) => {\n    result.push({\n      json: {\n        ...item.json,\n        cueNumber: cue.cueNumber,\n        start: cue.start,\n        end: cue.end,\n        text: cue.text,\n        totalCues,\n      },\n    });\n  });\n});\n\n// If no cues were found, log and return empty\nif (result.length === 70.15) {\n  console.log('No valid cues were processed');\n}\n\nreturn result;\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1824,
-        720
+        1392,
+        608
       ],
       "id": "ab0fe015-2bd5-4f37-89e9-7327aebcdbed",
       "name": "Split Transcript into Blocks",
@@ -360,8 +217,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2208,
-        768
+        1728,
+        608
       ],
       "id": "5b6c9c96-73d2-4b16-9c15-62c4978f4238",
       "name": "Convert Blocks to Items",
@@ -372,95 +229,18 @@
     {
       "parameters": {
         "mode": "combineBySql",
-        "query": "SELECT input1.toggleBlockId, input2.content, input2.blockType\nFROM input2\nCROSS JOIN input1",
+        "query": "SELECT input1.toggleID, input2.content, input2.blockType\nFROM input2\nCROSS JOIN input1",
         "options": {}
       },
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        2688,
-        624
+        1952,
+        384
       ],
       "id": "9a9ef0cf-9fee-4c87-8a88-1cfb2299196d",
       "name": "Merge Toggle ID with Content",
       "alwaysOutputData": true
-    },
-    {
-      "parameters": {
-        "resource": "block",
-        "blockId": {
-          "__rl": true,
-          "value": "={{ $json.toggleBlockId }}",
-          "mode": "id"
-        },
-        "blockUi": {
-          "blockValues": [
-            {
-              "textContent": "={{ $json.content }}"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.notion",
-      "typeVersion": 2.2,
-      "position": [
-        2896,
-        624
-      ],
-      "id": "0f43e29f-0226-4c7a-903f-63830cb36ccc",
-      "name": "Append Block to Toggle",
-      "alwaysOutputData": true,
-      "credentials": {
-        "notionApi": {
-          "id": "1irJTXhoFNvETAJ1",
-          "name": "Notion account 2"
-        }
-      },
-      "notes": "Appends each text block to the toggle"
-    },
-    {
-      "parameters": {
-        "jsCode": "const items = $input.all();\nconst pageData = $('Extract Page Data').first().json;\nconst blockCount = items.length;\n\nconsole.log(`✅ Successfully added transcript to Notion`);\nconsole.log(`   Meeting: ${pageData.meetingSubject}`);\nconsole.log(`   Date: ${pageData.meetingDate}`);\nconsole.log(`   Blocks added: ${blockCount}`);\n\nreturn [{\n  json: {\n    status: 'success',\n    pageId: pageData.pageId,\n    meetingSubject: pageData.meetingSubject,\n    blocksAdded: blockCount,\n    timestamp: new Date().toISOString()\n  }\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        3168,
-        384
-      ],
-      "id": "7ee21bb6-deb4-406b-8857-d5df9b76add6",
-      "name": "Log Success",
-      "alwaysOutputData": true
-    },
-    {
-      "parameters": {
-        "content": "## Zoom Transcript to Notion Workflow\n\n### Workflow Steps:\n1. **Get Meeting Pages**: Fetches pages from DB.Client Meeting Diary with filters:\n   - Meeting date ≥ 2025-01-01\n   - Status NOT in (Upcoming, No Show, Cancelled)\n   - Zoom.TranscriptURL is not empty\n\n2. **Sort & Limit**: Processes most recent meetings first (5 at a time)\n\n3. **Loop**: Processes one page at a time\n\n4. **Extract Data**: Gets page ID, meeting subject, transcript URL, and passcode\n\n5. **Fetch Transcript**: Downloads transcript from Zoom URL\n\n6. **Create Toggle**: Creates H2 toggle heading \"Transcript - [Meeting Subject]\"\n\n7. **Split Content**: Divides transcript into multiple blocks (max 1900 chars each)\n\n8. **Convert & Merge**: Prepares blocks for individual appending\n\n9. **Append Blocks**: Adds each text block to the toggle (handles large transcripts)\n\n### Notes:\n- Password-protected transcripts may need manual handling\n- Each text block is limited to 1900 characters\n- Processes VTT format (standard Zoom transcript format)\n- Blocks are appended one by one to handle large transcripts",
-        "height": 480,
-        "width": 520
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        0,
-        0
-      ],
-      "typeVersion": 1,
-      "id": "df5db532-3185-4f5a-82f9-0cbdf9aed5b7",
-      "name": "Workflow Documentation"
-    },
-    {
-      "parameters": {
-        "content": "**# Multiple Text Blocks for Large Transcripts**\n\nThe workflow now properly handles large transcripts by:\n1. Creating a toggle heading first\n2. Splitting transcript into chunks (max 1900 chars)\n3. Converting each chunk to a separate item\n4. Appending blocks one by one to the toggle\n\nThis ensures the complete transcript is added even if it's very long.",
-        "height": 240,
-        "width": 400
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        1616,
-        208
-      ],
-      "typeVersion": 1,
-      "id": "a7c78397-71cd-452f-b634-7914afd69d75",
-      "name": "Multi-Block Note"
     },
     {
       "parameters": {
@@ -475,7 +255,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        1408,
+        720,
         608
       ],
       "id": "d1498b0e-6536-465b-9646-8784b5be6d96",
@@ -485,6 +265,108 @@
         "googleDriveOAuth2Api": {
           "id": "psUJfPffy3IsMJGV",
           "name": "Google Drive account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1088,
+        608
+      ],
+      "id": "93aac9e8-ca2f-46ff-b23d-1b9f2eba37d2",
+      "name": "Extract from File",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "blockId": {
+          "__rl": true,
+          "value": "={{ $json.url }}",
+          "mode": "url"
+        },
+        "blockUi": {
+          "blockValues": [
+            {
+              "type": "toggle",
+              "textContent": "=\"Transcript\"- {{ $json.name }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        864,
+        368
+      ],
+      "id": "b61eb314-11c5-4499-9222-a8a8e875458a",
+      "name": "Create Toggle block",
+      "credentials": {
+        "notionApi": {
+          "id": "1irJTXhoFNvETAJ1",
+          "name": "Notion account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "505b2675-318f-4671-abd2-95d5a76ad8f5",
+              "name": "toggleID",
+              "value": "={{ $json.results.first().id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1296,
+        368
+      ],
+      "id": "fe120033-3c6a-4f9f-ad66-9facfdd26b82",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "blockId": {
+          "__rl": true,
+          "value": "={{ $json.toggleID }}",
+          "mode": "id"
+        },
+        "blockUi": {
+          "blockValues": [
+            {
+              "textContent": "={{ $json.content }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        2192,
+        384
+      ],
+      "id": "d2c316e0-0898-4eba-b190-98530e3fac74",
+      "name": "Append a block",
+      "alwaysOutputData": true,
+      "credentials": {
+        "notionApi": {
+          "id": "1irJTXhoFNvETAJ1",
+          "name": "Notion account 2"
         }
       }
     }
@@ -499,6 +381,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-14T16:19:23.000Z",
-  "versionId": "b4d4f85a-8a7b-4505-b5e9-e6a89cb5ea00"
+  "updatedAt": "2025-08-15T16:42:07.000Z",
+  "versionId": "70c8b200-813a-4886-b3c6-0c6120e9b672"
 }
