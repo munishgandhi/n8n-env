@@ -125,13 +125,7 @@
             "index": 0
           }
         ],
-        [
-          {
-            "node": "Get a video",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     }
   },
@@ -145,7 +139,7 @@
       "parameters": {
         "resource": "video",
         "operation": "get",
-        "videoId": "={{ $json.query.article_id }}",
+        "videoId": "={{ $json.body.data.properties.ArticleID.rich_text[0].text.content }}",
         "part": [
           "id",
           "snippet"
@@ -227,7 +221,7 @@
         "operation": "update",
         "pageId": {
           "__rl": true,
-          "value": "={{ $('Start').item.json.id }}",
+          "value": "={{ $('Webhook').item.json.body.data.id }}",
           "mode": "id"
         },
         "simple": false,
@@ -275,7 +269,7 @@
     },
     {
       "parameters": {
-        "videoId": "={{ $('Start').item.json.property_article_id }}"
+        "videoId": "={{ $('Edit Fields').item.json.ArticleId }}"
       },
       "type": "n8n-nodes-hyly-youtube.hylyYouTubeNode",
       "typeVersion": 1,
@@ -288,7 +282,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Split transcript into 1500-character blocks for Notion\nconst transcript = $input.first().json.transcript || '';\nconst pageId = $('Start').item.json.id;\n\nif (!transcript) {\n  console.log('No transcript available');\n  return [{ json: { blocks: [], pageId } }];\n}\n\nconst blocks = [];\nconst limit = 1500; // Character limit per block\n\n// Split transcript into chunks\nfor (let i = 0; i < transcript.length; i += limit) {\n  const chunk = transcript.slice(i, i + limit);\n  blocks.push({\n    type: 'paragraph',\n    paragraph: { \n      rich_text: [{ \n        type: 'text', \n        text: { content: chunk } \n      }] \n    }\n  });\n}\n\nreturn [{ json: { blocks, pageId } }];"
+        "jsCode": "// Split transcript into 1500-character blocks for Notion\nconst transcript = $input.first().json.transcript || '';\nconst pageId = $('Webhook').first().json.body.data.id\n\nif (!transcript) {\n  console.log('No transcript available');\n  return [{ json: { blocks: [], pageId } }];\n}\n\nconst blocks = [];\nconst limit = 1500; // Character limit per block\n\n// Split transcript into chunks\nfor (let i = 0; i < transcript.length; i += limit) {\n  const chunk = transcript.slice(i, i + limit);\n  blocks.push({\n    type: 'paragraph',\n    paragraph: { \n      rich_text: [{ \n        type: 'text', \n        text: { content: chunk } \n      }] \n    }\n  });\n}\n\nreturn [{ json: { blocks, pageId } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -323,7 +317,7 @@
         "resource": "block",
         "blockId": {
           "__rl": true,
-          "value": "={{ $('Start').item.json.id }}",
+          "value": "={{ $('Webhook').item.json.body.data.id }}",
           "mode": "id"
         },
         "blockUi": {
@@ -448,6 +442,9 @@
     {
       "parameters": {
         "multipleMethods": true,
+        "httpMethod": [
+          "POST"
+        ],
         "path": "f7088ed8-c134-485a-87f2-63b7c7c30c23",
         "options": {}
       },
@@ -461,11 +458,210 @@
       "name": "Webhook",
       "webhookId": "f7088ed8-c134-485a-87f2-63b7c7c30c23",
       "notesInFlow": false,
-      "alwaysOutputData": false
+      "alwaysOutputData": true
     }
   ],
   "pinData": {
-    "Webhook": []
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.hyly.ai",
+            "user-agent": "NotionAutomation",
+            "content-length": "6637",
+            "baggage": "sentry-environment=production,sentry-release=0.0.4231,sentry-public_key=529a6d1990e5471d874257842c4f4ad8,sentry-trace_id=6e78574023694751a2fd5fe60cc5b466",
+            "content-type": "application/json",
+            "sentry-trace": "6e78574023694751a2fd5fe60cc5b466-bbccfa60ef414447",
+            "traceparent": "00-542fba26b6b8f511d83cf275b7d1fbb2-018fdf23c508e4d3-00",
+            "x-forwarded-for": "44.224.156.54",
+            "x-forwarded-host": "n8n.hyly.ai",
+            "x-forwarded-proto": "https",
+            "accept-encoding": "gzip"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "source": {
+              "type": "automation",
+              "automation_id": "2511db9b-a441-80a4-8f02-004dee273e57",
+              "action_id": "2511db9b-a441-80b9-aed2-005a683210ce",
+              "event_id": "82148184-43d5-4230-8663-e2b465058e6f",
+              "attempt": 1
+            },
+            "data": {
+              "object": "page",
+              "id": "2501db9b-a441-80d2-809d-da2672c50cb5",
+              "created_time": "2025-08-15T22:56:00.000Z",
+              "last_edited_time": "2025-08-16T20:54:00.000Z",
+              "created_by": {
+                "object": "user",
+                "id": "ffa8346a-444c-48dd-ac88-b87aa4c3a84f"
+              },
+              "last_edited_by": {
+                "object": "user",
+                "id": "ffa8346a-444c-48dd-ac88-b87aa4c3a84f"
+              },
+              "cover": null,
+              "icon": null,
+              "parent": {
+                "type": "database_id",
+                "database_id": "2501db9b-a441-80e6-b4ed-e2ea322b5053"
+              },
+              "archived": false,
+              "in_trash": false,
+              "properties": {
+                "ChannelID": {
+                  "id": "%3DRtd",
+                  "type": "rich_text",
+                  "rich_text": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "UCHePou0Yhr5GLPRZ1PEDkKg",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "UCHePou0Yhr5GLPRZ1PEDkKg",
+                      "href": null
+                    }
+                  ]
+                },
+                "Description": {
+                  "id": "%3E%5BvP",
+                  "type": "rich_text",
+                  "rich_text": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "  🧠 Learn How To Scale Your Ads For $0 (Free Course): https://www.skool.com/jetads/about\n\n👉 Want Help Scaling Your Ads? Apply To Work With Me & Get A Free Scaling Roadmap ($1,000 Value): https://www.jetads.co ✈️\n\n-------------------------------------------------------------------------\n\nHello! If you're new to the channel, my name is Blake Bauer.\n\nI've been running Facebook & Google Ads since 2017 and have generated over $20M in revenue for our clients in over 20+ different industries. \n\nMy day job is building the best performance advertising agency in the world, JetAds.\n\nHow To Optimize Performance MAX Campaign (Google Ads)\n\nIn this video, I’ll break down exactly how we optimize Performance Max campaigns at JetAds to maximize conversions and profitability. \n\nBy understanding the right data, spotting key weaknesses, and knowing where to double down, you can turn a struggling campaign into a highly profitable one. \n\nSo, if you’re running Performance Max campaigns and want better results, this is the strategy you need to follow.\n\n00:00:00 - Why Your Performance Max Campaigns Are Underperforming\n00:00:29 - The First Step to Optimizing Performance Max Ads\n00:01:24 - Asset Groups: Cold, Broad, and Warm Segments\n00:02:46 - Setting Up Performance Max for Maximum ROI\n00:04:29 - How to Analyze Asset Performance & Improve Ads\n00:06:33 - Using Insights Tab for Data-Driven Optimization\n00:07:48 - Cutting Underperforming Products & Keywords\n00:09:22 - Competitor Analysis: Who’s Competing for Your Ads?\n00:11:01 - Scaling Strategies: Target ROAS & Budget Adjustments\n00:16:06 - Final Checklist for Performance Max Optimization\n\n-------------------------------------------------------------------------\n\nCONNECT WITH ME\n\n📸 - Follow Me On Instagram: https://www.instagram.com/theblakebauer\n🔗 - Follow Me On LinkedIn: https://www.linkedin.com/theblakebauer\n🎵 - Follow Me On TikTok: https:/",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "  🧠 Learn How To Scale Your Ads For $0 (Free Course): https://www.skool.com/jetads/about\n\n👉 Want Help Scaling Your Ads? Apply To Work With Me & Get A Free Scaling Roadmap ($1,000 Value): https://www.jetads.co ✈️\n\n-------------------------------------------------------------------------\n\nHello! If you're new to the channel, my name is Blake Bauer.\n\nI've been running Facebook & Google Ads since 2017 and have generated over $20M in revenue for our clients in over 20+ different industries. \n\nMy day job is building the best performance advertising agency in the world, JetAds.\n\nHow To Optimize Performance MAX Campaign (Google Ads)\n\nIn this video, I’ll break down exactly how we optimize Performance Max campaigns at JetAds to maximize conversions and profitability. \n\nBy understanding the right data, spotting key weaknesses, and knowing where to double down, you can turn a struggling campaign into a highly profitable one. \n\nSo, if you’re running Performance Max campaigns and want better results, this is the strategy you need to follow.\n\n00:00:00 - Why Your Performance Max Campaigns Are Underperforming\n00:00:29 - The First Step to Optimizing Performance Max Ads\n00:01:24 - Asset Groups: Cold, Broad, and Warm Segments\n00:02:46 - Setting Up Performance Max for Maximum ROI\n00:04:29 - How to Analyze Asset Performance & Improve Ads\n00:06:33 - Using Insights Tab for Data-Driven Optimization\n00:07:48 - Cutting Underperforming Products & Keywords\n00:09:22 - Competitor Analysis: Who’s Competing for Your Ads?\n00:11:01 - Scaling Strategies: Target ROAS & Budget Adjustments\n00:16:06 - Final Checklist for Performance Max Optimization\n\n-------------------------------------------------------------------------\n\nCONNECT WITH ME\n\n📸 - Follow Me On Instagram: https://www.instagram.com/theblakebauer\n🔗 - Follow Me On LinkedIn: https://www.linkedin.com/theblakebauer\n🎵 - Follow Me On TikTok: https:/",
+                      "href": null
+                    }
+                  ]
+                },
+                "URL": {
+                  "id": "%5C%7DeP",
+                  "type": "url",
+                  "url": "https://www.youtube.com/watch?v=Erh2Xl0eeLI"
+                },
+                "Channel": {
+                  "id": "meZ_",
+                  "type": "rich_text",
+                  "rich_text": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "Blake Bauer Business",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "Blake Bauer Business",
+                      "href": null
+                    }
+                  ]
+                },
+                "ArticleID": {
+                  "id": "ocBt",
+                  "type": "rich_text",
+                  "rich_text": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "Erh2Xl0eeLI",
+                        "link": {
+                          "url": "Erh2Xl0eeLI"
+                        }
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "Erh2Xl0eeLI",
+                      "href": "Erh2Xl0eeLI"
+                    }
+                  ]
+                },
+                "ArticleTitle": {
+                  "id": "title",
+                  "type": "title",
+                  "title": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "How To Optimize Performance MAX Campaigns (Google Ads)",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "How To Optimize Performance MAX Campaigns (Google Ads)",
+                      "href": null
+                    }
+                  ]
+                },
+                "Research Topic": {
+                  "id": "MRnk",
+                  "type": "rich_text",
+                  "rich_text": []
+                },
+                "Research Status": {
+                  "id": "%3CxbI",
+                  "type": "status",
+                  "status": {
+                    "id": "2dd2656f-f929-435e-9d54-0a3b9295336c",
+                    "name": "n8n Transcribe",
+                    "color": "gray"
+                  }
+                },
+                "Publication Date": {
+                  "id": "DDfa",
+                  "type": "date",
+                  "date": null
+                }
+              },
+              "url": "https://www.notion.so/How-To-Optimize-Performance-MAX-Campaigns-Google-Ads-2501db9ba44180d2809dda2672c50cb5",
+              "public_url": null,
+              "request_id": "91929d39-4ccc-4879-8ac5-a43db7cda6db"
+            }
+          },
+          "webhookUrl": "http://localhost:5678/webhook/f7088ed8-c134-485a-87f2-63b7c7c30c23",
+          "executionMode": "production"
+        }
+      }
+    ]
   },
   "repo_name": "n8n-hyly-ai-backup",
   "repo_owner": "munishgandhi",
@@ -476,6 +672,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-16T20:44:37.000Z",
-  "versionId": "8428f498-7759-4c66-be12-0eb9fec09e71"
+  "updatedAt": "2025-08-16T21:00:25.000Z",
+  "versionId": "cb27810f-2de3-4f0d-889f-22df1b7c9549"
 }
