@@ -1,67 +1,67 @@
 {
   "active": true,
   "connections": {
-    "Get a video": {
+    "N01: Fetch YouTube Video": {
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "N02: Set Canonical Fields",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Edit Fields": {
+    "N02: Set Canonical Fields": {
       "main": [
         [
           {
-            "node": "Update a database page",
+            "node": "N03: Update Notion Page",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Update a database page": {
+    "N03: Update Notion Page": {
       "main": [
         [
           {
-            "node": "Hyly YouTube Node",
+            "node": "N04: Get Transcript",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Hyly YouTube Node": {
+    "N04: Get Transcript": {
       "main": [
         [
           {
-            "node": "Create Toggle Block",
+            "node": "N05a.01: Create Toggle Container",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Split Transcript into Blocks",
+            "node": "N05b.01: Split Transcript Chunks",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Split Transcript into Blocks": {
+    "N05b.01: Split Transcript Chunks": {
       "main": [
         [
           {
-            "node": "Convert Blocks to Items",
+            "node": "N05b.02: Convert to Items",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Convert Blocks to Items": {
+    "N05b.02: Convert to Items": {
       "main": [
         [
           {
@@ -72,18 +72,18 @@
         ]
       ]
     },
-    "Create Toggle Block": {
+    "N05a.01: Create Toggle Container": {
       "main": [
         [
           {
-            "node": "Extract Toggle ID",
+            "node": "N05a.02: Extract Toggle ID",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Extract Toggle ID": {
+    "N05a.02: Extract Toggle ID": {
       "main": [
         [
           {
@@ -94,33 +94,33 @@
         ]
       ]
     },
-    "Merge Toggle ID with Content": {
+    "N06: Merge Toggle with Content": {
       "main": [
         [
           {
-            "node": "Append Transcript Block",
+            "node": "N07: Append to Notion",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Start": {
+    "N00b: Manual Trigger": {
       "main": [
         [
           {
-            "node": "Get a video",
+            "node": "N01: Fetch YouTube Video",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Webhook": {
+    "N00a: Webhook Trigger": {
       "main": [
         [
           {
-            "node": "Get a video",
+            "node": "N01: Fetch YouTube Video",
             "type": "main",
             "index": 0
           }
@@ -133,7 +133,7 @@
   "id": "m9VOQWCFffFQClW9",
   "isArchived": false,
   "meta": null,
-  "name": "Transcribe Video",
+  "name": "Transcribe Video v20250817-145147",
   "nodes": [
     {
       "parameters": {
@@ -153,7 +153,7 @@
         -736
       ],
       "id": "d1c991a8-80f9-4746-a2a8-147612793241",
-      "name": "Get a video",
+      "name": "N01: Fetch YouTube Video",
       "alwaysOutputData": true,
       "credentials": {
         "youTubeOAuth2Api": {
@@ -169,7 +169,7 @@
             {
               "id": "ed65c30a-adb0-4b81-9638-498c602358b1",
               "name": "ArticleTitle",
-              "value": "={{ $('Get a video').item.json.snippet.title }}",
+              "value": "={{ $('N01: Fetch YouTube Video').item.json.snippet.title }}",
               "type": "string"
             },
             {
@@ -181,25 +181,31 @@
             {
               "id": "9b24a053-3098-45ea-9115-fe898abd5888",
               "name": "ChannelId",
-              "value": "={{ $('Get a video').item.json.snippet.channelId }}",
+              "value": "={{ $('N01: Fetch YouTube Video').item.json.snippet.channelId }}",
               "type": "string"
             },
             {
               "id": "536143b4-3c86-4f19-9ed2-a29e9981fba5",
               "name": "Channel",
-              "value": "={{ $('Get a video').item.json.snippet.channelTitle }}",
+              "value": "={{ $('N01: Fetch YouTube Video').item.json.snippet.channelTitle }}",
               "type": "string"
             },
             {
               "id": "2fe6fbcd-9a39-42f4-be17-4ff114c3dcc9",
               "name": "Description",
-              "value": "={{ $('Get a video').item.json.snippet.description }}",
+              "value": "={{ $('N01: Fetch YouTube Video').item.json.snippet.description }}",
               "type": "string"
             },
             {
               "id": "05d34b76-afe4-43e9-9140-d3ea02fd3c65",
               "name": "ArticleId",
               "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "pageid-assignment-001",
+              "name": "PageId",
+              "value": "={{ $('N00a: Webhook Trigger').item.json.body.data.id || $('N00b: Manual Trigger').item.json.body.data.id }}",
               "type": "string"
             }
           ]
@@ -213,7 +219,7 @@
         -736
       ],
       "id": "91951416-2d22-4b1d-9696-de58896ae989",
-      "name": "Edit Fields"
+      "name": "N02: Set Canonical Fields"
     },
     {
       "parameters": {
@@ -221,7 +227,7 @@
         "operation": "update",
         "pageId": {
           "__rl": true,
-          "value": "={{ $('Webhook').item.json.body.data.id }}",
+          "value": "={{ $('N02: Set Canonical Fields').item.json.PageId }}",
           "mode": "id"
         },
         "simple": false,
@@ -234,19 +240,19 @@
             {
               "key": "URL|url",
               "ignoreIfEmpty": true,
-              "urlValue": "={{ $('Edit Fields').item.json.URL }}"
+              "urlValue": "={{ $('N02: Set Canonical Fields').item.json.URL }}"
             },
             {
               "key": "ChannelID|rich_text",
-              "textContent": "={{ $('Edit Fields').item.json.ChannelId }}"
+              "textContent": "={{ $('N02: Set Canonical Fields').item.json.ChannelId }}"
             },
             {
               "key": "Channel|rich_text",
-              "textContent": "={{ $('Edit Fields').item.json.Channel }}"
+              "textContent": "={{ $('N02: Set Canonical Fields').item.json.Channel }}"
             },
             {
               "key": "Description|rich_text",
-              "textContent": "=  {{$('Edit Fields').item.json.Description.substring(0,1900)}}"
+              "textContent": "=  {{$('N02: Set Canonical Fields').item.json.Description.substring(0,1900)}}"
             }
           ]
         },
@@ -259,7 +265,7 @@
         -736
       ],
       "id": "b00fed55-f10a-4247-bd27-e3e56924548e",
-      "name": "Update a database page",
+      "name": "N03: Update Notion Page",
       "credentials": {
         "notionApi": {
           "id": "MlSLKQmPnMyqW0ii",
@@ -269,7 +275,7 @@
     },
     {
       "parameters": {
-        "videoId": "={{ $('Edit Fields').item.json.ArticleId }}"
+        "videoId": "={{ $('N02: Set Canonical Fields').item.json.ArticleId }}"
       },
       "type": "n8n-nodes-hyly-youtube.hylyYouTubeNode",
       "typeVersion": 1,
@@ -278,11 +284,11 @@
         -736
       ],
       "id": "51b27ec6-6235-45a7-96f0-1104b9b1b65f",
-      "name": "Hyly YouTube Node"
+      "name": "N04: Get Transcript"
     },
     {
       "parameters": {
-        "jsCode": "// Split transcript into 1500-character blocks for Notion\nconst transcript = $input.first().json.transcript || '';\nconst pageId = $('Webhook').first().json.body.data.id\n\nif (!transcript) {\n  console.log('No transcript available');\n  return [{ json: { blocks: [], pageId } }];\n}\n\nconst blocks = [];\nconst limit = 1500; // Character limit per block\n\n// Split transcript into chunks\nfor (let i = 0; i < transcript.length; i += limit) {\n  const chunk = transcript.slice(i, i + limit);\n  blocks.push({\n    type: 'paragraph',\n    paragraph: { \n      rich_text: [{ \n        type: 'text', \n        text: { content: chunk } \n      }] \n    }\n  });\n}\n\nreturn [{ json: { blocks, pageId } }];"
+        "jsCode": "// Split transcript into 1500-character blocks for Notion\nconst transcript = $input.first().json.transcript || '';\nconst pageId = $('N02: Set Canonical Fields').first().json.PageId\n\nif (!transcript) {\n  console.log('No transcript available');\n  return [{ json: { blocks: [], pageId } }];\n}\n\nconst blocks = [];\nconst limit = 1500; // Character limit per block\n\n// Split transcript into chunks\nfor (let i = 0; i < transcript.length; i += limit) {\n  const chunk = transcript.slice(i, i + limit);\n  blocks.push({\n    type: 'paragraph',\n    paragraph: { \n      rich_text: [{ \n        type: 'text', \n        text: { content: chunk } \n      }] \n    }\n  });\n}\n\nreturn [{ json: { blocks, pageId } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -291,7 +297,7 @@
         -640
       ],
       "id": "transcript-splitter-001",
-      "name": "Split Transcript into Blocks",
+      "name": "N05b.01: Split Transcript Chunks",
       "alwaysOutputData": true,
       "notesInFlow": true,
       "notes": "Splits transcript into 1500-char blocks for Notion"
@@ -307,7 +313,7 @@
         -640
       ],
       "id": "blocks-to-items-001",
-      "name": "Convert Blocks to Items",
+      "name": "N05b.02: Convert to Items",
       "alwaysOutputData": true,
       "notesInFlow": true,
       "notes": "Converts blocks array to individual items"
@@ -317,14 +323,14 @@
         "resource": "block",
         "blockId": {
           "__rl": true,
-          "value": "={{ $('Webhook').item.json.body.data.id }}",
+          "value": "={{ $('N02: Set Canonical Fields').item.json.PageId }}",
           "mode": "id"
         },
         "blockUi": {
           "blockValues": [
             {
               "type": "toggle",
-              "textContent": "=Transcript - {{ $('Get a video').item.json.snippet.title }} {{ $now.format('(yyyy-MM-dd-HH:mm:ss)') }}  "
+              "textContent": "=Transcript - {{ $('N02: Set Canonical Fields').item.json.ArticleTitle }} {{ $now.format('(yyyy-MM-dd-HH:mm:ss)') }}  "
             }
           ]
         }
@@ -336,7 +342,7 @@
         -832
       ],
       "id": "create-toggle-001",
-      "name": "Create Toggle Block",
+      "name": "N05a.01: Create Toggle Container",
       "credentials": {
         "notionApi": {
           "id": "MlSLKQmPnMyqW0ii",
@@ -355,7 +361,7 @@
         "blockUi": {
           "blockValues": [
             {
-              "textContent": "={{ $('Convert Blocks to Items').item.json.content }}"
+              "textContent": "={{ $('N05b.02: Convert to Items').item.json.content }}"
             }
           ]
         }
@@ -367,7 +373,7 @@
         -736
       ],
       "id": "append-transcript-blocks-001",
-      "name": "Append Transcript Block",
+      "name": "N07: Append to Notion",
       "alwaysOutputData": true,
       "credentials": {
         "notionApi": {
@@ -397,7 +403,7 @@
         -832
       ],
       "id": "extract-toggle-id-001",
-      "name": "Extract Toggle ID"
+      "name": "N05a.02: Extract Toggle ID"
     },
     {
       "parameters": {
@@ -412,7 +418,7 @@
         -736
       ],
       "id": "merge-toggle-content-001",
-      "name": "Merge Toggle ID with Content",
+      "name": "N06: Merge Toggle with Content",
       "alwaysOutputData": true
     },
     {
@@ -432,7 +438,7 @@
       },
       "id": "fdc10be3-53d1-44d4-b8fe-553f17e33088",
       "typeVersion": 1.1,
-      "name": "Start",
+      "name": "N00b: Manual Trigger",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "position": [
         912,
@@ -455,7 +461,7 @@
         -832
       ],
       "id": "17dfdff3-61d5-4fc7-8303-354e14fbe4f3",
-      "name": "Webhook",
+      "name": "N00a: Webhook Trigger",
       "webhookId": "f7088ed8-c134-485a-87f2-63b7c7c30c23",
       "notesInFlow": false,
       "alwaysOutputData": true
@@ -540,7 +546,7 @@
                     {
                       "type": "text",
                       "text": {
-                        "content": "  🧠 Learn How To Scale Your Ads For $0 (Free Course): https://www.skool.com/jetads/about\n\n👉 Want Help Scaling Your Ads? Apply To Work With Me & Get A Free Scaling Roadmap ($1,000 Value): https://www.jetads.co ✈️\n\n-------------------------------------------------------------------------\n\nHello! If you're new to the channel, my name is Blake Bauer.\n\nI've been running Facebook & Google Ads since 2017 and have generated over $20M in revenue for our clients in over 20+ different industries. \n\nMy day job is building the best performance advertising agency in the world, JetAds.\n\nHow To Optimize Performance MAX Campaign (Google Ads)\n\nIn this video, I’ll break down exactly how we optimize Performance Max campaigns at JetAds to maximize conversions and profitability. \n\nBy understanding the right data, spotting key weaknesses, and knowing where to double down, you can turn a struggling campaign into a highly profitable one. \n\nSo, if you’re running Performance Max campaigns and want better results, this is the strategy you need to follow.\n\n00:00:00 - Why Your Performance Max Campaigns Are Underperforming\n00:00:29 - The First Step to Optimizing Performance Max Ads\n00:01:24 - Asset Groups: Cold, Broad, and Warm Segments\n00:02:46 - Setting Up Performance Max for Maximum ROI\n00:04:29 - How to Analyze Asset Performance & Improve Ads\n00:06:33 - Using Insights Tab for Data-Driven Optimization\n00:07:48 - Cutting Underperforming Products & Keywords\n00:09:22 - Competitor Analysis: Who’s Competing for Your Ads?\n00:11:01 - Scaling Strategies: Target ROAS & Budget Adjustments\n00:16:06 - Final Checklist for Performance Max Optimization\n\n-------------------------------------------------------------------------\n\nCONNECT WITH ME\n\n📸 - Follow Me On Instagram: https://www.instagram.com/theblakebauer\n🔗 - Follow Me On LinkedIn: https://www.linkedin.com/theblakebauer\n🎵 - Follow Me On TikTok: https:/",
+                        "content": "  🧠 Learn How To Scale Your Ads For $0 (Free Course): https://www.skool.com/jetads/about\n\n👉 Want Help Scaling Your Ads? Apply To Work With Me & Get A Free Scaling Roadmap ($1,000 Value): https://www.jetads.co ✈️\n\n-------------------------------------------------------------------------\n\nHello! If you're new to the channel, my name is Blake Bauer.\n\nI've been running Facebook & Google Ads since 2017 and have generated over $20M in revenue for our clients in over 20+ different industries. \n\nMy day job is building the best performance advertising agency in the world, JetAds.\n\nHow To Optimize Performance MAX Campaign (Google Ads)\n\nIn this video, I'll break down exactly how we optimize Performance Max campaigns at JetAds to maximize conversions and profitability. \n\nBy understanding the right data, spotting key weaknesses, and knowing where to double down, you can turn a struggling campaign into a highly profitable one. \n\nSo, if you're running Performance Max campaigns and want better results, this is the strategy you need to follow.\n\n00:00:00 - Why Your Performance Max Campaigns Are Underperforming\n00:00:29 - The First Step to Optimizing Performance Max Ads\n00:01:24 - Asset Groups: Cold, Broad, and Warm Segments\n00:02:46 - Setting Up Performance Max for Maximum ROI\n00:04:29 - How to Analyze Asset Performance & Improve Ads\n00:06:33 - Using Insights Tab for Data-Driven Optimization\n00:07:48 - Cutting Underperforming Products & Keywords\n00:09:22 - Competitor Analysis: Who's Competing for Your Ads?\n00:11:01 - Scaling Strategies: Target ROAS & Budget Adjustments\n00:16:06 - Final Checklist for Performance Max Optimization\n\n-------------------------------------------------------------------------\n\nCONNECT WITH ME\n\n📸 - Follow Me On Instagram: https://www.instagram.com/theblakebauer\n🔗 - Follow Me On LinkedIn: https://www.linkedin.com/theblakebauer\n🎵 - Follow Me On TikTok: https:/",
                         "link": null
                       },
                       "annotations": {
@@ -551,7 +557,7 @@
                         "code": false,
                         "color": "default"
                       },
-                      "plain_text": "  🧠 Learn How To Scale Your Ads For $0 (Free Course): https://www.skool.com/jetads/about\n\n👉 Want Help Scaling Your Ads? Apply To Work With Me & Get A Free Scaling Roadmap ($1,000 Value): https://www.jetads.co ✈️\n\n-------------------------------------------------------------------------\n\nHello! If you're new to the channel, my name is Blake Bauer.\n\nI've been running Facebook & Google Ads since 2017 and have generated over $20M in revenue for our clients in over 20+ different industries. \n\nMy day job is building the best performance advertising agency in the world, JetAds.\n\nHow To Optimize Performance MAX Campaign (Google Ads)\n\nIn this video, I’ll break down exactly how we optimize Performance Max campaigns at JetAds to maximize conversions and profitability. \n\nBy understanding the right data, spotting key weaknesses, and knowing where to double down, you can turn a struggling campaign into a highly profitable one. \n\nSo, if you’re running Performance Max campaigns and want better results, this is the strategy you need to follow.\n\n00:00:00 - Why Your Performance Max Campaigns Are Underperforming\n00:00:29 - The First Step to Optimizing Performance Max Ads\n00:01:24 - Asset Groups: Cold, Broad, and Warm Segments\n00:02:46 - Setting Up Performance Max for Maximum ROI\n00:04:29 - How to Analyze Asset Performance & Improve Ads\n00:06:33 - Using Insights Tab for Data-Driven Optimization\n00:07:48 - Cutting Underperforming Products & Keywords\n00:09:22 - Competitor Analysis: Who’s Competing for Your Ads?\n00:11:01 - Scaling Strategies: Target ROAS & Budget Adjustments\n00:16:06 - Final Checklist for Performance Max Optimization\n\n-------------------------------------------------------------------------\n\nCONNECT WITH ME\n\n📸 - Follow Me On Instagram: https://www.instagram.com/theblakebauer\n🔗 - Follow Me On LinkedIn: https://www.linkedin.com/theblakebauer\n🎵 - Follow Me On TikTok: https:/",
+                      "plain_text": "  🧠 Learn How To Scale Your Ads For $0 (Free Course): https://www.skool.com/jetads/about\n\n👉 Want Help Scaling Your Ads? Apply To Work With Me & Get A Free Scaling Roadmap ($1,000 Value): https://www.jetads.co ✈️\n\n-------------------------------------------------------------------------\n\nHello! If you're new to the channel, my name is Blake Bauer.\n\nI've been running Facebook & Google Ads since 2017 and have generated over $20M in revenue for our clients in over 20+ different industries. \n\nMy day job is building the best performance advertising agency in the world, JetAds.\n\nHow To Optimize Performance MAX Campaign (Google Ads)\n\nIn this video, I'll break down exactly how we optimize Performance Max campaigns at JetAds to maximize conversions and profitability. \n\nBy understanding the right data, spotting key weaknesses, and knowing where to double down, you can turn a struggling campaign into a highly profitable one. \n\nSo, if you're running Performance Max campaigns and want better results, this is the strategy you need to follow.\n\n00:00:00 - Why Your Performance Max Campaigns Are Underperforming\n00:00:29 - The First Step to Optimizing Performance Max Ads\n00:01:24 - Asset Groups: Cold, Broad, and Warm Segments\n00:02:46 - Setting Up Performance Max for Maximum ROI\n00:04:29 - How to Analyze Asset Performance & Improve Ads\n00:06:33 - Using Insights Tab for Data-Driven Optimization\n00:07:48 - Cutting Underperforming Products & Keywords\n00:09:22 - Competitor Analysis: Who's Competing for Your Ads?\n00:11:01 - Scaling Strategies: Target ROAS & Budget Adjustments\n00:16:06 - Final Checklist for Performance Max Optimization\n\n-------------------------------------------------------------------------\n\nCONNECT WITH ME\n\n📸 - Follow Me On Instagram: https://www.instagram.com/theblakebauer\n🔗 - Follow Me On LinkedIn: https://www.linkedin.com/theblakebauer\n🎵 - Follow Me On TikTok: https:/",
                       "href": null
                     }
                   ]
@@ -672,6 +678,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-16T21:00:25.000Z",
+  "updatedAt": "2025-08-17T18:51:48.000Z",
   "versionId": "cb27810f-2de3-4f0d-889f-22df1b7c9549"
 }
