@@ -205,7 +205,7 @@
             {
               "id": "pageid-assignment-001",
               "name": "PageId",
-              "value": "=  {{ ((() => {\n    try {\n      return $('N00a: Webhook Trigger').item?.json?.body?.data?.id;\n    } catch (e) {\n      // Webhook trigger node doesn't exist\n    }\n    try {\n      return $('N00b: Manual Trigger').item?.json?.body?.data?.id;\n    } catch (e) {\n      // Manual trigger node doesn't exist either\n      return null;\n    }\n  })() || '').trim() }}",
+              "value": "={{ (function() {\n    try {\n      return $('N00a: Webhook Trigger').item.json.body.data.id;\n    } catch (e) {\n      // Webhook failed\n    }\n    try {\n      return $('N00b: Manual Trigger').item.json.body.data.id;\n    } catch (e) {\n      return '';\n    }\n  })() }}",
               "type": "string"
             }
           ]
@@ -878,6 +878,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-17T19:43:37.000Z",
-  "versionId": "14f359fa-5e37-44c5-9844-74a661f9ebff"
+  "updatedAt": "2025-08-17T20:14:22.000Z",
+  "versionId": "8b10f172-f9b4-46f8-bdc6-1ff1988cf06d"
 }
