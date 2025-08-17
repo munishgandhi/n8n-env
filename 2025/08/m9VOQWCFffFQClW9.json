@@ -147,7 +147,7 @@
   "id": "m9VOQWCFffFQClW9",
   "isArchived": false,
   "meta": null,
-  "name": "Transcribe Video v20250817-165500",
+  "name": "Transcribe Video v20250817-185830",
   "nodes": [
     {
       "parameters": {
@@ -494,7 +494,7 @@
           "propertyValues": [
             {
               "key": "Research Status|status",
-              "status": "n8n Done"
+              "statusValue": "n8n Done"
             }
           ]
         }
@@ -926,6 +926,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-17T20:55:00.000Z",
+  "updatedAt": "2025-08-17T22:58:30.000Z",
   "versionId": "8b10f172-f9b4-46f8-bdc6-1ff1988cf06d"
 }
