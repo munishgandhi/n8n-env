@@ -6,11 +6,12 @@ allowed-tools: Bash(./system-docker-update.sh:*)
 
 # System Docker Update
 
-Updates Docker containers in the VC-MGR stack with two modes: soft (default) or hard update.
+Updates Docker containers in the n8n Environment with two modes: soft (default) or hard update.
 
 ## Soft Update (Default)
 Preserves container IDs while updating images:
 - Pulls latest images while containers run
+- **Rebuilds n8n extensions (YouTube node, etc.)**
 - Restarts only containers with new images
 - **Preserves ngrok tunnels and external references**
 - Faster update process
@@ -20,6 +21,7 @@ Preserves container IDs while updating images:
 Complete recreation of all containers:
 - Stops and removes all containers
 - Pulls latest images
+- **Rebuilds n8n extensions (YouTube node, etc.)**
 - Creates new containers with new IDs
 - Fixes Docker Desktop display issues
 - **Requires reconfiguring ngrok tunnels**

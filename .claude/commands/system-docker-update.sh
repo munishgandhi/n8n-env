@@ -15,7 +15,7 @@ UPDATE_MODE="soft"
 show_help() {
     echo "Usage: $0 [options]"
     echo
-    echo "Updates Docker containers in the VC-MGR stack."
+    echo "Updates Docker containers in the n8n Environment."
     echo
     echo "Modes:"
     echo "  Default (soft): Pull images and restart only changed containers"
@@ -64,7 +64,7 @@ done
 cd "$PROJECT_ROOT"
 
 # Initialize logging
-echo "🚀 VC-MGR Docker Update (${UPDATE_MODE^^} mode)..."
+echo "🚀 n8n Environment Docker Update (${UPDATE_MODE^^} mode)..."
 echo "Time: $(date)"
 echo "Location: $(pwd)"
 echo
@@ -99,6 +99,20 @@ if [ "$UPDATE_MODE" = "hard" ]; then
     fi
     
     echo ""
+    echo "🔧 === REBUILDING N8N EXTENSIONS ==="
+    echo "🔄 Building custom extensions (YouTube node, etc.)..."
+    if cd "$PROJECT_ROOT/docker/n8n-extensions" && npm run build; then
+        echo "✅ Extensions built successfully"
+        EXTENSION_STATUS="✅"
+        cd "$PROJECT_ROOT"
+    else
+        echo "❌ Extension build failed"
+        EXTENSION_STATUS="❌"
+        cd "$PROJECT_ROOT"
+        exit 1
+    fi
+    
+    echo ""
     echo "🔧 === STARTING ALL CONTAINERS (NEW) ==="
     echo -n "🔍 Starting all services: "
     if docker-compose -f "$PROJECT_ROOT/docker/docker-compose.yml" up -d; then
@@ -114,6 +128,7 @@ if [ "$UPDATE_MODE" = "hard" ]; then
     echo "🔧 === HARD UPDATE SUMMARY ==="
     echo "Stop containers: $STOP_STATUS"
     echo "Pull images: $PULL_STATUS"
+    echo "Build extensions: $EXTENSION_STATUS"
     echo "Start containers: $START_STATUS"
     echo ""
     echo "⚠️  Note: Container IDs have changed. You may need to:"
@@ -130,6 +145,20 @@ else
         PULL_STATUS="✅"
     else
         echo "❌ Failed to pull images"
+        exit 1
+    fi
+    
+    echo ""
+    echo "🔧 === REBUILDING N8N EXTENSIONS ==="
+    echo "🔄 Building custom extensions (YouTube node, etc.)..."
+    if cd "$PROJECT_ROOT/docker/n8n-extensions" && npm run build; then
+        echo "✅ Extensions built successfully"
+        EXTENSION_STATUS="✅"
+        cd "$PROJECT_ROOT"
+    else
+        echo "❌ Extension build failed"
+        EXTENSION_STATUS="❌"
+        cd "$PROJECT_ROOT"
         exit 1
     fi
     
@@ -152,6 +181,7 @@ else
     echo ""
     echo "🔧 === SOFT UPDATE SUMMARY ==="
     echo "Pull images: $PULL_STATUS"
+    echo "Build extensions: $EXTENSION_STATUS"
     echo "Update containers: $UPDATE_STATUS"
     echo ""
     echo "✅ Soft update completed!"
