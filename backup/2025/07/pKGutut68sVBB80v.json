@@ -1,0 +1,74 @@
+{
+  "active": false,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Test Gmail Connection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-18T23:07:47.233Z",
+  "id": "pKGutut68sVBB80v",
+  "isArchived": false,
+  "meta": null,
+  "name": "System Test > Gmail Connection v20250718-190747",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b119bde3-ae75-4e0e-bad9-f6d5f79657b7",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        300,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 1,
+        "filters": {
+          "labelIds": [
+            "Label_3354844662140732008"
+          ]
+        }
+      },
+      "id": "5a12b5d6-71b6-4857-b1a5-4bcb8f2b3cef",
+      "name": "Test Gmail Connection",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        520,
+        -40
+      ],
+      "webhookId": "1c0e01c0-cf85-4976-a98a-8a29a772088a",
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pxtxj61wdCzGXITa",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-env",
+  "repo_owner": "munishgandhi",
+  "repo_path": "backup/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-19T18:05:10.000Z",
+  "versionId": "4c7317e6-7382-44e5-9a42-6c32261b22e8"
+}
