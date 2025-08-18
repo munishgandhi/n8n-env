@@ -24,10 +24,10 @@ This file contains Claude-specific instructions for managing the n8n environment
 - `sqlite-web-viewer` (8080) - Database browser
 - `open-webui` (3000) - AI interface
 
-For detailed information about each component, read the `CLAUDE.md` file in the respective directories:
-- `/home/mg/src/n8n-env/.claude/agents/CLAUDE.md`
-- `/home/mg/src/n8n-env/.claude/commands/CLAUDE.md` 
-- `/home/mg/src/n8n-env/docker/CLAUDE.md`
+For detailed information about each component, read the `README.md` file in the respective directories:
+- `/home/mg/src/n8n-env/.claude/agents/README.md`
+- `/home/mg/src/n8n-env/.claude/commands/README.md` 
+- `/home/mg/src/n8n-env/docker/README.md`
 
 ## Quick Start
 ```bash
