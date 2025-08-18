@@ -1,0 +1,163 @@
+{
+  "active": false,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get Gmail Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Gmail Message": {
+      "main": [
+        [
+          {
+            "node": "Extract Email Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Email Data": {
+      "main": [
+        [
+          {
+            "node": "Create in Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-26T03:48:36.337Z",
+  "id": "snWuquHCLqXSIhey",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Gmail to Notion - Basic v20250725-234836",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "gmail-to-notion",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        250,
+        300
+      ],
+      "typeVersion": 1.1,
+      "webhookId": "205ace9e-c8b3-4bf1-be2b-ecd412da6b82"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $json.query.messageId }}",
+        "simple": false,
+        "options": {}
+      },
+      "id": "gmail-get",
+      "name": "Get Gmail Message",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        450,
+        300
+      ],
+      "typeVersion": 2.1,
+      "webhookId": "421438e3-2632-425c-b203-7177c8d1d9ea",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pxtxj61wdCzGXITa",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "gmailId",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "threadId",
+              "value": "={{ $json.threadId }}"
+            },
+            {
+              "name": "subject",
+              "value": "={{ $json.subject }}"
+            },
+            {
+              "name": "fromEmail",
+              "value": "={{ $json.from.value[0].address }}"
+            },
+            {
+              "name": "fromName",
+              "value": "={{ $json.from.value[0].name }}"
+            },
+            {
+              "name": "freshContent",
+              "value": "={{ $json.text || $json.snippet }}"
+            },
+            {
+              "name": "gmailDate",
+              "value": "={{ $json.date }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "extract-data",
+      "name": "Extract Email Data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        650,
+        300
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": "2231db9b-a441-8164-9226-eba95cc4e72c",
+        "title": "={{ $json.gmailId }}",
+        "options": {}
+      },
+      "id": "notion-create",
+      "name": "Create in Notion",
+      "type": "n8n-nodes-base.notion",
+      "position": [
+        850,
+        300
+      ],
+      "typeVersion": 2.2,
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-env",
+  "repo_owner": "munishgandhi",
+  "repo_path": "backup/",
+  "settings": {},
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-26T03:50:52.000Z",
+  "versionId": "642a41d9-c736-4112-b759-95d29a9c90da"
+}
