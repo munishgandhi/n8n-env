@@ -1,0 +1,344 @@
+{
+  "active": false,
+  "connections": {
+    "Schedule Every 10min": {
+      "main": [
+        [
+          {
+            "node": "Query AI Review Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query AI Review Records": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assessment Branch": {
+      "main": [
+        [
+          {
+            "node": "Update to MGR Review",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update to Sales Revise",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update to MGR Review": {
+      "main": [
+        [
+          {
+            "node": "Merge Branches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update to Sales Revise": {
+      "main": [
+        [
+          {
+            "node": "Merge Branches",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Ollama Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "LLM Assessment",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-08-09T01:24:30.111Z",
+  "id": "MqeSKWx8LBDQO2Of",
+  "isArchived": false,
+  "meta": null,
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1472,
+        -112
+      ],
+      "id": "233112cd-ab5f-4375-9fde-bcdec56e7e35",
+      "name": "Schedule Every 10min"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "mode": "id",
+          "value": "2481db9b-a441-8025-80d9-000b626fb13d"
+        },
+        "limit": 100,
+        "filterType": "json",
+        "filterJson": {
+          "and": [
+            {
+              "property": "Review Status",
+              "status": {
+                "equals": "AI Review"
+              }
+            },
+            {
+              "property": "Review Owner",
+              "people": {
+                "contains": "ffa8346a-444c-48dd-ac88-b87aa4c3a84f"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -1248,
+        -112
+      ],
+      "id": "602d4505-a10d-4899-a1a2-db776b42ac3a",
+      "name": "Query AI Review Records",
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1024,
+        -112
+      ],
+      "id": "4c0cea5b-f435-4a8f-8658-cda2116d74d9",
+      "name": "Split In Batches"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1.1,
+      "position": [
+        -1472,
+        112
+      ],
+      "id": "53484da3-a743-42d6-badb-72916289975c",
+      "name": "Extract Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Give your PASS/FAIL assessment on whether the provided answer responds to the question. If it fails, explain briefly why. Make the explanation scannable with emojis if needed. Use only the Guidelines to assess the answer. Sign off your answer on a new line as \"-- {your model name} on behalf of MG\"\n\nFormat your response as:\nASSESSMENT: [PASS/FAIL]\nEXPLANATION: [Brief explanation if FAIL, or confirmation if PASS]\n\n-- {your model name} on behalf of MG\n\n<Question> {{ $json.question }} </Question>\n<Answer> {{ $json.answer }} </Answer>\n<Guidelines>\n{{ $json.guidelines }}\n</Guidelines>",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -1472,
+        1304
+      ],
+      "id": "37cd79e8-b6d9-499a-8192-7c0e0333c13c",
+      "name": "LLM Assessment"
+    },
+    {
+      "parameters": {
+        "model": "gpt-oss:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "typeVersion": 1,
+      "position": [
+        -1376,
+        1528
+      ],
+      "id": "aa350060-837e-42ee-86ef-0405e977254e",
+      "name": "Ollama Model"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1.1,
+      "position": [
+        -1472,
+        336
+      ],
+      "id": "cd3ad4bb-368a-4ee5-bd0f-4e83247f795c",
+      "name": "Parse LLM Response"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.assessment }}",
+              "operation": "equal",
+              "value2": "PASS"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1472,
+        656
+      ],
+      "id": "19b92d98-8f80-4502-9700-997efb68ba82",
+      "name": "Assessment Branch"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "mode": "id",
+          "value": "={{ $json.notion_page_id }}"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Review Status",
+              "type": "status",
+              "statusValue": {
+                "mode": "name",
+                "value": "MGR Review"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -1248,
+        560
+      ],
+      "id": "594a7419-5fbf-4ccb-8fff-031311fc1003",
+      "name": "Update to MGR Review"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "mode": "id",
+          "value": "={{ $json.notion_page_id }}"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Review Status",
+              "type": "status",
+              "statusValue": {
+                "mode": "name",
+                "value": "Sales Revise"
+              }
+            },
+            {
+              "key": "Review Owner",
+              "type": "people",
+              "peopleValue": {
+                "mode": "list",
+                "list": "={{ $json.sales_owner.map(owner => owner.id) }}"
+              }
+            },
+            {
+              "key": "Assessment",
+              "type": "richText"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -1248,
+        752
+      ],
+      "id": "99e1aad9-ca64-42d4-9ece-ab728ec11c48",
+      "name": "Update to Sales Revise"
+    },
+    {
+      "parameters": {
+        "mode": "mergeByPosition"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -1024,
+        656
+      ],
+      "id": "98bc16af-9b48-4753-8419-e62ca2e86b3c",
+      "name": "Merge Branches"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1.1,
+      "position": [
+        -1472,
+        976
+      ],
+      "id": "6e3bdfe1-f7fb-48f9-9500-d13f64315401",
+      "name": "Log Results"
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-env",
+  "repo_owner": "munishgandhi",
+  "repo_path": "backup/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-08-09T01:24:30.000Z",
+  "versionId": "77b00993-0e05-4d09-bd86-c8055654fca6"
+}
