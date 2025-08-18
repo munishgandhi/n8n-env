@@ -1,0 +1,315 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a thread": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Get a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a message": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a message1": {
+      "main": [
+        [
+          {
+            "node": "Get a thread",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow": {
+      "main": [
+        []
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-25T22:37:34.694Z",
+  "id": "mRQ5mkIZedt21yyC",
+  "isArchived": true,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Backup-Backlog2Planners-Simple copy",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        -740
+      ],
+      "id": "2cd9988e-c982-46bd-bedc-e554b503f356",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "messages",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        600,
+        -840
+      ],
+      "id": "b75eb603-ac2c-458b-a7e2-99dce5c06c8f",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "get",
+        "threadId": "={{ $json.threadId }}",
+        "options": {},
+        "path": "f338e39d-c876-4395-a4dd-04e9253bb3b4"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        380,
+        -840
+      ],
+      "id": "76f608b6-5786-4583-98c3-209776214dda",
+      "name": "Get a thread",
+      "webhookId": "f338e39d-c876-4395-a4dd-04e9253bb3b4",
+      "executeOnce": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pxtxj61wdCzGXITa",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $json.id }}",
+        "simple": false,
+        "options": {},
+        "path": "f2ea3c2c-40bc-423e-9c0d-72cbaf524d09"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        820,
+        -840
+      ],
+      "id": "bd42fa95-8a51-462d-9e6d-3e2639c807d8",
+      "name": "Get a message",
+      "webhookId": "f2ea3c2c-40bc-423e-9c0d-72cbaf524d09",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pxtxj61wdCzGXITa",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $json.query.id }}",
+        "path": "9c2b1a88-ee6c-4554-a0d7-9464383d7398"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        160,
+        -840
+      ],
+      "id": "776c0990-6122-4dba-93ef-9aa4b17e24db",
+      "name": "Get a message1",
+      "webhookId": "9c2b1a88-ee6c-4554-a0d7-9464383d7398",
+      "alwaysOutputData": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pxtxj61wdCzGXITa",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "4c1RPy0PYoxFCCxj",
+          "mode": "list",
+          "cachedResultName": "PlannerEmail: Create v20250725-015520"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "gmailId": "={{ $json.id }}",
+            "subject": "={{ $json.subject }}",
+            "threadId": "={{ $json.threadId }}",
+            "gmailDate": "={{ $json.date }}",
+            "fromEmail": "={{ $json.from.value[0].address }}",
+            "freshContent": "={{ $json.text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "gmailId",
+              "displayName": "gmailId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fromEmail",
+              "displayName": "fromEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "freshContent",
+              "displayName": "freshContent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "threadId",
+              "displayName": "threadId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "gmailDate",
+              "displayName": "gmailDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1040,
+        -840
+      ],
+      "id": "3c70cc34-4599-43e8-82dd-ca98ffd8060f",
+      "name": "Execute Workflow"
+    },
+    {
+      "parameters": {
+        "path": "d39f1ca8-cb7a-4fa1-b42d-0c74e6aa3651",
+        "options": {
+          "noResponseBody": false
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        -940
+      ],
+      "id": "46016a59-93f2-4e2a-a966-a7b74212d909",
+      "name": "Webhook",
+      "webhookId": "d39f1ca8-cb7a-4fa1-b42d-0c74e6aa3651"
+    }
+  ],
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {
+          "query": {
+            "id": "197fac9e1c67dc74"
+          }
+        }
+      }
+    ],
+    "Webhook": [
+      {
+        "json": {
+          "query": {
+            "id": "197fac9e1c67dc74"
+          }
+        }
+      }
+    ]
+  },
+  "repo_name": "n8n-env",
+  "repo_owner": "munishgandhi",
+  "repo_path": "backup/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-07-31T05:11:28.000Z",
+  "versionId": "c10ad6aa-963f-46eb-82df-91b5ae3f4dfb"
+}
