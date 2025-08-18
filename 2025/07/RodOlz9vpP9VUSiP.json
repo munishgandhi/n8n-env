@@ -49,7 +49,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        220,
+        224,
         0
       ],
       "id": "509fb5c9-e536-4a85-93c4-4a10b2314087",
@@ -70,20 +70,20 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\n    \"model\": \"qwen2.5:14b-instruct\",\n    \"prompt\": \"Hello! Please respond with 'Hello World from n8n + Ollama!'\",\n    \"stream\": false,\n    \"options\": {\n      \"temperature\": 0.1\n    }\n  }\n",
+        "jsonBody": "={\n    \"model\": \"{{ $json.models[0].model }}\",\n    \"prompt\": \"Hello! Please respond with 'Hello World from n8n + Ollama!'\",\n    \"stream\": false,\n    \"options\": {\n      \"temperature\": 0.1\n    }\n  }",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        440,
+        448,
         0
       ],
       "id": "a962dd3a-b5a6-4a7e-a69f-abccb1df2ba8",
       "name": "HTTP Request1"
     }
   ],
-  "pinData": null,
+  "pinData": {},
   "repo_name": "n8n-hyly-ai-backup",
   "repo_owner": "munishgandhi",
   "repo_path": "",
@@ -93,6 +93,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-07-18T23:07:47.349Z",
-  "versionId": "447770b9-79b6-4460-ac5f-887c15d01ae1"
+  "updatedAt": "2025-08-18T00:18:25.000Z",
+  "versionId": "6118df4d-5a8a-4591-a5d8-dc4555565178"
 }
