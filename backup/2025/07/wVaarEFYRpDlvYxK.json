@@ -1,0 +1,246 @@
+{
+  "active": false,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Latest VC Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Latest VC Email": {
+      "main": [
+        [
+          {
+            "node": "Check Email Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Email Exists": {
+      "main": [
+        [
+          {
+            "node": "Extract Email Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Email Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Email Data": {
+      "main": [
+        [
+          {
+            "node": "Analyze with Ollama",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze with Ollama": {
+      "main": [
+        [
+          {
+            "node": "Combine Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-18T23:07:34.760Z",
+  "id": "wVaarEFYRpDlvYxK",
+  "isArchived": false,
+  "meta": null,
+  "name": "System Test > Fetch VC Email v20250718-190734",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "d59732a6-c488-409e-bd78-28b59be2d8fa",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 1,
+        "filters": {
+          "labelIds": [
+            "Label_3354844662140732008"
+          ]
+        }
+      },
+      "id": "5fd96476-cded-4d10-bc30-93ba15a3b392",
+      "name": "Get Latest VC Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        0,
+        -20
+      ],
+      "webhookId": "568b3c3c-d14c-4068-afcc-4da8005db6f0",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "credentials": {
+        "gmailOAuth2": "pxtxj61wdCzGXITa"
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "email-found",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "c14c9c0e-01ba-49db-9c8b-d4e861f3a624",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "191f86b9-69c0-4c43-afa5-7ea56789982b",
+      "name": "Check Email Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        220,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "  // The input is an array, so get the first item\n  const emailArray = $input.first().json;\n  const email = Array.isArray(emailArray) ? emailArray[0] : emailArray;\n\n  console.log('=== EMAIL DATA ===');\n  console.log('Email object:', email);\n\n  // Now extract the data using the correct field names\n  const emailData = {\n    id: email.id || 'unknown',\n    threadId: email.threadId || 'unknown',\n    snippet: email.snippet || '',\n    subject: email.Subject || 'Unknown Subject',  // Capital S - we see it in the data\n    from: email.From || 'Unknown Sender',        // Capital F - we see it in the data  \n    to: email.To || 'Unknown Recipient',         // Capital T - we see it in the data\n    processedAt: new Date().toISOString()\n  };\n\n  console.log('Extracted email data:', emailData);\n  return emailData;\n"
+      },
+      "id": "78cc95f0-789b-406c-8006-3ecd210225de",
+      "name": "Extract Email Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:11434/api/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "qwen2.5:14b-instruct"
+            },
+            {
+              "name": "prompt",
+              "value": "=  Analyze this email:\n\n  Subject: {{ $json.subject }}\n  From: {{ $json.from }}\n  Snippet: {{ $json.snippet }}\n\n  Extract: sender name, company, purpose, sentiment. Respond only with\n  JSON:\n  {\n    \"sender_name\": \"\",\n    \"sender_company\": \"\",\n    \"main_topic_purpose\": \"\",\n    \"sentiment\": \"\"\n  }\n\ndo not send \"context\" list of numbers"
+            },
+            {
+              "name": "stream",
+              "value": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d50939db-f9cf-4602-b7df-e83e41cca6e7",
+      "name": "Analyze with Ollama",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "  // Get email data from the Extract Email Data node\n  const emailData = $('Extract Email Data').first().json;\n\n  // Get AI response from current input\n  const aiResponse = $input.first().json;\n\n  // Parse AI analysis\n  let aiAnalysis = {};\n  try {\n    aiAnalysis = JSON.parse(aiResponse.response);\n  } catch (error) {\n    aiAnalysis = { error: 'Failed to parse' };\n  }\n\n  const result = {\n    email: {\n      id: emailData.id,\n      threadId: emailData.threadId,\n      subject: emailData.subject,\n      from: emailData.from,\n      to: emailData.to,\n      snippet: emailData.snippet,\n      processedAt: emailData.processedAt\n    },\n    analysis: aiAnalysis,\n    processing: {\n      time_ms: Math.round(aiResponse.total_duration / 1000000),\n      model: aiResponse.model,\n      completed_at: new Date().toISOString()\n    }\n  };\n\n  return result;\n"
+      },
+      "id": "ba0428aa-aaf4-48ea-957c-b0848d6444e1",
+      "name": "Combine Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// No email found in the specified label\nconst result = {\n  error: 'No emails found in --watch/vc or --watch-vc label',\n  searchedLabels: ['--watch/vc', '--watch-vc'],\n  timestamp: new Date().toISOString(),\n  processingComplete: false\n};\n\nconsole.log('❌ No emails found in VC watch folders');\n\nreturn result;"
+      },
+      "id": "b1ffe9a9-4461-4077-bc87-26d030f90a53",
+      "name": "No Email Found",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        80
+      ]
+    }
+  ],
+  "pinData": null,
+  "repo_name": "n8n-env",
+  "repo_owner": "munishgandhi",
+  "repo_path": "backup/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-18T23:07:34.760Z",
+  "versionId": "984ba975-4d71-4e1f-a852-d88fa083420b"
+}
