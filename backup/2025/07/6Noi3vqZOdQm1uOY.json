@@ -1,0 +1,423 @@
+{
+  "active": false,
+  "connections": {
+    "N00: Start": {
+      "main": [
+        [
+          {
+            "node": "N01: Input Validation & Environment Setup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N01: Input Validation & Environment Setup": {
+      "main": [
+        [
+          {
+            "node": "N02: Validation Success Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N02: Validation Success Check": {
+      "main": [
+        [
+          {
+            "node": "N03: Query Existing PlannerPerson",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "N09: Error Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N03: Query Existing PlannerPerson": {
+      "main": [
+        [
+          {
+            "node": "N04: Process Query Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N04: Process Query Results": {
+      "main": [
+        [
+          {
+            "node": "N05: Record Exists Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N05: Record Exists Check": {
+      "main": [
+        [
+          {
+            "node": "N08: Format Database Record",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "N06: Create New PlannerPerson Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N06: Create New PlannerPerson Record": {
+      "main": [
+        [
+          {
+            "node": "N07: Query Created Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N07: Query Created Record": {
+      "main": [
+        [
+          {
+            "node": "N08: Format Database Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-22T15:34:25.246Z",
+  "id": "6Noi3vqZOdQm1uOY",
+  "isArchived": false,
+  "meta": null,
+  "name": "PlannerPerson: Create v20250729-022922",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "emailAddress",
+              "type": "any"
+            },
+            {
+              "name": "plannerFirmId",
+              "type": "any"
+            },
+            {
+              "name": "backlogId",
+              "type": "any"
+            }
+          ]
+        }
+      },
+      "id": "125626fc-055d-4ba9-866f-c8e6c05937a5",
+      "typeVersion": 1.1,
+      "name": "N00: Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        1744,
+        -448
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Node 2: Input Validation & Environment Setup\nconst input = $json;\nconsole.log('🔍 Sub-workflow input received:', JSON.stringify(input, null, 2));\n\n// Validate required field for PlannerPerson creation\nif (!input.emailAddress) {\n  console.error('❌ Missing required field: emailAddress');\n  return {\n    valid: false,\n    error: \"Missing required field: emailAddress\",\n    details: \"Email address must be provided for PlannerPerson creation\"\n  };\n}\n\n// Validate email format (basic check for valid email)\nif (typeof input.emailAddress !== 'string' || input.emailAddress.trim() === '') {\n  console.error('❌ Invalid email format:', input.emailAddress);\n  return {\n    valid: false,\n    error: \"Invalid email format\",\n    details: \"Email address must be a non-empty string\"\n  };\n}\n\n// Basic email validation (contains @ symbol)\nif (!input.emailAddress.includes('@')) {\n  console.error('❌ Invalid email format:', input.emailAddress);\n  return {\n    valid: false,\n    error: \"Invalid email format\",\n    details: \"Email address must contain @ symbol\"\n  };\n}\n\nconsole.log(`✅ Valid sub-workflow input for email: ${input.emailAddress}`);\nreturn {\n  valid: true,\n  processedInput: {\n    emailAddress: input.emailAddress.toLowerCase().trim(),\n    plannerFirmId: input.plannerFirmId || null,\n    backlogId: input.backlogId || ''\n  }\n};"
+      },
+      "id": "input-validation",
+      "name": "N01: Input Validation & Environment Setup",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1968,
+        -448
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "valid-check",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equal",
+                "rightType": "boolean"
+              }
+            },
+            {
+              "id": "d17daef6-c946-4a6d-8772-c1c9b3e5e1d7",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "validation-check",
+      "name": "N02: Validation Success Check",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2192,
+        -448
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "2231db9b-a441-81c3-89ad-fb6ebb405a81",
+          "mode": "list",
+          "cachedResultName": "vcdb.PlannerPerson.vn8n",
+          "cachedResultUrl": "https://www.notion.so/2231db9ba44181c3-89adfb6ebb405a81"
+        },
+        "filterType": "manual",
+        "filters": {
+          "conditions": [
+            {
+              "key": "Email Address|title",
+              "condition": "equals",
+              "titleValue": "={{ $json.processedInput.emailAddress }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "query-existing",
+      "name": "N03: Query Existing PlannerPerson",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        2400,
+        -576
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Node 5: Process Query Results\nconst queryResults = $input.all();\nconst inputData = $('N01: Input Validation & Environment Setup').first().json.processedInput;\n\nconsole.log('🔍 Duplicate check results:', queryResults.length, 'records found');\n\n// Check if no results or empty result object\nif (queryResults.length === 0 || !queryResults[0].json || Object.keys(queryResults[0].json).length === 0 || !queryResults[0].json.id) {\n  console.log('✅ No existing record found - will create new');\n  return {\n    recordExists: false,\n    existingRecord: null,\n    inputData: inputData,\n    backlogId: inputData.backlogId,\n    action: \"create_new\"\n  };\n}\n\nif (queryResults.length > 1) {\n  console.warn('⚠️ Multiple records found for email:', inputData.emailAddress);\n  // Use first record but log the issue\n}\n\nconst existingRecord = queryResults[0].json;\nconsole.log('ℹ️ Existing record found - will return existing');\nconsole.log('📄 Existing record ID:', existingRecord.id);\n\nreturn {\n  recordExists: true,\n  existingRecord: existingRecord,\n  inputData: inputData,\n  backlogId: inputData.backlogId,\n  action: \"found_existing\"\n};"
+      },
+      "id": "process-query",
+      "name": "N04: Process Query Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2624,
+        -544
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "record-exists-condition",
+              "leftValue": "={{ $json.recordExists }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equal"
+              }
+            },
+            {
+              "id": "898cdaad-1e00-4070-a407-46489762c8d2",
+              "leftValue": "={{ $json.existingRecord.id }}",
+              "rightValue": "found_existing",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {
+          "ignoreCase": false,
+          "looseTypeValidation": false
+        }
+      },
+      "id": "record-exists-check",
+      "name": "N05: Record Exists Check",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2848,
+        -544
+      ],
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// Node 8: Format Database Record Response\nconst input = $json;\nconst action = $('N04: Process Query Results').first().json.action;\n\nconsole.log('✅ Formatting database record');\nconsole.log('📄 Input data:', JSON.stringify(input, null, 2));\n\n// Check if this is coming from the existing record path or new record path\nlet recordData;\n\nif (action === 'found_existing') {\n  // For existing records, the data is already formatted from N04\n  const existingData = $('N04: Process Query Results').first().json.existingRecord;\n  \n  recordData = {\n    id: existingData.id,\n    url: existingData.url,\n    property_email_address: existingData.property_email_address || '',\n    property_status: existingData.property_status || 'pending',\n    // Relations are already in the right format\n    rel_backlog: existingData.property_rel_backlog?.[0] || null,\n    rel_planner_email: existingData.property_rel_planner_email?.[0] || null,\n    rel_planner_firm: existingData.property_rel_planner_firm?.[0] || null,\n    rel_person: existingData.property_rel_person?.[0] || null,\n    action: action,\n    created_time: existingData.property_created_time || existingData.created_time,\n    last_edited_time: existingData.property_last_edited_time || existingData.last_edited_time\n  };\n} else {\n  // For new records, check if we have input at all\n  if (!input || Object.keys(input).length === 0) {\n    // If no input, get the data from N07 directly\n    const n07Data = $('N07: Query Created Record').first().json;\n    recordData = {\n      id: n07Data.id,\n      url: n07Data.url,\n      property_email_address: n07Data.property_email_address || '',\n      property_status: n07Data.property_status || 'pending',\n      // Relations are already in the right format\n      rel_backlog: n07Data.property_rel_backlog?.[0] || null,\n      rel_planner_email: n07Data.property_rel_planner_email?.[0] || null,\n      rel_planner_firm: n07Data.property_rel_planner_firm?.[0] || null,\n      rel_person: n07Data.property_rel_person?.[0] || null,\n      action: 'created_new',\n      created_time: n07Data.property_created_time || n07Data.created_time,\n      last_edited_time: n07Data.property_last_edited_time || n07Data.last_edited_time\n    };\n  } else {\n    // If we have input, use it (data comes from N07 with properties at root)\n    recordData = {\n      id: input.id,\n      url: input.url,\n      property_email_address: input.property_email_address || '',\n      property_status: input.property_status || 'pending',\n      // Relations are already in the right format\n      rel_backlog: input.property_rel_backlog?.[0] || null,\n      rel_planner_email: input.property_rel_planner_email?.[0] || null,\n      rel_planner_firm: input.property_rel_planner_firm?.[0] || null,\n      rel_person: input.property_rel_person?.[0] || null,\n      action: 'created_new',\n      created_time: input.property_created_time || input.created_time,\n      last_edited_time: input.property_last_edited_time || input.last_edited_time\n    };\n  }\n}\n\n// Add execution and workflow information\nrecordData.childExecutionId = $execution.id;\nrecordData.childWorkflowId = $workflow.id;\nrecordData.childWorkflowName = $workflow.name;\n\n// Return in nested structure with database table name\nconst response = {\n  PlannerPerson: recordData\n};\n\nconsole.log('✅ Database record formatted successfully');\nreturn response;"
+      },
+      "id": "format-db-record",
+      "name": "N08: Format Database Record",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3504,
+        -544
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": "2231db9b-a441-81c3-89ad-fb6ebb405a81",
+        "title": "={{ $('N04: Process Query Results').first().json.inputData.emailAddress }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Status|select",
+              "selectValue": "pending"
+            },
+            {
+              "key": "rel:PlannerFirm|relation",
+              "relationValue": "={{ $('N04: Process Query Results').first().json.inputData.plannerFirmId ? [$('N04: Process Query Results').first().json.inputData.plannerFirmId] : [] }}"
+            },
+            {
+              "key": "rel:Backlog|relation",
+              "relationValue": "={{ $('N04: Process Query Results').first().json.backlogId ? [$('N04: Process Query Results').first().json.backlogId] : [] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "create-new-record",
+      "name": "N06: Create New PlannerPerson Record",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        3072,
+        -448
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Node 8: Error Output\nconst validationResult = $input.first().json;\n\nconsole.error('❌ Sub-workflow error:', validationResult.error);\n\nreturn {\n  success: false,\n  error: validationResult.error,\n  details: validationResult.details,\n  action: \"error\",\n  timestamp: new Date().toISOString()\n};"
+      },
+      "id": "error-output",
+      "name": "N09: Error Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        -336
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "2231db9b-a441-81c3-89ad-fb6ebb405a81",
+          "mode": "list",
+          "cachedResultName": "vcdb.PlannerPerson.vn8n",
+          "cachedResultUrl": "https://www.notion.so/2231db9ba44181c3-89adfb6ebb405a81"
+        },
+        "filterType": "manual",
+        "filters": {
+          "conditions": [
+            {
+              "key": "Email Address|title",
+              "condition": "equals",
+              "titleValue": "={{ $('N04: Process Query Results').first().json.inputData.emailAddress }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "query-created-record",
+      "name": "N07: Query Created Record",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        3280,
+        -448
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "N00: Start": [
+      {
+        "json": {
+          "emailAddress": "mg@hy.ly",
+          "plannerFirmId": "23d1db9b-a441-81ec-8cdc-e77aa6f5364c",
+          "backlogId": "2371db9b-a441-81f5-9d6e-d4e258bfa4f1"
+        }
+      }
+    ]
+  },
+  "repo_name": "n8n-env",
+  "repo_owner": "munishgandhi",
+  "repo_path": "backup/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-29T06:29:22.000Z",
+  "versionId": "c2e143fe-dff1-4c59-b999-ee60e5946900"
+}
