@@ -40,11 +40,11 @@
 ### 2.2 Module Scripts
 - [x] `/home/mg/src/vc-mgr/.claude/commands/modules/shared-functions.sh` → `/home/mg/src/n8n-env/.claude/commands/modules/shared-functions.sh` | Completion: 2025-08-17 21:40:47 ✅ VERIFIED
 - [x] `/home/mg/src/vc-mgr/.claude/commands/modules/system-check-docker.sh` → `/home/mg/src/n8n-env/.claude/commands/modules/system-check-docker.sh` | Completion: 2025-08-17 21:40:47 ✅ VERIFIED
-- [x] `/home/mg/src/vc-mgr/.claude/commands/modules/system-check-gmail.sh` → `/home/mg/src/n8n-env/.claude/commands/modules/system-check-gmail.sh` | Completion: 2025-08-17 21:40:47 ✅ VERIFIED
+- [x] `/home/mg/src/vc-mgr/.claude/commands/modules/system-check-gmail.sh` → **NOT MOVED** - Gmail test removed from n8n-env | Completion: 2025-08-18 ❌ NOT MOVED
 - [x] `/home/mg/src/vc-mgr/.claude/commands/modules/system-check-n8n-mcp.sh` → `/home/mg/src/n8n-env/.claude/commands/modules/system-check-n8n-mcp.sh` | Completion: 2025-08-17 21:40:47 ✅ VERIFIED
 - [x] `/home/mg/src/vc-mgr/.claude/commands/modules/system-check-n8n-workflow.sh` → `/home/mg/src/n8n-env/.claude/commands/modules/system-check-n8n-workflow.sh` | Completion: 2025-08-17 21:40:47 ✅ VERIFIED
-- [x] `/home/mg/src/vc-mgr/.claude/commands/modules/system-check-notion.sh` → `/home/mg/src/n8n-env/.claude/commands/modules/system-check-notion.sh` | Completion: 2025-08-17 21:40:47 ✅ VERIFIED
-- [x] `/home/mg/src/vc-mgr/.claude/commands/modules/system-check-ollama.sh` → `/home/mg/src/n8n-env/.claude/commands/modules/system-check-ollama.sh` | Completion: 2025-08-17 21:40:47 ✅ VERIFIED
+- [x] `/home/mg/src/vc-mgr/.claude/commands/modules/system-check-notion.sh` → **NOT MOVED** - Notion check removed from n8n-env | Completion: 2025-08-18 ❌ NOT MOVED
+- [x] `/home/mg/src/vc-mgr/.claude/commands/modules/system-check-ollama.sh` → **NOT MOVED** - Ollama test rewritten for native testing | Completion: 2025-08-18 ❌ NOT MOVED
 - [x] `/home/mg/src/vc-mgr/.claude/commands/modules/system-check-sqlite.sh` → `/home/mg/src/n8n-env/.claude/commands/modules/system-check-sqlite.sh` | Completion: 2025-08-17 21:40:47 ✅ VERIFIED
 
 ## Phase 3: Environment Configuration

@@ -86,24 +86,7 @@ test_port_availability() {
 test_service_endpoints() {
     print_section "${NETWORK} Service Endpoint Health"
     
-    # n8n health check
-    if run_test_command "curl -f http://localhost:5678/healthz" 5; then
-        print_test "n8n health endpoint" "PASS" "http://localhost:5678/healthz"
-    else
-        print_test "n8n health endpoint" "FAIL" "Health check failed"
-    fi
-    
-    # n8n API availability
-    if [ -n "$N8N_API_KEY" ]; then
-        if run_test_command "curl -f -H 'X-N8N-API-KEY: $N8N_API_KEY' http://localhost:5678/api/v1/workflows" 5; then
-            local workflow_count=$(get_command_output "curl -s -H 'X-N8N-API-KEY: $N8N_API_KEY' http://localhost:5678/api/v1/workflows | jq '.data | length' 2>/dev/null" 5)
-            print_test "n8n API endpoint" "PASS" "Found $workflow_count workflows"
-        else
-            print_test "n8n API endpoint" "FAIL" "API not accessible with authentication"
-        fi
-    else
-        print_test "n8n API endpoint" "WARN" "N8N_API_KEY not available for API test"
-    fi
+    # n8n health and API tests are handled by system-check-n8n.sh module
     
     # SQLite viewer
     if run_test_command "curl -f http://localhost:8080" 5; then

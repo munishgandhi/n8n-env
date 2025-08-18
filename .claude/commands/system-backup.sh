@@ -5,9 +5,9 @@
 
 set -e  # Exit on any error
 
-BACKUP_NAME=${1:-"minimal-$(date +%Y%m%d-%H%M%S)"}
-BACKUP_DIR="$PROJECT_ROOT/backup"
 PROJECT_ROOT="$(git rev-parse --show-toplevel)"
+BACKUP_NAME=${1:-"minimal-$(date +%Y%m%d-%H%M%S)"}
+BACKUP_DIR="/home/mg/backups/n8n-env"
 cd "$PROJECT_ROOT"  # Ensure we're in project root
 
 echo "💾 n8n Environment Minimal Backup (Critical Data Only)"
@@ -25,7 +25,7 @@ echo ""
 # 1. ENVIRONMENT FILE (.env) - API keys and UUIDs
 echo "🔑 === ENVIRONMENT CREDENTIALS ==="
 if [ -f "$PROJECT_ROOT/.env" ]; then
-    cp "$PROJECT_ROOT/.env" "$BACKUP_DIR/$BACKUP_NAME/env-backup"
+    cp "$PROJECT_ROOT/.env" "$BACKUP_DIR/$BACKUP_NAME/.env"
     key_count=$(grep -c "API_KEY\|DB_ID" "$PROJECT_ROOT/.env")
     echo "✅ .env file backed up ($key_count credentials)"
 else
@@ -57,7 +57,7 @@ if docker volume inspect "$N8N_VOLUME" > /dev/null 2>&1; then
     
     echo "🔧 Backing up n8n config..."
     docker run --rm -v "$N8N_VOLUME":/source -v "$BACKUP_DIR/$BACKUP_NAME":/backup alpine sh -c \
-        "cp /source/config /backup/config-backup && chmod 644 /backup/config-backup"
+        "cp /source/config /backup/config.json && chmod 644 /backup/config.json"
     
     # Get sizes for verification  
     DB_SIZE=$(docker run --rm -v "$N8N_VOLUME":/data alpine du -sh /data/database.sqlite | cut -f1)
@@ -72,60 +72,10 @@ else
     exit 1
 fi
 
-# 3. EXTRACT CURRENT WORKFLOWS (conditional)
+# 3. WORKFLOW EXTRACTION - REMOVED
+# Workflows are backed up in the SQLite database above
 echo ""
-echo "📤 === WORKFLOW EXTRACTION ==="
-
-# Skip extraction if environment variable is set
-if [ "$SKIP_WORKFLOW_EXTRACTION" = "true" ]; then
-    echo "⏭️  SKIP_WORKFLOW_EXTRACTION=true - skipping workflow extraction"
-else
-    # Check if workflows have been modified since last extraction
-    LAST_EXTRACT_FILE="$PROJECT_ROOT/.claude/scripts/.last-extract-time"
-    LAST_EXTRACT_TIME=$(cat "$LAST_EXTRACT_FILE" 2>/dev/null || echo "1970-01-01 00:00:00")
-    
-    # Query SQLite directly for workflows modified since last extraction
-    MODIFIED_WORKFLOWS=$(docker run --rm -v "$N8N_VOLUME":/data alpine sh -c "
-        apk add sqlite > /dev/null 2>&1 && 
-        sqlite3 /data/database.sqlite \"
-            SELECT COUNT(*) FROM workflow_entity 
-            WHERE updatedAt > datetime('$LAST_EXTRACT_TIME')
-        \"
-    " 2>/dev/null || echo "1")
-
-    if [ "$MODIFIED_WORKFLOWS" -gt "0" ]; then
-        echo "🔄 Found $MODIFIED_WORKFLOWS modified workflows - extracting only changed ones..."
-        cd "$PROJECT_ROOT"
-        
-        # Get list of modified workflow IDs
-        MODIFIED_IDS=$(docker run --rm -v "$N8N_VOLUME":/data alpine sh -c "
-            apk add sqlite > /dev/null 2>&1 && 
-            sqlite3 /data/database.sqlite \"
-                SELECT id FROM workflow_entity 
-                WHERE updatedAt > datetime('$LAST_EXTRACT_TIME')
-            \"
-        " 2>/dev/null || echo "")
-        
-        # Extract only modified workflows
-        if [ -n "$MODIFIED_IDS" ]; then
-            echo "$MODIFIED_IDS" | while read workflow_id; do
-                if [ -n "$workflow_id" ]; then
-                    echo "📄 Extracting workflow: $workflow_id"
-                    "$PROJECT_ROOT/davinci/scripts/n8n-workflows/07-workflow-export.sh" "$workflow_id"
-                fi
-            done
-        else
-            # Fallback: extract all workflows if we can't get specific IDs
-            "$PROJECT_ROOT/davinci/scripts/n8n-workflows/07-workflow-export.sh"
-        fi
-        
-        # Store current timestamp for next check
-        echo "$(date '+%Y-%m-%d %H:%M:%S')" > "$LAST_EXTRACT_FILE"
-        echo "✅ Modified workflows extracted to project/n8n-workflows/download/"
-    else
-        echo "⏭️  No workflows modified since last extraction - skipping"
-    fi
-fi
+echo "⏭️  Workflow extraction removed - workflows preserved in database backup"
 
 # 4. UPDATE WORKFLOW DOCUMENTATION
 echo ""

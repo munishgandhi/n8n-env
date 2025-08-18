@@ -30,9 +30,9 @@ test_sqlite_database() {
         " 2>/dev/null || echo "Error")
         
         if [ "$workflow_count" != "Error" ] && [ -n "$workflow_count" ]; then
-            print_test "Workflow count" "PASS" "$workflow_count workflows"
+            print_test "SQLite workflow count" "PASS" "$workflow_count workflows"
         else
-            print_test "Workflow count" "WARN" "Could not query workflow table"
+            print_test "SQLite workflow count" "WARN" "Could not query workflow table"
         fi
         
         # Get execution count
@@ -50,9 +50,9 @@ test_sqlite_database() {
         " 2>/dev/null || echo "Error")
         
         if [ "$execution_count" != "Error" ] && [ -n "$execution_count" ]; then
-            print_test "Execution count" "PASS" "$execution_count executions"
+            print_test "SQLite execution count" "PASS" "$execution_count executions"
         else
-            print_test "Execution count" "WARN" "Could not query execution table"
+            print_test "SQLite execution count" "WARN" "Could not query execution table"
         fi
         
         # Get credential count
@@ -70,9 +70,9 @@ test_sqlite_database() {
         " 2>/dev/null || echo "Error")
         
         if [ "$credential_count" != "Error" ] && [ -n "$credential_count" ]; then
-            print_test "Credential count" "PASS" "$credential_count credentials"
+            print_test "SQLite credential count" "PASS" "$credential_count credentials"
         else
-            print_test "Credential count" "WARN" "Could not query credential table"
+            print_test "SQLite credential count" "WARN" "Could not query credential table"
         fi
         
         # Test database file size within container

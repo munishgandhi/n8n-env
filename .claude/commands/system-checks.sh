@@ -83,7 +83,7 @@ print_summary() {
 # Main execution
 main() {
     clear
-    echo -e "${BLUE}${ROCKET} VC-MGR System Validation ${ROCKET}${NC}"
+    echo -e "${BLUE}${ROCKET} n8n Environment System Validation ${ROCKET}${NC}"
     echo -e "${CYAN}Interactive comprehensive system check${NC}"
     echo -e "${CYAN}$(date)${NC}\n"
     
@@ -106,14 +106,12 @@ main() {
     test_port_availability  
     test_service_endpoints
     
-    source "$MODULES_DIR/system-check-notion.sh"
-    test_notion_api
+    # Notion API test removed - not needed in n8n-env
     
-    source "$MODULES_DIR/system-check-n8n-workflow.sh"
+    source "$MODULES_DIR/system-check-n8n.sh"
     test_n8n_workflow
     
-    source "$MODULES_DIR/system-check-gmail.sh"
-    test_gmail_api
+    # Gmail test removed - not needed in n8n-env
     
     source "$MODULES_DIR/system-check-sqlite.sh"
     test_sqlite_database

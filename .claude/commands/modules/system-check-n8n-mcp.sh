@@ -11,6 +11,11 @@ source "$SCRIPT_DIR/shared-functions.sh"
 test_mcp_server() {
     print_section "${GEAR} MCP Server Connectivity"
     
+    # Load environment if not already loaded (for standalone testing)
+    if [ -z "$N8N_MCP_AUTH_TOKEN" ] && [ -f "$(git rev-parse --show-toplevel)/.env" ]; then
+        source "$(git rev-parse --show-toplevel)/.env"
+    fi
+    
     # Test MCP health endpoint (proper way)
     if run_test_command "curl -f http://localhost:3001/health" 5; then
         local health_response=$(curl -s http://localhost:3001/health 2>/dev/null)
