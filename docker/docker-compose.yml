@@ -18,7 +18,7 @@ services:
       # Ollama connection via Windows host
       - OLLAMA_BASE_URL=http://host.docker.internal:11434
     volumes:
-      - n8n_data:/home/node/.n8n
+      - vc-mgr_n8n_data:/home/node/.n8n
     depends_on:
       - redis
 
@@ -27,7 +27,7 @@ services:
     container_name: n8n_redis
     restart: unless-stopped
     volumes:
-      - redis_data:/data
+      - vc-mgr_redis_data:/data
 
   n8n-mcp:
     image: ghcr.io/czlonkowski/n8n-mcp:latest
@@ -56,7 +56,7 @@ services:
       - N8N_API_TIMEOUT=30000
       - N8N_API_MAX_RETRIES=3
     volumes:
-      - n8n_mcp_data:/app/data
+      - vc-mgr_n8n_mcp_data:/app/data
     depends_on:
       - n8n
     healthcheck:
@@ -79,7 +79,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - n8n_data:/data
+      - vc-mgr_n8n_data:/data
     environment:
       - SQLITE_DATABASE=/data/database.sqlite
     depends_on:
@@ -92,14 +92,18 @@ services:
     ports:
       - "3000:8080"
     volumes:
-      - open_webui_data:/app/backend/data
+      - vc-mgr_open_webui_data:/app/backend/data
     environment:
       - OLLAMA_BASE_URL=http://host.docker.internal:11434
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
 volumes:
-  n8n_data:
-  redis_data:
-  n8n_mcp_data:
-  open_webui_data:
+  vc-mgr_n8n_data:
+    external: true
+  vc-mgr_redis_data:
+    external: true
+  vc-mgr_n8n_mcp_data:
+    external: true
+  vc-mgr_open_webui_data:
+    external: true
