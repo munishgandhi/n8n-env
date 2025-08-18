@@ -1,0 +1,247 @@
+{
+  "active": false,
+  "connections": {
+    "Start: Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Query: Backlog Database (Gmail Date + Status)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query: Backlog Database (Gmail Date + Status)": {
+      "main": [
+        [
+          {
+            "node": "Core: Determine Next Date Algorithm",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Core: Determine Next Date Algorithm": {
+      "main": [
+        [
+          {
+            "node": "Route: Create vs Warning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route: Create vs Warning": {
+      "main": [
+        [
+          {
+            "node": "Create: New Backlog Entry",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Output: Warning Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create: New Backlog Entry": {
+      "main": [
+        [
+          {
+            "node": "Output: Success Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-29T22:24:24.876Z",
+  "id": "sQeLIjSL3TCycvSh",
+  "isArchived": true,
+  "meta": null,
+  "name": "BAK: Backlog Creator > Workflow-01 > Create next processing date v20250718-191121 copy",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "c14b983a-02ac-4290-bfb6-2d868799fccc",
+      "name": "Start: Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        200,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ALGORITHM: Determine Next Date to Process\n// Handle different input formats from n8n Notion node\nlet entries = [];\n\n// Try different ways to access the data\nif (Array.isArray($json)) {\n  entries = $json;\n} else if ($json.results && Array.isArray($json.results)) {\n  entries = $json.results;\n} else if ($input && $input.all) {\n  entries = $input.all().map(item => item.json);\n} else {\n  entries = [$json].filter(item => item && typeof item === 'object');\n}\n\nconsole.log(`📊 Found ${entries.length} backlog entries`);\nif (entries.length > 0) {\n  console.log(`📋 First entry structure:`, JSON.stringify(entries[0], null, 2));\n}\n\n// Helper function: get current Eastern time date\nfunction getEasternDate() {\n  const now = new Date();\n  // Eastern time is UTC-5 (standard) or UTC-4 (daylight), use UTC-4 for July\n  const easternOffset = -4 * 60; // minutes\n  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);\n  const easternTime = new Date(utc + (easternOffset * 60000));\n  return easternTime;\n}\n\n// Helper function: format date to YYYY-MM-DD\nfunction formatDate(date) {\n  const year = date.getFullYear();\n  const month = String(date.getMonth() + 1).padStart(2, '0');\n  const day = String(date.getDate()).padStart(2, '0');\n  return `${year}-${month}-${day}`;\n}\n\n// Helper function: get yesterday's date in Eastern time\nfunction getYesterday() {\n  const easternNow = getEasternDate();\n  const yesterday = new Date(easternNow);\n  yesterday.setDate(yesterday.getDate() - 1);\n  return formatDate(yesterday);\n}\n\n// Helper function: add days to date\nfunction addDays(dateStr, days) {\n  if (!dateStr || typeof dateStr !== 'string') {\n    console.log(`⚠️ Invalid date string: ${dateStr}`);\n    return null;\n  }\n  const date = new Date(dateStr + 'T12:00:00'); // Use noon to avoid timezone issues\n  if (isNaN(date.getTime())) {\n    console.log(`⚠️ Cannot parse date: ${dateStr}`);\n    return null;\n  }\n  date.setDate(date.getDate() + days);\n  return formatDate(date);\n}\n\n// Helper function: check if entry has valid data\nfunction isValidEntry(entry) {\n  if (!entry || typeof entry !== 'object') return false;\n  \n  // Check if it has any meaningful properties (specifically Gmail Date or Status)\n  const hasGmailDate = entry.property_gmail_date || \n                      entry.properties?.[\"Gmail Date\"] || \n                      entry.name;\n  const hasStatus = entry.property_status || \n                   entry.properties?.Status;\n  \n  return !!(hasGmailDate || hasStatus || entry.id);\n}\n\n// Filter out empty objects and invalid entries\nconst validEntries = entries.filter(isValidEntry);\n\nconsole.log(`📊 Valid entries after filtering: ${validEntries.length}`);\n\n// Log current Eastern time for debugging\nconst easternNow = getEasternDate();\nconst today = formatDate(easternNow);\nconst yesterday = getYesterday();\nconsole.log(`📅 Current Eastern time: ${easternNow.toISOString()}`);\nconsole.log(`📅 Today (Eastern): ${today}, Yesterday (Eastern): ${yesterday}`);\n\n// STEP 1: If no valid entries exist, return yesterday\nif (validEntries.length === 0) {\n  console.log(`✅ No valid entries found, creating entry for yesterday: ${yesterday}`);\n  return [{\n    json: {\n      action: 'create',\n      nextDate: yesterday,\n      reason: 'No entries exist - starting with yesterday'\n    }\n  }];\n}\n\n// STEP 2: Check ALL entries for incomplete status (CRITICAL FIX)\n// If ANY entry is not complete, block creation\nconst incompleteEntries = validEntries.filter(entry => {\n  const status = entry.property_status || \n                entry.properties?.Status?.select?.name;\n  const date = entry.property_gmail_date || \n              entry.properties?.[\"Gmail Date\"]?.title?.[0]?.text?.content ||\n              entry.name;\n  \n  console.log(`📋 Entry ${date}: status = ${status}`);\n  return status && status !== 'complete';\n});\n\nif (incompleteEntries.length > 0) {\n  const incompleteInfo = incompleteEntries.map(entry => {\n    const status = entry.property_status || \n                  entry.properties?.Status?.select?.name;\n    const date = entry.property_gmail_date || \n                entry.properties?.[\"Gmail Date\"]?.title?.[0]?.text?.content ||\n                entry.name;\n    return `${date}(${status})`;\n  }).join(', ');\n  \n  console.log(`⚠️  Found ${incompleteEntries.length} incomplete entries: ${incompleteInfo}`);\n  return [{\n    json: {\n      action: 'warning',\n      message: `Cannot create new entries - ${incompleteEntries.length} entries are not complete: ${incompleteInfo}`,\n      incompleteCount: incompleteEntries.length,\n      incompleteEntries: incompleteInfo\n    }\n  }];\n}\n\n// STEP 3: All entries are complete - proceed with date logic\nconsole.log(`✅ All entries are complete - proceeding with date logic`);\n\n// Get latest entry for date calculation\nconst latestEntry = validEntries[0];\nconst latestDate = latestEntry.property_gmail_date || \n                  latestEntry.properties?.[\"Gmail Date\"]?.title?.[0]?.text?.content ||\n                  latestEntry.name;\n\nconsole.log(`📋 Latest complete entry: ${latestDate}`);\n\n// STEP 4: Find earliest missing date (gap finding)\n// Get all dates and sort them\nconst allDates = validEntries\n  .map(entry => {\n    return entry.property_gmail_date || \n           entry.properties?.[\"Gmail Date\"]?.title?.[0]?.text?.content ||\n           entry.name;\n  })\n  .filter(date => date && typeof date === 'string' && date.match(/^\\d{4}-\\d{2}-\\d{2}$/))\n  .sort();\n\nconsole.log(`📅 All valid dates: ${allDates.join(', ')}`);\n\n// Find the first gap\nfor (let i = 0; i < allDates.length - 1; i++) {\n  const currentDate = allDates[i];\n  const nextDate = allDates[i + 1];\n  \n  const expectedNext = addDays(currentDate, 1);\n  if (!expectedNext) continue;\n  \n  if (expectedNext !== nextDate) {\n    console.log(`🔍 Found gap: ${currentDate} -> ${nextDate}, missing: ${expectedNext}`);\n    return [{\n      json: {\n        action: 'create',\n        nextDate: expectedNext,\n        reason: `Found gap between ${currentDate} and ${nextDate}`\n      }\n    }];\n  }\n}\n\n// STEP 5: No gaps found, create entry for day before oldest (with existence check)\nconst oldestDate = allDates[allDates.length - 1]; // Since sorted ascending, last is oldest\nlet candidate = addDays(oldestDate, -1);\nif (!candidate) {\n  console.log(`❌ Cannot calculate day before oldest: ${oldestDate}`);\n  return [{\n    json: {\n      action: 'create',\n      nextDate: yesterday,\n      reason: 'Date calculation error - using yesterday'\n    }\n  }];\n}\n\n// Keep going back until we find a date that doesn't exist\nwhile (candidate && allDates.includes(candidate) && candidate >= '2020-01-01') {\n  console.log(`📋 Date ${candidate} already exists, trying day before`);\n  candidate = addDays(candidate, -1);\n}\n\n// Never create today or future dates\nconst nextDate = candidate > yesterday ? yesterday : candidate;\n\nconsole.log(`📆 No gaps found. Oldest: ${oldestDate}, candidate: ${candidate}, yesterday: ${yesterday}`);\nconsole.log(`✅ Creating entry for: ${nextDate}`);\n\nreturn [{\n  json: {\n    action: 'create',\n    nextDate: nextDate,\n    reason: `No gaps found, creating entry for earliest missing date before ${oldestDate}`\n  }\n}];"
+      },
+      "id": "56904140-c767-4608-877b-3979baeae372",
+      "name": "Core: Determine Next Date Algorithm",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "action_is_create",
+              "leftValue": "={{$json.action}}",
+              "rightValue": "create",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ee7aafb5-5a8b-4084-a20f-c5f15eed4c6f",
+      "name": "Route: Create vs Warning",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        860,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "2231db9b-a441-8178-8957-f88a30b0cdba",
+          "mode": "list",
+          "cachedResultName": "vcdb.Backlog.vn8n",
+          "cachedResultUrl": "https://www.notion.so/2231db9ba44181788957f88a30b0cdba"
+        },
+        "title": "={{ $json.nextDate }}",
+        "simple": false,
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Date Started|date",
+              "date": "={{ $now }}",
+              "timezone": "US/Eastern"
+            },
+            {
+              "key": "Status|select",
+              "selectValue": "start"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7c17c120-3cdf-4f6b-a8dd-634318c80a51",
+      "name": "Create: New Backlog Entry",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        40
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// OUTPUT: Return Warning Message\nconst input = $json;\n\nconst result = {\n  success: false,\n  action: 'warning',\n  message: input.message,\n  details: {\n    incompleteCount: input.incompleteCount,\n    incompleteEntries: input.incompleteEntries\n  },\n  timestamp: new Date().toISOString()\n};\n\nconsole.log('⚠️  Backlog Creator Warning:', result.message);\n\nreturn [{ json: result }];"
+      },
+      "id": "bbe172ee-bbc3-4bf6-83c9-b15caf5b28e9",
+      "name": "Output: Warning Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// OUTPUT: Return Success Result\nconst createResult = $input.first().json;\nconst algorithmResult = $('Core: Determine Next Date Algorithm').first().json;\n\nconst result = {\n  success: true,\n  action: 'created',\n  createdDate: algorithmResult.nextDate,\n  reason: algorithmResult.reason,\n  backlogEntryId: createResult.id,\n  timestamp: new Date().toISOString()\n};\n\nconsole.log(`✅ Backlog Creator Success: Created entry for ${result.createdDate}`);\nconsole.log(`📝 Reason: ${result.reason}`);\nconsole.log(`🆔 Entry ID: ${result.backlogEntryId}`);\n\nreturn [{ json: result }];"
+      },
+      "id": "87b2e7ee-d6c1-45e6-a7b7-971692ad64a7",
+      "name": "Output: Success Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "2231db9b-a441-8178-8957-f88a30b0cdba",
+          "mode": "list",
+          "cachedResultName": "vcdb.Backlog.vn8n",
+          "cachedResultUrl": "https://www.notion.so/2231db9ba44181788957f88a30b0cdba"
+        },
+        "options": {
+          "sort": {
+            "sortValue": [
+              {
+                "key": "Gmail Date|title",
+                "direction": "descending"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        140
+      ],
+      "id": "184a7b54-9a94-4de7-aa6d-45a3014623a5",
+      "name": "Query: Backlog Database (Gmail Date + Status)",
+      "alwaysOutputData": true,
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-env",
+  "repo_owner": "munishgandhi",
+  "repo_path": "backup/",
+  "settings": {},
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-31T05:11:19.000Z",
+  "versionId": "d958e262-dc0d-49c5-97b2-8a4ce17b5928"
+}
