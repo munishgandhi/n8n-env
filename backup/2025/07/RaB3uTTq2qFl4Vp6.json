@@ -1,0 +1,64 @@
+{
+  "active": false,
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-07-26T03:53:42.787Z",
+  "id": "RaB3uTTq2qFl4Vp6",
+  "isArchived": false,
+  "meta": null,
+  "name": "Test Simple Workflow v20250725-235342",
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "2",
+      "name": "Set",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ],
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "test",
+              "value": "Hello World"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "pinData": null,
+  "repo_name": "n8n-env",
+  "repo_owner": "munishgandhi",
+  "repo_path": "backup/",
+  "settings": {},
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-07-26T03:53:42.787Z",
+  "versionId": "6754b4f8-c111-428c-b598-089b84ec2bb7"
+}
