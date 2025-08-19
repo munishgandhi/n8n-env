@@ -43,7 +43,7 @@
       "main": [
         [
           {
-            "node": "Basic LLM Chain",
+            "node": "Append a block",
             "type": "main",
             "index": 0
           }
@@ -186,7 +186,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1808,
+        1744,
         608
       ],
       "id": "a85f4588-ee2f-43b2-8df0-feeea0e12417",
@@ -202,7 +202,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2144,
+        2112,
         608
       ],
       "id": "035b4c1c-85c0-4cd9-90a7-9d12eb2e1a66",
@@ -342,7 +342,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        2816,
+        2624,
         384
       ],
       "id": "7806e00f-313f-4652-8365-697e402b40fc",
@@ -374,24 +374,6 @@
       "id": "0781c197-71ee-4e14-9c25-9b587e4d9e58",
       "name": "Schedule Trigger",
       "alwaysOutputData": true
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "=Convert the trnascript bassed on following instruction.\n\n#Instructions\nConvert the transcript into fllowing notion block according to the instructions given for each.\n\n1. Summary (Minutes of Meeting)\n\n3–6 bullets, ~1 line each. Focus on outcomes/decisions, not play‑by‑play.\n\nAdd quick metadata line: “When / Who / Stage / Touchpoint”.\n\n2.Action Items → Owner → Due → Status\n\nBullet list where each item is a compact row:\n• [ ] Action | Owner: {Name/Team} | Due: {YYYY‑MM‑DD} | Priority: {H/M/L}\n\nIf you know the page’s Notion “Owner” people field, mirror it here for visibility.\n\n3. Positive Notes (from client)\n\nShort bullets with bold keyword up front + optional quote:\n• **Feature X** impressed them — “clip” (mm:ss)\n\n4. Negative Notes / Risks\n\nSame style, inverted:\n• **Reporting latency** caused confusion — “clip” (mm:ss)\n\n5. Overall Client Sentiment\n\nOne line + emoji tag: 😀 Positive / 😐 Mixed / ☹️ Negative\n\n(If you can, add a one‑word reason: “Positive — clarity on attribution”)\n\n6. Competitors / Other Vendors Mentioned\n\n• Vendor | Product | Context | Client stance (pro/con/neutral) | “clip” (mm:ss)\n\n7. Client Feedback / Suggestions\n\n• Suggestion | Impact (H/M/L) | Effort (H/M/L) | Theme (e.g., AdMax, Owner360)\n8. Extra information\n\nIf any other inportant iformation needs to be highlighted.",
-        "hasOutputParser": true,
-        "batching": {
-          "batchSize": 1
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.chainLlm",
-      "typeVersion": 1.7,
-      "position": [
-        2576,
-        384
-      ],
-      "id": "b954f26e-bbde-408e-85f9-a33ec21e09ed",
-      "name": "Basic LLM Chain"
     }
   ],
   "pinData": {},
@@ -404,6 +386,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-19T11:24:44.000Z",
-  "versionId": "5e6b2fcc-01a2-4e56-9a37-432df0456e2e"
+  "updatedAt": "2025-08-19T12:51:17.000Z",
+  "versionId": "0c0dd984-7089-4e8d-9b08-fd76e5fb1fb2"
 }
