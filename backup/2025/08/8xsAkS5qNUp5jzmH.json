@@ -1,11 +1,6 @@
 {
   "active": false,
   "connections": {
-    "Start": {
-      "main": [
-        []
-      ]
-    },
     "Get Meeting Pages from Notion": {
       "main": [
         [
@@ -48,7 +43,7 @@
       "main": [
         [
           {
-            "node": "Append a block",
+            "node": "Basic LLM Chain",
             "type": "main",
             "index": 0
           }
@@ -104,7 +99,7 @@
         []
       ]
     },
-    "Notion Trigger": {
+    "Schedule Trigger": {
       "main": [
         [
           {
@@ -125,17 +120,6 @@
   "name": "Add trnascript trigger",
   "nodes": [
     {
-      "parameters": {},
-      "id": "dd779186-9383-4dda-b946-95efcb28ca0c",
-      "name": "Start",
-      "position": [
-        0,
-        512
-      ],
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1
-    },
-    {
       "parameters": {
         "resource": "databasePage",
         "operation": "getAll",
@@ -152,12 +136,6 @@
         "filters": {
           "conditions": [
             {
-              "key": "n8n|formula",
-              "condition": "equals",
-              "returnType": "text",
-              "textValue": "n8n trigger"
-            },
-            {
               "key": "Status|status",
               "condition": "does_not_equal",
               "statusValue": "Cancel"
@@ -173,13 +151,13 @@
               "statusValue": "Upcoming Meeting"
             },
             {
-              "key": "GDrive Transcript URL|url",
-              "condition": "is_not_empty"
+              "key": "Meeting Date|date",
+              "condition": "after",
+              "date": "2025-08-14T00:00:00"
             },
             {
-              "key": "Meeting Date|date",
-              "condition": "on_or_after",
-              "date": "2025-08-15T00:00:00"
+              "key": "GDrive Transcript URL|url",
+              "condition": "is_not_empty"
             }
           ]
         },
@@ -188,7 +166,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        528,
+        480,
         512
       ],
       "id": "1e7ab268-e209-46c5-909f-72ad6de9c1e0",
@@ -208,7 +186,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1600,
+        1808,
         608
       ],
       "id": "a85f4588-ee2f-43b2-8df0-feeea0e12417",
@@ -224,7 +202,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1936,
+        2144,
         608
       ],
       "id": "035b4c1c-85c0-4cd9-90a7-9d12eb2e1a66",
@@ -242,7 +220,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        2160,
+        2368,
         384
       ],
       "id": "af413440-20e8-43fe-b3e7-f31d6a1a3161",
@@ -262,7 +240,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        928,
+        1136,
         608
       ],
       "id": "818ddaca-df9a-483c-8f81-7cbed942910e",
@@ -283,7 +261,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        1296,
+        1504,
         608
       ],
       "id": "999fc402-6bac-45f5-8a05-83ef38e8290b",
@@ -310,7 +288,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        1072,
+        1280,
         368
       ],
       "id": "883eb050-d6d2-498b-aa69-30f98f0089a7",
@@ -339,7 +317,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1504,
+        1712,
         368
       ],
       "id": "0526b545-ea16-47ee-b621-c6cef039e2df",
@@ -364,7 +342,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        2400,
+        2816,
         384
       ],
       "id": "7806e00f-313f-4652-8365-697e402b40fc",
@@ -379,37 +357,41 @@
     },
     {
       "parameters": {
-        "pollTimes": {
-          "item": [
+        "rule": {
+          "interval": [
             {
-              "mode": "everyHour"
+              "field": "minutes"
             }
           ]
-        },
-        "event": "pagedUpdatedInDatabase",
-        "databaseId": {
-          "__rl": true,
-          "value": "f22d8083-6d1d-4759-a1c0-c133a4cce8c9",
-          "mode": "list",
-          "cachedResultName": "DB.Client Meeting Diary",
-          "cachedResultUrl": "https://www.notion.so/f22d80836d1d4759a1c0c133a4cce8c9"
         }
       },
-      "type": "n8n-nodes-base.notionTrigger",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
       "position": [
         208,
         512
       ],
-      "id": "e0b4ad26-a47a-40d5-8cc2-6f18b352a3a5",
-      "name": "Notion Trigger",
-      "alwaysOutputData": true,
-      "credentials": {
-        "notionApi": {
-          "id": "1irJTXhoFNvETAJ1",
-          "name": "Notion account 2"
+      "id": "0781c197-71ee-4e14-9c25-9b587e4d9e58",
+      "name": "Schedule Trigger",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Convert the trnascript bassed on following instruction.\n\n#Instructions\nConvert the transcript into fllowing notion block according to the instructions given for each.\n\n1. Summary (Minutes of Meeting)\n\n3–6 bullets, ~1 line each. Focus on outcomes/decisions, not play‑by‑play.\n\nAdd quick metadata line: “When / Who / Stage / Touchpoint”.\n\n2.Action Items → Owner → Due → Status\n\nBullet list where each item is a compact row:\n• [ ] Action | Owner: {Name/Team} | Due: {YYYY‑MM‑DD} | Priority: {H/M/L}\n\nIf you know the page’s Notion “Owner” people field, mirror it here for visibility.\n\n3. Positive Notes (from client)\n\nShort bullets with bold keyword up front + optional quote:\n• **Feature X** impressed them — “clip” (mm:ss)\n\n4. Negative Notes / Risks\n\nSame style, inverted:\n• **Reporting latency** caused confusion — “clip” (mm:ss)\n\n5. Overall Client Sentiment\n\nOne line + emoji tag: 😀 Positive / 😐 Mixed / ☹️ Negative\n\n(If you can, add a one‑word reason: “Positive — clarity on attribution”)\n\n6. Competitors / Other Vendors Mentioned\n\n• Vendor | Product | Context | Client stance (pro/con/neutral) | “clip” (mm:ss)\n\n7. Client Feedback / Suggestions\n\n• Suggestion | Impact (H/M/L) | Effort (H/M/L) | Theme (e.g., AdMax, Owner360)\n8. Extra information\n\nIf any other inportant iformation needs to be highlighted.",
+        "hasOutputParser": true,
+        "batching": {
+          "batchSize": 1
         }
-      }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        2576,
+        384
+      ],
+      "id": "b954f26e-bbde-408e-85f9-a33ec21e09ed",
+      "name": "Basic LLM Chain"
     }
   ],
   "pinData": {},
@@ -422,6 +404,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-19T08:31:26.000Z",
-  "versionId": "0c11c24c-227f-4497-9b5f-507c5e9be468"
+  "updatedAt": "2025-08-19T11:24:44.000Z",
+  "versionId": "5e6b2fcc-01a2-4e56-9a37-432df0456e2e"
 }
