@@ -99,11 +99,6 @@
         []
       ]
     },
-    "Start": {
-      "main": [
-        []
-      ]
-    },
     "Notion Trigger": {
       "main": [
         [
@@ -175,7 +170,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        528,
+        464,
         512
       ],
       "id": "968e1bae-1f59-43b8-bcfc-587bee5ced9b",
@@ -365,17 +360,6 @@
       }
     },
     {
-      "parameters": {},
-      "id": "59738595-cac8-47a5-9355-0255cfad5119",
-      "name": "Start",
-      "position": [
-        0,
-        512
-      ],
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1
-    },
-    {
       "parameters": {
         "pollTimes": {
           "item": [
@@ -421,6 +405,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-19T07:11:10.000Z",
-  "versionId": "237b9003-90e6-478f-9dec-4abca8eed669"
+  "updatedAt": "2025-08-19T08:27:18.000Z",
+  "versionId": "3bbb918f-a6d7-4fbc-a535-bc1482158d60"
 }
