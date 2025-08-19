@@ -3,13 +3,7 @@
   "connections": {
     "Start": {
       "main": [
-        [
-          {
-            "node": "Get Meeting Pages from Notion",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Get Meeting Pages from Notion": {
@@ -109,6 +103,17 @@
       "main": [
         []
       ]
+    },
+    "Notion Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Meeting Pages from Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-08-19T07:07:38.167Z",
@@ -147,8 +152,10 @@
         "filters": {
           "conditions": [
             {
-              "key": "Meeting Date|date",
-              "condition": "past_week"
+              "key": "n8n|formula",
+              "condition": "equals",
+              "returnType": "text",
+              "textValue": "n8n trigger"
             },
             {
               "key": "Status|status",
@@ -170,9 +177,9 @@
               "condition": "is_not_empty"
             },
             {
-              "key": "Meeting Subject|title",
-              "condition": "does_not_equal",
-              "titleValue": "Check In Westhome.2025.08.14 HALO Focused"
+              "key": "Meeting Date|date",
+              "condition": "on_or_after",
+              "date": "2025-08-15T00:00:00"
             }
           ]
         },
@@ -181,7 +188,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        320,
+        528,
         512
       ],
       "id": "1e7ab268-e209-46c5-909f-72ad6de9c1e0",
@@ -201,7 +208,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1392,
+        1600,
         608
       ],
       "id": "a85f4588-ee2f-43b2-8df0-feeea0e12417",
@@ -217,7 +224,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1728,
+        1936,
         608
       ],
       "id": "035b4c1c-85c0-4cd9-90a7-9d12eb2e1a66",
@@ -235,7 +242,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1952,
+        2160,
         384
       ],
       "id": "af413440-20e8-43fe-b3e7-f31d6a1a3161",
@@ -255,7 +262,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        720,
+        928,
         608
       ],
       "id": "818ddaca-df9a-483c-8f81-7cbed942910e",
@@ -276,7 +283,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        1088,
+        1296,
         608
       ],
       "id": "999fc402-6bac-45f5-8a05-83ef38e8290b",
@@ -303,7 +310,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        864,
+        1072,
         368
       ],
       "id": "883eb050-d6d2-498b-aa69-30f98f0089a7",
@@ -332,7 +339,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1296,
+        1504,
         368
       ],
       "id": "0526b545-ea16-47ee-b621-c6cef039e2df",
@@ -357,11 +364,45 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        2192,
+        2400,
         384
       ],
       "id": "7806e00f-313f-4652-8365-697e402b40fc",
       "name": "Append a block",
+      "alwaysOutputData": true,
+      "credentials": {
+        "notionApi": {
+          "id": "1irJTXhoFNvETAJ1",
+          "name": "Notion account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        },
+        "event": "pagedUpdatedInDatabase",
+        "databaseId": {
+          "__rl": true,
+          "value": "f22d8083-6d1d-4759-a1c0-c133a4cce8c9",
+          "mode": "list",
+          "cachedResultName": "DB.Client Meeting Diary",
+          "cachedResultUrl": "https://www.notion.so/f22d80836d1d4759a1c0c133a4cce8c9"
+        }
+      },
+      "type": "n8n-nodes-base.notionTrigger",
+      "typeVersion": 1,
+      "position": [
+        208,
+        512
+      ],
+      "id": "e0b4ad26-a47a-40d5-8cc2-6f18b352a3a5",
+      "name": "Notion Trigger",
       "alwaysOutputData": true,
       "credentials": {
         "notionApi": {
@@ -381,6 +422,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-19T07:07:38.167Z",
-  "versionId": "4ac53b36-e634-4084-b63c-1ddb5d3ed204"
+  "updatedAt": "2025-08-19T08:31:26.000Z",
+  "versionId": "0c11c24c-227f-4497-9b5f-507c5e9be468"
 }
