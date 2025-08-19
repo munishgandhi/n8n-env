@@ -1,17 +1,6 @@
 {
   "active": false,
   "connections": {
-    "Start": {
-      "main": [
-        [
-          {
-            "node": "Get Meeting Pages from Notion",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get Meeting Pages from Notion": {
       "main": [
         [
@@ -109,6 +98,22 @@
       "main": [
         []
       ]
+    },
+    "Start": {
+      "main": [
+        []
+      ]
+    },
+    "Notion Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Meeting Pages from Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-08-13T11:00:46.927Z",
@@ -120,17 +125,6 @@
   "name": "Add Transcript",
   "nodes": [
     {
-      "parameters": {},
-      "id": "59738595-cac8-47a5-9355-0255cfad5119",
-      "name": "Start",
-      "position": [
-        0,
-        512
-      ],
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1
-    },
-    {
       "parameters": {
         "resource": "databasePage",
         "operation": "getAll",
@@ -141,7 +135,7 @@
           "cachedResultName": "DB.Client Meeting Diary",
           "cachedResultUrl": "https://www.notion.so/f22d80836d1d4759a1c0c133a4cce8c9"
         },
-        "returnAll": true,
+        "limit": 2,
         "filterType": "manual",
         "matchType": "allFilters",
         "filters": {
@@ -181,7 +175,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        320,
+        528,
         512
       ],
       "id": "968e1bae-1f59-43b8-bcfc-587bee5ced9b",
@@ -201,7 +195,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1392,
+        1600,
         608
       ],
       "id": "ab0fe015-2bd5-4f37-89e9-7327aebcdbed",
@@ -217,7 +211,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1728,
+        1936,
         608
       ],
       "id": "5b6c9c96-73d2-4b16-9c15-62c4978f4238",
@@ -235,7 +229,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1952,
+        2160,
         384
       ],
       "id": "9a9ef0cf-9fee-4c87-8a88-1cfb2299196d",
@@ -255,7 +249,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        720,
+        928,
         608
       ],
       "id": "d1498b0e-6536-465b-9646-8784b5be6d96",
@@ -276,7 +270,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        1088,
+        1296,
         608
       ],
       "id": "93aac9e8-ca2f-46ff-b23d-1b9f2eba37d2",
@@ -303,7 +297,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        864,
+        1072,
         368
       ],
       "id": "b61eb314-11c5-4499-9222-a8a8e875458a",
@@ -332,7 +326,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1296,
+        1504,
         368
       ],
       "id": "fe120033-3c6a-4f9f-ad66-9facfdd26b82",
@@ -357,11 +351,57 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        2192,
+        2400,
         384
       ],
       "id": "d2c316e0-0898-4eba-b190-98530e3fac74",
       "name": "Append a block",
+      "alwaysOutputData": true,
+      "credentials": {
+        "notionApi": {
+          "id": "1irJTXhoFNvETAJ1",
+          "name": "Notion account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "59738595-cac8-47a5-9355-0255cfad5119",
+      "name": "Start",
+      "position": [
+        0,
+        512
+      ],
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "event": "pagedUpdatedInDatabase",
+        "databaseId": {
+          "__rl": true,
+          "value": "f22d8083-6d1d-4759-a1c0-c133a4cce8c9",
+          "mode": "list",
+          "cachedResultName": "DB.Client Meeting Diary",
+          "cachedResultUrl": "https://www.notion.so/f22d80836d1d4759a1c0c133a4cce8c9"
+        },
+        "simple": false
+      },
+      "type": "n8n-nodes-base.notionTrigger",
+      "typeVersion": 1,
+      "position": [
+        208,
+        512
+      ],
+      "id": "47771521-d11f-4ea5-92f9-91491a895f4b",
+      "name": "Notion Trigger",
       "alwaysOutputData": true,
       "credentials": {
         "notionApi": {
@@ -381,6 +421,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-16T02:19:06.000Z",
-  "versionId": "65c071ab-75b7-43c3-a14f-c531ed16157f"
+  "updatedAt": "2025-08-19T07:11:10.000Z",
+  "versionId": "237b9003-90e6-478f-9dec-4abca8eed669"
 }
