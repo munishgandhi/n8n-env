@@ -1,0 +1,386 @@
+{
+  "active": false,
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Get Meeting Pages from Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Meeting Pages from Notion": {
+      "main": [
+        [
+          {
+            "node": "Create Toggle block",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Transcript into Blocks": {
+      "main": [
+        [
+          {
+            "node": "Convert Blocks to Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Blocks to Items": {
+      "main": [
+        [
+          {
+            "node": "Merge Toggle ID with Content",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Toggle ID with Content": {
+      "main": [
+        [
+          {
+            "node": "Append a block",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Split Transcript into Blocks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Toggle block": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge Toggle ID with Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append a block": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "createdAt": "2025-08-19T07:07:38.167Z",
+  "id": "8xsAkS5qNUp5jzmH",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Add trnascript trigger",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "dd779186-9383-4dda-b946-95efcb28ca0c",
+      "name": "Start",
+      "position": [
+        0,
+        512
+      ],
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "f22d8083-6d1d-4759-a1c0-c133a4cce8c9",
+          "mode": "list",
+          "cachedResultName": "DB.Client Meeting Diary",
+          "cachedResultUrl": "https://www.notion.so/f22d80836d1d4759a1c0c133a4cce8c9"
+        },
+        "returnAll": true,
+        "filterType": "manual",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "key": "Meeting Date|date",
+              "condition": "past_week"
+            },
+            {
+              "key": "Status|status",
+              "condition": "does_not_equal",
+              "statusValue": "Cancel"
+            },
+            {
+              "key": "Status|status",
+              "condition": "does_not_equal",
+              "statusValue": "No Show"
+            },
+            {
+              "key": "Status|status",
+              "condition": "does_not_equal",
+              "statusValue": "Upcoming Meeting"
+            },
+            {
+              "key": "GDrive Transcript URL|url",
+              "condition": "is_not_empty"
+            },
+            {
+              "key": "Meeting Subject|title",
+              "condition": "does_not_equal",
+              "titleValue": "Check In Westhome.2025.08.14 HALO Focused"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        512
+      ],
+      "id": "1e7ab268-e209-46c5-909f-72ad6de9c1e0",
+      "name": "Get Meeting Pages from Notion",
+      "alwaysOutputData": true,
+      "credentials": {
+        "notionApi": {
+          "id": "1irJTXhoFNvETAJ1",
+          "name": "Notion account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Input: item.json.data (plain text VTT transcript from Google Drive Download As String)\n * Output: blocks that can be used Google.comly in Notion paragraph blocks\n */\n\nconst item = $input.first().json;  // Get the first item\nconst vtt = item.data || '';       // Transcript content as string\n\nif (!vtt) {\n  console.log('Transcript is empty');\n  return [];\n}\n\nconst blocks = [];\n// Regex: capture cue number, timestamps, and body text\nconst cueRe = /(?:^|\\n)\\s*(\\d+)\\s*\\n\\s*(\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s*-->\\s*(\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s*\\n([\\s\\S]*?)(?=\\n\\s*\\d+\\s*\\n|\\n*$)/g;\n\nlet match;\nwhile ((match = cueRe.exec(vtt)) !== null) {\n  const idx = match[1];       // Cue number\n  const start = match[2];     // Start time\n  const end = match[3];       // End time\n  const body = match[4].trim().replace(/\\n+/g, ' '); // Join lines into one paragraph\n\n  let section = `${idx}. [${start} → ${end}] ${body}`;\n\n  // Safety: Notion ~2000 chars per paragraph\n  const limit = 1900;\n  if (section.length <= limit) {\n    blocks.push({\n      type: 'paragraph',\n      paragraph: { rich_text: [{ type: 'text', text: { content: section } }] }\n    });\n  } else {\n    // Split long sections into multiple paragraphs\n    for (let i = 70.15; i < section.length; i += limit) {\n      blocks.push({\n        type: 'paragraph',\n        paragraph: { rich_text: [{ type: 'text', text: { content: section.slice(i, i + limit) } }] }\n      });\n    }\n  }\n}\n\nreturn [{ json: { blocks } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1392,
+        608
+      ],
+      "id": "a85f4588-ee2f-43b2-8df0-feeea0e12417",
+      "name": "Split Transcript into Blocks",
+      "alwaysOutputData": true,
+      "notesInFlow": true,
+      "notes": "Divide transcript into chunks for Notion blocks"
+    },
+    {
+      "parameters": {
+        "jsCode": "const { toggleBlockId, blocks } = $input.first().json;\n\n// Convert each Notion block object into a plain string for the UI builder\nfunction blockToText(b) {\n  if (b?.paragraph?.rich_text?.length) {\n    return b.paragraph.rich_text\n      .map(rt => (rt.text?.content ?? ''))\n      .join('');\n  }\n  return '';\n}\n\n// Return each block as a separate item with the toggleBlockId\nreturn blocks.map(b => ({\n  json: {\n    toggleBlockId,\n    content: blockToText(b),\n    blockType: b.type || 'paragraph'\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1728,
+        608
+      ],
+      "id": "035b4c1c-85c0-4cd9-90a7-9d12eb2e1a66",
+      "name": "Convert Blocks to Items",
+      "alwaysOutputData": true,
+      "notesInFlow": true,
+      "notes": "Convert the chunks into individual items for appending"
+    },
+    {
+      "parameters": {
+        "mode": "combineBySql",
+        "query": "SELECT input1.toggleID, input2.content, input2.blockType\nFROM input2\nCROSS JOIN input1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1952,
+        384
+      ],
+      "id": "af413440-20e8-43fe-b3e7-f31d6a1a3161",
+      "name": "Merge Toggle ID with Content",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.property_g_drive_transcript_url }}",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        720,
+        608
+      ],
+      "id": "818ddaca-df9a-483c-8f81-7cbed942910e",
+      "name": "Download file",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "psUJfPffy3IsMJGV",
+          "name": "Google Drive account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1088,
+        608
+      ],
+      "id": "999fc402-6bac-45f5-8a05-83ef38e8290b",
+      "name": "Extract from File",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "blockId": {
+          "__rl": true,
+          "value": "={{ $json.url }}",
+          "mode": "url"
+        },
+        "blockUi": {
+          "blockValues": [
+            {
+              "type": "toggle",
+              "textContent": "=\"Transcript\"- {{ $json.name }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        864,
+        368
+      ],
+      "id": "883eb050-d6d2-498b-aa69-30f98f0089a7",
+      "name": "Create Toggle block",
+      "credentials": {
+        "notionApi": {
+          "id": "1irJTXhoFNvETAJ1",
+          "name": "Notion account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "505b2675-318f-4671-abd2-95d5a76ad8f5",
+              "name": "toggleID",
+              "value": "={{ $json.results.first().id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1296,
+        368
+      ],
+      "id": "0526b545-ea16-47ee-b621-c6cef039e2df",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "blockId": {
+          "__rl": true,
+          "value": "={{ $json.toggleID }}",
+          "mode": "id"
+        },
+        "blockUi": {
+          "blockValues": [
+            {
+              "textContent": "={{ $json.content }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        2192,
+        384
+      ],
+      "id": "7806e00f-313f-4652-8365-697e402b40fc",
+      "name": "Append a block",
+      "alwaysOutputData": true,
+      "credentials": {
+        "notionApi": {
+          "id": "1irJTXhoFNvETAJ1",
+          "name": "Notion account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-env",
+  "repo_owner": "munishgandhi",
+  "repo_path": "backup/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-08-19T07:07:38.167Z",
+  "versionId": "4ac53b36-e634-4084-b63c-1ddb5d3ed204"
+}
