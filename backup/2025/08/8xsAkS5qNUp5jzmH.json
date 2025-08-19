@@ -65,7 +65,7 @@
       "main": [
         [
           {
-            "node": "Split Transcript into Blocks",
+            "node": "Basic LLM Chain",
             "type": "main",
             "index": 0
           }
@@ -105,6 +105,28 @@
           {
             "node": "Get Meeting Pages from Notion",
             "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Split Transcript into Blocks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -186,7 +208,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1744,
+        1952,
         608
       ],
       "id": "a85f4588-ee2f-43b2-8df0-feeea0e12417",
@@ -202,7 +224,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2112,
+        2320,
         608
       ],
       "id": "035b4c1c-85c0-4cd9-90a7-9d12eb2e1a66",
@@ -220,7 +242,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        2368,
+        2576,
         384
       ],
       "id": "af413440-20e8-43fe-b3e7-f31d6a1a3161",
@@ -342,7 +364,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        2624,
+        2832,
         384
       ],
       "id": "7806e00f-313f-4652-8365-697e402b40fc",
@@ -374,6 +396,47 @@
       "id": "0781c197-71ee-4e14-9c25-9b587e4d9e58",
       "name": "Schedule Trigger",
       "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a meeting analyst for Hyly.AI. Rewrite the transcript into this exact Notion-friendly layout and output ONLY markdown (no prose before/after):\n\n### 1. Summary (Minutes of Meeting)\n- …\n\n### 2. Action Items → Owner → Due\n- [ ] Task | Owner: … | Due: YYYY-MM-DD\n\n### 3. Positive Notes (from client)\n- …\n\n### 4. Negative Notes / Risks\n- …\n\n### 5. Overall Client Sentiment\n😀/😐/☹️ — one-line reason\n\n### 6. Competitors / Other Vendors Mentioned\n- Vendor | Product | Context | Stance\n\n### 7. Client Feedback / Suggestions\n",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1712,
+        608
+      ],
+      "id": "5b945f98-6f53-4978-bbac-4dad61a7daac",
+      "name": "Basic LLM Chain",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1600,
+        816
+      ],
+      "id": "1be7f3d8-634c-4cca-9d8c-4763f12eeada",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "n9CzOlPm3NauPLzl",
+          "name": "OpenAi account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -386,6 +449,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-19T12:51:17.000Z",
-  "versionId": "0c0dd984-7089-4e8d-9b08-fd76e5fb1fb2"
+  "updatedAt": "2025-08-19T14:28:47.000Z",
+  "versionId": "d30593d5-d9ca-41ac-b28e-7320e49a8056"
 }
