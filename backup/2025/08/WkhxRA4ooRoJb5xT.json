@@ -1,0 +1,22 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2025-08-19T13:28:33.962Z",
+  "id": "WkhxRA4ooRoJb5xT",
+  "isArchived": false,
+  "meta": null,
+  "name": "Design with AI - Test",
+  "nodes": [],
+  "pinData": {},
+  "repo_name": "n8n-env",
+  "repo_owner": "munishgandhi",
+  "repo_path": "backup/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-08-19T13:29:42.000Z",
+  "versionId": "db24dbef-1b37-42c4-8fb3-d631ccd516cf"
+}
