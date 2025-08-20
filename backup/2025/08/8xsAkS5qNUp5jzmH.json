@@ -10,7 +10,7 @@
             "index": 0
           },
           {
-            "node": "Edit Fields1",
+            "node": "Download file",
             "type": "main",
             "index": 0
           }
@@ -132,23 +132,12 @@
         ]
       ]
     },
-    "Ollama Model": {
+    "Ollama Chat Model": {
       "ai_languageModel": [
         [
           {
             "node": "Basic LLM Chain",
             "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields1": {
-      "main": [
-        [
-          {
-            "node": "Download file",
-            "type": "main",
             "index": 0
           }
         ]
@@ -202,6 +191,11 @@
             {
               "key": "GDrive Transcript URL|url",
               "condition": "is_not_empty"
+            },
+            {
+              "key": "GDrive Transcript URL|url",
+              "condition": "does_not_equal",
+              "urlValue": "=Failed to Upload Transcript to Google Drive"
             }
           ]
         },
@@ -277,7 +271,7 @@
         "fileId": {
           "__rl": true,
           "value": "={{ $json.property_g_drive_transcript_url }}",
-          "mode": "id"
+          "mode": "url"
         },
         "options": {}
       },
@@ -453,35 +447,20 @@
       "parameters": {
         "options": {}
       },
-      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
       "typeVersion": 1,
       "position": [
         1808,
         816
       ],
-      "id": "6e6f5865-cf3f-45db-add2-4d92db45b5d0",
-      "name": "Ollama Model",
+      "id": "2267da97-ef3c-47e0-963f-27db4d9be21b",
+      "name": "Ollama Chat Model",
       "credentials": {
         "ollamaApi": {
           "id": "ByLZ5hKB7z0IGsEx",
           "name": "Ollama account 2"
         }
       }
-    },
-    {
-      "parameters": {
-        "mode": "raw",
-        "jsonOutput": "{{ ($json.property_g_drive_transcript_url || '')\n    .match(/[-\\w]{25,}/)?.[70.15] || '' }}\n\n",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        688,
-        512
-      ],
-      "id": "43ec1239-d058-403f-93dd-7a8f03fba4a2",
-      "name": "Edit Fields1"
     }
   ],
   "pinData": {},
@@ -494,6 +473,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-20T06:25:24.000Z",
-  "versionId": "b8b6402f-678d-4d0c-8151-cd0dfb37fbf6"
+  "updatedAt": "2025-08-20T07:37:26.000Z",
+  "versionId": "2f2dd86a-01c3-420c-b8a4-c9efc30a8a82"
 }
