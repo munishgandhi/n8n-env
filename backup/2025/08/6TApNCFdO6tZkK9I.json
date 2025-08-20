@@ -118,7 +118,7 @@
       "typeVersion": 1.1,
       "position": [
         -608,
-        -548
+        -544
       ],
       "id": "0859504e-0f35-44a9-8256-3325fe98f468",
       "name": "N00: Start"
@@ -138,7 +138,7 @@
       "typeVersion": 2.2,
       "position": [
         -384,
-        -644
+        -640
       ],
       "id": "notion-query-ai-review",
       "name": "N01: Query AI Review Records",
@@ -158,7 +158,7 @@
       "typeVersion": 2,
       "position": [
         -160,
-        -644
+        -640
       ],
       "id": "transform-notion-data",
       "name": "N02: Transform Notion Data"
@@ -178,7 +178,7 @@
       "typeVersion": 1,
       "position": [
         64,
-        -644
+        -640
       ],
       "id": "guidelines-missing-check",
       "name": "Guidelines Missing?"
@@ -192,7 +192,7 @@
       "typeVersion": 1,
       "position": [
         384,
-        -296
+        -304
       ],
       "id": "81f40736-4f7e-43b3-8e8b-928af2f45222",
       "name": "N03: Ollama Model",
@@ -213,7 +213,7 @@
       "typeVersion": 1.7,
       "position": [
         288,
-        -520
+        -528
       ],
       "id": "4d7b6a07-8a53-430e-8064-175df835f230",
       "name": "N04: Basic LLM Chain"
@@ -227,7 +227,7 @@
       "typeVersion": 2,
       "position": [
         688,
-        -644
+        -640
       ],
       "id": "calculate-updates",
       "name": "N05: Calculate Updates"
@@ -264,7 +264,7 @@
       "typeVersion": 2.2,
       "position": [
         912,
-        -644
+        -640
       ],
       "id": "update-notion",
       "name": "N06: Update Notion",
@@ -285,14 +285,83 @@
       "typeVersion": 2,
       "position": [
         -608,
-        -740
+        -736
       ],
       "id": "6c7fe9bc-de8f-4344-bff0-86f317eb1fb8",
       "name": "Webhook",
       "webhookId": "7c7d669d-0fd2-438e-986e-15fe9a30c825"
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "N00: Start": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.hyly.ai",
+            "user-agent": "NotionAutomation",
+            "content-length": "979",
+            "baggage": "sentry-environment=production,sentry-release=0.0.4261,sentry-public_key=529a6d1990e5471d874257842c4f4ad8,sentry-trace_id=3ad4249d369d478686c8cf07ffec98eb",
+            "content-type": "application/json",
+            "sentry-trace": "3ad4249d369d478686c8cf07ffec98eb-a6420cc1074ff6e3",
+            "traceparent": "00-82833423985cae43ea6351e131886887-622e34b7909f90d7-00",
+            "x-forwarded-for": "44.224.156.54",
+            "x-forwarded-host": "n8n.hyly.ai",
+            "x-forwarded-proto": "https",
+            "accept-encoding": "gzip"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "source": {
+              "type": "automation",
+              "automation_id": "24b1db9b-a441-80d2-b236-004d9a618f30",
+              "action_id": "24b1db9b-a441-8059-8e82-005a1110ae9f",
+              "event_id": "03eac82e-847d-4915-ae5d-fbd59a553a0e",
+              "attempt": 1
+            },
+            "data": {
+              "object": "page",
+              "id": "24f1db9b-a441-809e-b9cd-cd83b6be15ee",
+              "created_time": "2025-08-14T22:52:00.000Z",
+              "last_edited_time": "2025-08-19T21:50:00.000Z",
+              "created_by": {
+                "object": "user",
+                "id": "f23cdeec-395e-4a46-9959-436567aae306"
+              },
+              "last_edited_by": {
+                "object": "user",
+                "id": "f23cdeec-395e-4a46-9959-436567aae306"
+              },
+              "cover": null,
+              "icon": null,
+              "parent": {
+                "type": "database_id",
+                "database_id": "2481db9b-a441-802d-a96f-d941ed20fd96"
+              },
+              "archived": false,
+              "in_trash": false,
+              "properties": {
+                "Review Status": {
+                  "id": "ee%3Bd",
+                  "type": "status",
+                  "status": {
+                    "id": "a6f963df-a732-49b0-b701-c1714386a21b",
+                    "name": "AI Review",
+                    "color": "yellow"
+                  }
+                }
+              },
+              "url": "https://www.notion.so/What-is-the-directive-from-your-boss-24f1db9ba441809eb9cdcd83b6be15ee",
+              "public_url": null,
+              "request_id": "84ca909c-b9f1-4cbf-adf5-5d6e20dd539d"
+            }
+          },
+          "webhookUrl": "http://localhost:5678/webhook/7c7d669d-0fd2-438e-986e-15fe9a30c825",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
   "repo_name": "n8n-env",
   "repo_owner": "munishgandhi",
   "repo_path": "backup/",
@@ -302,6 +371,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-13T23:27:31.000Z",
-  "versionId": "935b1d65-59b8-43f9-be98-85a681bd2cf5"
+  "updatedAt": "2025-08-20T23:39:23.000Z",
+  "versionId": "e216ab14-31c6-457a-aab7-592dde76b9b6"
 }
