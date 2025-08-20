@@ -10,7 +10,7 @@
             "index": 0
           },
           {
-            "node": "Download file",
+            "node": "Edit Fields1",
             "type": "main",
             "index": 0
           }
@@ -121,7 +121,18 @@
         ]
       ]
     },
-    "OpenAI Chat Model": {
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Model": {
       "ai_languageModel": [
         [
           {
@@ -132,12 +143,12 @@
         ]
       ]
     },
-    "Structured Output Parser": {
-      "ai_outputParser": [
+    "Edit Fields1": {
+      "main": [
         [
           {
-            "node": "Basic LLM Chain",
-            "type": "ai_outputParser",
+            "node": "Download file",
+            "type": "main",
             "index": 0
           }
         ]
@@ -219,7 +230,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1952,
+        2160,
         608
       ],
       "id": "a85f4588-ee2f-43b2-8df0-feeea0e12417",
@@ -235,7 +246,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2320,
+        2528,
         608
       ],
       "id": "035b4c1c-85c0-4cd9-90a7-9d12eb2e1a66",
@@ -253,7 +264,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        2576,
+        2784,
         384
       ],
       "id": "af413440-20e8-43fe-b3e7-f31d6a1a3161",
@@ -266,14 +277,14 @@
         "fileId": {
           "__rl": true,
           "value": "={{ $json.property_g_drive_transcript_url }}",
-          "mode": "url"
+          "mode": "id"
         },
         "options": {}
       },
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        1136,
+        1344,
         608
       ],
       "id": "818ddaca-df9a-483c-8f81-7cbed942910e",
@@ -294,7 +305,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        1504,
+        1712,
         608
       ],
       "id": "999fc402-6bac-45f5-8a05-83ef38e8290b",
@@ -321,7 +332,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        1280,
+        1488,
         368
       ],
       "id": "883eb050-d6d2-498b-aa69-30f98f0089a7",
@@ -350,7 +361,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1712,
+        1920,
         368
       ],
       "id": "0526b545-ea16-47ee-b621-c6cef039e2df",
@@ -375,7 +386,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        2832,
+        3040,
         384
       ],
       "id": "7806e00f-313f-4652-8365-697e402b40fc",
@@ -418,7 +429,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        1712,
+        1920,
         608
       ],
       "id": "5b945f98-6f53-4978-bbac-4dad61a7daac",
@@ -427,40 +438,50 @@
     },
     {
       "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "gpt-4.1-mini"
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "typeVersion": 1.2,
-      "position": [
-        1600,
-        816
-      ],
-      "id": "1be7f3d8-634c-4cca-9d8c-4763f12eeada",
-      "name": "OpenAI Chat Model",
-      "credentials": {
-        "openAiApi": {
-          "id": "n9CzOlPm3NauPLzl",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "schemaType": "manual"
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        1856,
+        2064,
         816
       ],
       "id": "e81ae52b-94bf-4f2c-960a-7b15d8ff6ff7",
       "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "typeVersion": 1,
+      "position": [
+        1808,
+        816
+      ],
+      "id": "6e6f5865-cf3f-45db-add2-4d92db45b5d0",
+      "name": "Ollama Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "ByLZ5hKB7z0IGsEx",
+          "name": "Ollama account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{{ ($json.property_g_drive_transcript_url || '')\n    .match(/[-\\w]{25,}/)?.[70.15] || '' }}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        688,
+        512
+      ],
+      "id": "43ec1239-d058-403f-93dd-7a8f03fba4a2",
+      "name": "Edit Fields1"
     }
   ],
   "pinData": {},
@@ -473,6 +494,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-20T04:55:02.000Z",
-  "versionId": "90f63acc-3871-4ff0-9aaa-2416cc025bd2"
+  "updatedAt": "2025-08-20T06:25:24.000Z",
+  "versionId": "b8b6402f-678d-4d0c-8151-cd0dfb37fbf6"
 }
