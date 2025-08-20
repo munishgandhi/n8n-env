@@ -65,7 +65,7 @@
       "main": [
         [
           {
-            "node": "Basic LLM Chain",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -110,23 +110,12 @@
         ]
       ]
     },
-    "Basic LLM Chain": {
+    "HTTP Request": {
       "main": [
         [
           {
             "node": "Split Transcript into Blocks",
             "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Ollama Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Basic LLM Chain",
-            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -213,7 +202,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2256,
+        2464,
         608
       ],
       "id": "a85f4588-ee2f-43b2-8df0-feeea0e12417",
@@ -229,7 +218,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2528,
+        2736,
         608
       ],
       "id": "035b4c1c-85c0-4cd9-90a7-9d12eb2e1a66",
@@ -247,7 +236,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        2784,
+        2992,
         384
       ],
       "id": "af413440-20e8-43fe-b3e7-f31d6a1a3161",
@@ -369,7 +358,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        3040,
+        3248,
         384
       ],
       "id": "7806e00f-313f-4652-8365-697e402b40fc",
@@ -404,45 +393,38 @@
     },
     {
       "parameters": {
-        "promptType": "define",
-        "text": "=You are a meeting analyst for Hyly.AI. Rewrite the transcript into this exact Notion-friendly layout and output ONLY markdown (no prose before/after):\n\n### 1. Summary (Minutes of Meeting)\n- …\n\n### 2. Action Items → Owner → Due\n- [ ] Task | Owner: … | Due: YYYY-MM-DD\n\n### 3. Positive Notes (from client)\n- …\n\n### 4. Negative Notes / Risks\n- …\n\n### 5. Overall Client Sentiment\n😀/😐/☹️ — one-line reason\n\n### 6. Competitors / Other Vendors Mentioned\n- Vendor | Product | Context | Stance\n\n### 7. Client Feedback / Suggestions\n\nTRANSCRIPT:\n{{$json.data }}\n",
-        "hasOutputParser": true,
-        "batching": {
-          "batchSize": 5
+        "method": "POST",
+        "url": "=http://192.168.1.3:11434/api/generate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "JSON",
+        "body": "={\n  \"model\": \"llama3:8b\",\n  \"prompt\": \"You are a meeting analyst for Hyly.AI. Rewrite the transcript into this exact Notion-friendly layout and output ONLY markdown:\\n\\n### 1. Summary (Minutes of Meeting)\\n- …\\n\\n### 2. Action Items → Owner → Due\\n- [ ] Task | Owner: … | Due: YYYY-MM-DD\\n\\n### 3. Positive Notes (from client)\\n- …\\n\\n### 4. Negative Notes / Risks\\n- …\\n\\n### 5. Overall Client Sentiment\\n😀/😐/☹️ — one-line reason\\n\\n### 6. Competitors / Other Vendors Mentioned\\n- Vendor | Product | Context | Stance\\n\\n### 7. Client Feedback / Suggestions\\n- …\\n\\n### 8. Full Transcript (cleaned)\\n\\nTRANSCRIPT:\\n{{ $json.data }}\",\n  \"stream\": false\n}\n",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
         }
       },
-      "type": "@n8n/n8n-nodes-langchain.chainLlm",
-      "typeVersion": 1.7,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         1920,
         608
       ],
-      "id": "5b945f98-6f53-4978-bbac-4dad61a7daac",
-      "name": "Basic LLM Chain",
+      "id": "cf920217-7468-4054-9d60-e9eee91ab69a",
+      "name": "HTTP Request",
       "alwaysOutputData": true
-    },
-    {
-      "parameters": {
-        "model": "=llama3:8b",
-        "options": {
-          "temperature": 0.7,
-          "numPredict": 2000
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
-      "typeVersion": 1,
-      "position": [
-        1808,
-        816
-      ],
-      "id": "2267da97-ef3c-47e0-963f-27db4d9be21b",
-      "name": "Ollama Chat Model",
-      "credentials": {
-        "ollamaApi": {
-          "id": "ByLZ5hKB7z0IGsEx",
-          "name": "Ollama account 2"
-        }
-      }
     }
   ],
   "pinData": {},
@@ -455,6 +437,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-20T08:17:45.000Z",
-  "versionId": "299bff25-a243-441a-afb8-1f7a06b812b1"
+  "updatedAt": "2025-08-20T10:23:43.000Z",
+  "versionId": "f841d77f-b5fb-441e-83e4-920d4668bafa"
 }
