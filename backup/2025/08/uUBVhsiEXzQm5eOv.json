@@ -117,7 +117,7 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "name": "Test Notion Block Append v20250821-004603",
+  "name": "Test Notion Block Append v20250821-010303",
   "nodes": [
     {
       "parameters": {},
@@ -188,7 +188,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmOllama",
       "typeVersion": 1,
       "position": [
-        520,
+        528,
         112
       ],
       "id": "b6faef13-9ed1-41eb-98a2-20a52c54f748",
@@ -323,9 +323,10 @@
           "batching": {
             "batch": {
               "batchSize": 1,
-              "batchInterval": 1000
+              "batchInterval": 2000
             }
-          }
+          },
+          "response": {}
         }
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -336,6 +337,7 @@
       ],
       "id": "n07-append-inside-toggle",
       "name": "N07-Append-Inside-Toggle",
+      "retryOnFail": false,
       "credentials": {
         "httpBearerAuth": {
           "id": "Pz2o5fSEYYGuQ4A3",
@@ -362,6 +364,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-21T04:46:03.000Z",
-  "versionId": "fa98b165-cecf-449f-b2e2-4f1a6bee1f1a"
+  "updatedAt": "2025-08-21T05:46:18.000Z",
+  "versionId": "80c3f7f4-6d1b-441b-aafb-6604f3c1591c"
 }
