@@ -10,9 +10,12 @@
             "index": 0
           }
         ]
+      ],
+      "main": [
+        []
       ]
     },
-    "N00a-Manual-Trigger": {
+    "N00 Manual Trigger": {
       "main": [
         [
           {
@@ -109,17 +112,6 @@
       "main": [
         []
       ]
-    },
-    "N00-Manual-Trigger": {
-      "main": [
-        [
-          {
-            "node": "N01-Set-Canonical-Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "createdAt": "2025-08-21T00:45:13.825Z",
@@ -128,8 +120,19 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "name": "Test Notion Block Append v20250821-030836",
+  "name": "Test Notion Block Append v20250821-150500",
   "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -112
+      ],
+      "id": "746a84d7-6e16-472e-baf1-e56e88a265ee",
+      "name": "N00 Manual Trigger"
+    },
     {
       "parameters": {
         "assignments": {
@@ -300,6 +303,7 @@
     {
       "parameters": {
         "resource": "block",
+        "operation": "append",
         "blockId": {
           "__rl": true,
           "mode": "id",
@@ -312,6 +316,13 @@
               "textContent": "={{ $json[$json.type].rich_text[0].text.content }}"
             }
           ]
+        },
+        "options": {
+          "retry": {
+            "enabled": true,
+            "count": 3,
+            "interval": 2000
+          }
         }
       },
       "type": "n8n-nodes-base.notion",
@@ -328,17 +339,6 @@
           "name": "Notion account"
         }
       }
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        0,
-        -112
-      ],
-      "id": "746a84d7-6e16-472e-baf1-e56e88a265ee",
-      "name": "N00-Manual-Trigger"
     }
   ],
   "pinData": {
@@ -359,6 +359,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-21T18:50:41.000Z",
-  "versionId": "d3feed97-fe66-4c4e-a75b-b005da9cb562"
+  "updatedAt": "2025-08-21T19:17:56.125Z",
+  "versionId": "5c4d3ded-ba53-4869-9531-0d017452a414"
 }
