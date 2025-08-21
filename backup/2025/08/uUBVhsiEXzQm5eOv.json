@@ -117,7 +117,7 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "name": "Test Notion Block Append v20250820-223151",
+  "name": "Test Notion Block Append v20250820-233347",
   "nodes": [
     {
       "parameters": {},
@@ -227,8 +227,8 @@
       "name": "N04a-Create-Toggle-Container",
       "credentials": {
         "notionApi": {
-          "id": "YOUR_NOTION_CREDENTIALS",
-          "name": "Notion API"
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
         }
       }
     },
@@ -257,7 +257,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const markdown = $input.first().json.text;\nconst blocks = [];\n\n// Split by lines and process\nconst lines = markdown.split('\\n');\n\nfor (const line of lines) {\n  const trimmed = line.trim();\n  \n  if (!trimmed || trimmed === '---') continue; // Skip empty lines and separators\n  \n  if (trimmed.startsWith('# ')) {\n    blocks.push({ \n      blockType: 'heading_1', \n      textContent: trimmed.substring(2).trim() \n    });\n  } else if (trimmed.startsWith('## ')) {\n    blocks.push({ \n      blockType: 'heading_2', \n      textContent: trimmed.substring(3).trim() \n    });\n  } else if (trimmed.startsWith('### ')) {\n    blocks.push({ \n      blockType: 'heading_3', \n      textContent: trimmed.substring(4).trim() \n    });\n  } else if (trimmed.startsWith('- ')) {\n    blocks.push({ \n      blockType: 'bulleted_list_item', \n      textContent: trimmed.substring(2).trim() \n    });\n  } else if (trimmed.match(/^\\d+\\. /)) {\n    blocks.push({ \n      blockType: 'numbered_list_item', \n      textContent: trimmed.replace(/^\\d+\\. /, '').trim() \n    });\n  } else if (trimmed.startsWith('> ')) {\n    // Blockquotes become styled paragraphs\n    blocks.push({ \n      blockType: 'paragraph', \n      textContent: trimmed.substring(2).trim() \n    });\n  } else if (trimmed.startsWith('|')) {\n    // Table rows become paragraphs\n    blocks.push({ \n      blockType: 'paragraph', \n      textContent: trimmed \n    });\n  } else {\n    // Regular text becomes paragraph\n    blocks.push({ \n      blockType: 'paragraph', \n      textContent: trimmed \n    });\n  }\n}\n\n// Return the array as a field so Split Out can process it\nreturn [{ blocks: blocks }];"
+        "jsCode": "const markdown = $input.first().json.text;\nconst blocks = [];\n\n// Parse markdown formatting to rich text\nfunction parseToRichText(text) {\n  const richTextArray = [];\n  const parts = text.split(/(\\*\\*.*?\\*\\*)/g);\n  \n  parts.forEach(part => {\n    if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {\n      // Bold text\n      richTextArray.push({\n        type: 'text',\n        text: { content: part.slice(2, -2) },\n        annotations: { bold: true }\n      });\n    } else if (part.trim()) {\n      // Regular text\n      richTextArray.push({\n        type: 'text',\n        text: { content: part }\n      });\n    }\n  });\n  \n  return richTextArray;\n}\n\n// Split by lines and process\nconst lines = markdown.split('\\n');\n\nfor (const line of lines) {\n  const trimmed = line.trim();\n  \n  if (!trimmed || trimmed === '---') continue; // Skip empty lines and separators\n  \n  let blockType;\n  let content = trimmed;\n  \n  if (trimmed.startsWith('# ')) {\n    blockType = 'heading_1';\n    content = trimmed.substring(2).trim();\n  } else if (trimmed.startsWith('## ')) {\n    blockType = 'heading_2';\n    content = trimmed.substring(3).trim();\n  } else if (trimmed.startsWith('### ')) {\n    blockType = 'heading_3';\n    content = trimmed.substring(4).trim();\n  } else if (trimmed.startsWith('- ')) {\n    blockType = 'bulleted_list_item';\n    content = trimmed.substring(2).trim();\n  } else if (trimmed.match(/^\\d+\\. /)) {\n    blockType = 'numbered_list_item';\n    content = trimmed.replace(/^\\d+\\. /, '').trim();\n  } else if (trimmed.startsWith('> ')) {\n    // Blockquotes become styled paragraphs\n    blockType = 'paragraph';\n    content = trimmed.substring(2).trim();\n  } else if (trimmed.startsWith('|')) {\n    // Table rows become paragraphs\n    blockType = 'paragraph';\n    content = trimmed;\n  } else {\n    // Regular text becomes paragraph\n    blockType = 'paragraph';\n    content = trimmed;\n  }\n  \n  // Generate blocks with rich text\n  blocks.push({ \n    type: blockType,\n    [blockType]: {\n      rich_text: parseToRichText(content)\n    }\n  });\n}\n\n// Return the array as a field so Split Out can process it\nreturn [{ blocks: blocks }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -284,10 +284,12 @@
     },
     {
       "parameters": {
-        "mode": "mergeByPosition"
+        "mode": "combineBySql",
+        "query": "SELECT input1.toggleId, input2.* FROM input2 CROSS JOIN input1",
+        "options": {}
       },
       "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
+      "typeVersion": 3.2,
       "position": [
         1248,
         -112
@@ -297,23 +299,30 @@
     },
     {
       "parameters": {
-        "resource": "block",
-        "blockId": {
-          "__rl": true,
-          "mode": "id",
-          "value": "={{ $json.toggleId }}"
-        },
-        "blockUi": {
-          "blockValues": [
+        "method": "PATCH",
+        "url": "=https://api.notion.com/v1/blocks/{{ $json.toggleId }}/children",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
             {
-              "type": "={{ $json.blockType }}",
-              "textContent": "={{ $json.textContent }}"
+              "name": "Notion-Version",
+              "value": "2022-06-28"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
             }
           ]
-        }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ children: [{ type: $json.type, [$json.type]: $json[$json.type] }] }) }}",
+        "options": {}
       },
-      "type": "n8n-nodes-base.notion",
-      "typeVersion": 2.2,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         1472,
         -112
@@ -321,9 +330,9 @@
       "id": "n07-append-inside-toggle",
       "name": "N07-Append-Inside-Toggle",
       "credentials": {
-        "notionApi": {
-          "id": "YOUR_NOTION_CREDENTIALS",
-          "name": "Notion API"
+        "httpBearerAuth": {
+          "id": "Pz2o5fSEYYGuQ4A3",
+          "name": "Notion API Bearer Auth"
         }
       }
     }
@@ -346,6 +355,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-21T02:33:46.000Z",
-  "versionId": "393e17f1-65f7-4e3d-a943-a214ddc68ee6"
+  "updatedAt": "2025-08-21T03:33:47.000Z",
+  "versionId": "fa98b165-cecf-449f-b2e2-4f1a6bee1f1a"
 }
