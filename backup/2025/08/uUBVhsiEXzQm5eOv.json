@@ -117,7 +117,7 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "name": "Test Notion Block Append v20250820-233347",
+  "name": "Test Notion Block Append v20250821-004603",
   "nodes": [
     {
       "parameters": {},
@@ -319,7 +319,14 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({ children: [{ type: $json.type, [$json.type]: $json[$json.type] }] }) }}",
-        "options": {}
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 1000
+            }
+          }
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -355,6 +362,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-21T03:33:47.000Z",
+  "updatedAt": "2025-08-21T04:46:03.000Z",
   "versionId": "fa98b165-cecf-449f-b2e2-4f1a6bee1f1a"
 }
