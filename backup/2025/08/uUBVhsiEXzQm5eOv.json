@@ -117,7 +117,7 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "name": "Test Notion Block Append v20250821-010303",
+  "name": "Test Notion Block Append v20250821-025227",
   "nodes": [
     {
       "parameters": {},
@@ -257,7 +257,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const markdown = $input.first().json.text;\nconst blocks = [];\n\n// Parse markdown formatting to rich text\nfunction parseToRichText(text) {\n  const richTextArray = [];\n  const parts = text.split(/(\\*\\*.*?\\*\\*)/g);\n  \n  parts.forEach(part => {\n    if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {\n      // Bold text\n      richTextArray.push({\n        type: 'text',\n        text: { content: part.slice(2, -2) },\n        annotations: { bold: true }\n      });\n    } else if (part.trim()) {\n      // Regular text\n      richTextArray.push({\n        type: 'text',\n        text: { content: part }\n      });\n    }\n  });\n  \n  return richTextArray;\n}\n\n// Split by lines and process\nconst lines = markdown.split('\\n');\n\nfor (const line of lines) {\n  const trimmed = line.trim();\n  \n  if (!trimmed || trimmed === '---') continue; // Skip empty lines and separators\n  \n  let blockType;\n  let content = trimmed;\n  \n  if (trimmed.startsWith('# ')) {\n    blockType = 'heading_1';\n    content = trimmed.substring(2).trim();\n  } else if (trimmed.startsWith('## ')) {\n    blockType = 'heading_2';\n    content = trimmed.substring(3).trim();\n  } else if (trimmed.startsWith('### ')) {\n    blockType = 'heading_3';\n    content = trimmed.substring(4).trim();\n  } else if (trimmed.startsWith('- ')) {\n    blockType = 'bulleted_list_item';\n    content = trimmed.substring(2).trim();\n  } else if (trimmed.match(/^\\d+\\. /)) {\n    blockType = 'numbered_list_item';\n    content = trimmed.replace(/^\\d+\\. /, '').trim();\n  } else if (trimmed.startsWith('> ')) {\n    // Blockquotes become styled paragraphs\n    blockType = 'paragraph';\n    content = trimmed.substring(2).trim();\n  } else if (trimmed.startsWith('|')) {\n    // Table rows become paragraphs\n    blockType = 'paragraph';\n    content = trimmed;\n  } else {\n    // Regular text becomes paragraph\n    blockType = 'paragraph';\n    content = trimmed;\n  }\n  \n  // Generate blocks with rich text\n  blocks.push({ \n    type: blockType,\n    [blockType]: {\n      rich_text: parseToRichText(content)\n    }\n  });\n}\n\n// Return the array as a field so Split Out can process it\nreturn [{ blocks: blocks }];"
+        "jsCode": "const markdown = $input.first().json.text;\nconst blocks = [];\n\n// Simplified plain text parsing - removes markdown but maintains proper API structure\nfunction parseToSimpleRichText(text) {\n  // Remove markdown formatting markers for plain text\n  const cleanText = text\n    .replace(/\\*\\*(.*?)\\*\\*/g, '$1')  // Remove bold markers\n    .replace(/\\*(.*?)\\*/g, '$1')     // Remove italic markers\n    .trim();\n  \n  // Return proper rich_text structure for Notion API\n  return [{\n    type: 'text',\n    text: { content: cleanText }\n  }];\n}\n\n// Split by lines and process\nconst lines = markdown.split('\\n');\n\nfor (const line of lines) {\n  const trimmed = line.trim();\n  \n  if (!trimmed || trimmed === '---') continue; // Skip empty lines and separators\n  \n  let blockType;\n  let content = trimmed;\n  \n  if (trimmed.startsWith('# ')) {\n    blockType = 'heading_1';\n    content = trimmed.substring(2).trim();\n  } else if (trimmed.startsWith('## ')) {\n    blockType = 'heading_2';\n    content = trimmed.substring(3).trim();\n  } else if (trimmed.startsWith('### ')) {\n    blockType = 'heading_3';\n    content = trimmed.substring(4).trim();\n  } else if (trimmed.startsWith('- ')) {\n    blockType = 'bulleted_list_item';\n    content = trimmed.substring(2).trim();\n  } else if (trimmed.match(/^\\d+\\. /)) {\n    blockType = 'numbered_list_item';\n    content = trimmed.replace(/^\\d+\\. /, '').trim();\n  } else if (trimmed.startsWith('> ')) {\n    // Blockquotes become styled paragraphs\n    blockType = 'paragraph';\n    content = trimmed.substring(2).trim();\n  } else if (trimmed.startsWith('|')) {\n    // Table rows become paragraphs\n    blockType = 'paragraph';\n    content = trimmed;\n  } else {\n    // Regular text becomes paragraph\n    blockType = 'paragraph';\n    content = trimmed;\n  }\n  \n  // Generate blocks with proper rich_text structure\n  blocks.push({ \n    type: blockType,\n    [blockType]: {\n      rich_text: parseToSimpleRichText(content)\n    }\n  });\n}\n\n// Return the array as a field so Split Out can process it\nreturn [{ blocks: blocks }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -299,49 +299,41 @@
     },
     {
       "parameters": {
-        "method": "PATCH",
-        "url": "=https://api.notion.com/v1/blocks/{{ $json.toggleId }}/children",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpBearerAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
+        "resource": "block",
+        "operation": "append",
+        "blockId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.toggleId }}"
+        },
+        "blockUi": {
+          "blockValues": [
             {
-              "name": "Notion-Version",
-              "value": "2022-06-28"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
+              "type": "={{ $json.type }}",
+              "richText": "={{ $json[$json.type].rich_text }}"
             }
           ]
         },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ children: [{ type: $json.type, [$json.type]: $json[$json.type] }] }) }}",
         "options": {
-          "batching": {
-            "batch": {
-              "batchSize": 1,
-              "batchInterval": 2000
-            }
-          },
-          "response": {}
+          "retry": {
+            "enabled": true,
+            "count": 3,
+            "interval": 2000
+          }
         }
       },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
       "position": [
         1472,
         -112
       ],
       "id": "n07-append-inside-toggle",
       "name": "N07-Append-Inside-Toggle",
-      "retryOnFail": false,
       "credentials": {
-        "httpBearerAuth": {
-          "id": "Pz2o5fSEYYGuQ4A3",
-          "name": "Notion API Bearer Auth"
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
         }
       }
     }
@@ -364,6 +356,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-21T05:46:18.000Z",
-  "versionId": "80c3f7f4-6d1b-441b-aafb-6604f3c1591c"
+  "updatedAt": "2025-08-21T06:52:27.000Z",
+  "versionId": "49547326-486f-4c2d-9a4f-9b297a7eeea0"
 }
