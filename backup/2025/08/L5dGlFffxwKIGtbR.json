@@ -1,0 +1,146 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get a database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a database": {
+      "main": [
+        [
+          {
+            "node": "Get a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a database page": {
+      "main": [
+        [
+          {
+            "node": "Create a page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-08-21T14:48:33.008Z",
+  "id": "L5dGlFffxwKIGtbR",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Moumita_test",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0c4f1d84-4da3-46e5-891e-dd862bb7263a",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "database",
+        "databaseId": {
+          "__rl": true,
+          "value": "2151db9b-a441-8074-b8a9-f419d2fd476d",
+          "mode": "list",
+          "cachedResultName": "wiki.Halo",
+          "cachedResultUrl": "https://www.notion.so/2151db9ba4418074b8a9f419d2fd476d"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "9db925d1-4eb3-482b-ae98-43fbef10a729",
+      "name": "Get a database",
+      "credentials": {
+        "notionApi": {
+          "id": "1irJTXhoFNvETAJ1",
+          "name": "Notion account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "https://www.notion.so/hylyai/Data-Lake-Feeder-2151db9ba4418082893af8fd434247bd?v=2151db9ba44180519d82000c0f0809d3&source=copy_link",
+          "mode": "url"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "866011c2-7b8e-4ab3-af0a-eb4802e4e4ed",
+      "name": "Get a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "1irJTXhoFNvETAJ1",
+          "name": "Notion account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.url }}",
+          "mode": "url"
+        },
+        "title": "test.child page",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "5cf800cf-a5af-4a4c-9cbe-167d11c7dafb",
+      "name": "Create a page",
+      "credentials": {
+        "notionApi": {
+          "id": "1irJTXhoFNvETAJ1",
+          "name": "Notion account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-env",
+  "repo_owner": "munishgandhi",
+  "repo_path": "backup/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-08-21T14:53:11.000Z",
+  "versionId": "f8b2401f-69a0-4e51-b7d1-6d440aece276"
+}
