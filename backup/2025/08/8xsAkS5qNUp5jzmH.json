@@ -21,16 +21,22 @@
       "main": [
         [
           {
-            "node": "Merge Toggle ID with Content",
+            "node": "Convert Blocks to Items",
             "type": "main",
-            "index": 1
+            "index": 0
           }
         ]
       ]
     },
     "Convert Blocks to Items": {
       "main": [
-        []
+        [
+          {
+            "node": "Merge Toggle ID with Content",
+            "type": "main",
+            "index": 1
+          }
+        ]
       ]
     },
     "Merge Toggle ID with Content": {
@@ -228,20 +234,19 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3120,
-        1248
+        2880,
+        608
       ],
       "id": "035b4c1c-85c0-4cd9-90a7-9d12eb2e1a66",
       "name": "Convert Blocks to Items",
       "alwaysOutputData": true,
       "notesInFlow": true,
-      "disabled": true,
       "notes": "Convert the chunks into individual items for appending"
     },
     {
       "parameters": {
         "mode": "combineBySql",
-        "query": "SELECT\n  input1.toggleID AS toggleID,\n  input2.blockNumber     AS block,\n  input2.type AS blocktype,\n  input2.SECTION AS title,\n    input2.content AS content,\nFROM input2\nCROSS JOIN input1\n\n\n\n",
+        "query": "SELECT\n  input1.toggleID AS toggleID,\n  input2.block     AS block\nFROM input2\nCROSS JOIN input1\n\n\n\n",
         "options": {}
       },
       "type": "n8n-nodes-base.merge",
@@ -363,7 +368,7 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        208,
+        112,
         512
       ],
       "id": "0781c197-71ee-4e14-9c25-9b587e4d9e58",
@@ -487,6 +492,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-21T09:17:37.000Z",
-  "versionId": "8aef5010-aad9-4fe0-b1ac-e76ebe00924f"
+  "updatedAt": "2025-08-21T12:56:58.000Z",
+  "versionId": "934303d8-756b-4cb8-b0d4-42f1dd27c3c9"
 }
