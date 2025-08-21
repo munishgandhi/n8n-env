@@ -36,6 +36,77 @@
     },
     "N02-Generate-Markdown-Guide": {
       "main": [
+        [
+          {
+            "node": "N04a-Create-Toggle-Container",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "N05a-Parse-Markdown-To-Blocks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N04a-Create-Toggle-Container": {
+      "main": [
+        [
+          {
+            "node": "N04b-Extract-Toggle-ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N04b-Extract-Toggle-ID": {
+      "main": [
+        [
+          {
+            "node": "N06-Merge-Toggle-With-Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N05a-Parse-Markdown-To-Blocks": {
+      "main": [
+        [
+          {
+            "node": "N05b-Split-To-Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N05b-Split-To-Items": {
+      "main": [
+        [
+          {
+            "node": "N06-Merge-Toggle-With-Content",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "N06-Merge-Toggle-With-Content": {
+      "main": [
+        [
+          {
+            "node": "N07-Append-Inside-Toggle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N07-Append-Inside-Toggle": {
+      "main": [
         []
       ]
     }
@@ -46,7 +117,7 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "name": "Test Notion Block Append v20250820-213600",
+  "name": "Test Notion Block Append v20250820-223151",
   "nodes": [
     {
       "parameters": {},
@@ -54,7 +125,7 @@
       "typeVersion": 1,
       "position": [
         0,
-        -208
+        -112
       ],
       "id": "746a84d7-6e16-472e-baf1-e56e88a265ee",
       "name": "N00a-Manual-Trigger"
@@ -89,7 +160,7 @@
       "typeVersion": 3.4,
       "position": [
         224,
-        -208
+        -112
       ],
       "id": "canonical-fields-node",
       "name": "N01-Set-Canonical-Fields"
@@ -104,7 +175,7 @@
       "typeVersion": 1.7,
       "position": [
         448,
-        -208
+        -112
       ],
       "id": "f429d62c-9e7c-4d31-9fdb-a4efaa2fb9b1",
       "name": "N02-Generate-Markdown-Guide"
@@ -117,8 +188,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmOllama",
       "typeVersion": 1,
       "position": [
-        528,
-        16
+        520,
+        112
       ],
       "id": "b6faef13-9ed1-41eb-98a2-20a52c54f748",
       "name": "N03-Process-With-Ollama",
@@ -126,6 +197,133 @@
         "ollamaApi": {
           "id": "i7QigsdBsQdZv3Mf",
           "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "blockId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "2551db9ba441805e9bd0fe21a317c8f0"
+        },
+        "blockUi": {
+          "blockValues": [
+            {
+              "type": "toggle",
+              "textContent": "=Markdown - Performance Max Guide {{ $now.format('(yyyy-MM-dd-HH:mm:ss)') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        -208
+      ],
+      "id": "n04a-create-toggle",
+      "name": "N04a-Create-Toggle-Container",
+      "credentials": {
+        "notionApi": {
+          "id": "YOUR_NOTION_CREDENTIALS",
+          "name": "Notion API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "toggleId",
+              "name": "toggleId",
+              "value": "={{ $json.results.first().id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        -208
+      ],
+      "id": "n04b-extract-toggle-id",
+      "name": "N04b-Extract-Toggle-ID"
+    },
+    {
+      "parameters": {
+        "jsCode": "const markdown = $input.first().json.text;\nconst blocks = [];\n\n// Split by lines and process\nconst lines = markdown.split('\\n');\n\nfor (const line of lines) {\n  const trimmed = line.trim();\n  \n  if (!trimmed || trimmed === '---') continue; // Skip empty lines and separators\n  \n  if (trimmed.startsWith('# ')) {\n    blocks.push({ \n      blockType: 'heading_1', \n      textContent: trimmed.substring(2).trim() \n    });\n  } else if (trimmed.startsWith('## ')) {\n    blocks.push({ \n      blockType: 'heading_2', \n      textContent: trimmed.substring(3).trim() \n    });\n  } else if (trimmed.startsWith('### ')) {\n    blocks.push({ \n      blockType: 'heading_3', \n      textContent: trimmed.substring(4).trim() \n    });\n  } else if (trimmed.startsWith('- ')) {\n    blocks.push({ \n      blockType: 'bulleted_list_item', \n      textContent: trimmed.substring(2).trim() \n    });\n  } else if (trimmed.match(/^\\d+\\. /)) {\n    blocks.push({ \n      blockType: 'numbered_list_item', \n      textContent: trimmed.replace(/^\\d+\\. /, '').trim() \n    });\n  } else if (trimmed.startsWith('> ')) {\n    // Blockquotes become styled paragraphs\n    blocks.push({ \n      blockType: 'paragraph', \n      textContent: trimmed.substring(2).trim() \n    });\n  } else if (trimmed.startsWith('|')) {\n    // Table rows become paragraphs\n    blocks.push({ \n      blockType: 'paragraph', \n      textContent: trimmed \n    });\n  } else {\n    // Regular text becomes paragraph\n    blocks.push({ \n      blockType: 'paragraph', \n      textContent: trimmed \n    });\n  }\n}\n\n// Return the array as a field so Split Out can process it\nreturn [{ blocks: blocks }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        -16
+      ],
+      "id": "n05a-parse-markdown",
+      "name": "N05a-Parse-Markdown-To-Blocks"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "blocks",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        -16
+      ],
+      "id": "n05b-split-to-items",
+      "name": "N05b-Split-To-Items"
+    },
+    {
+      "parameters": {
+        "mode": "mergeByPosition"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1248,
+        -112
+      ],
+      "id": "n06-merge-toggle-content",
+      "name": "N06-Merge-Toggle-With-Content"
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "blockId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.toggleId }}"
+        },
+        "blockUi": {
+          "blockValues": [
+            {
+              "type": "={{ $json.blockType }}",
+              "textContent": "={{ $json.textContent }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1472,
+        -112
+      ],
+      "id": "n07-append-inside-toggle",
+      "name": "N07-Append-Inside-Toggle",
+      "credentials": {
+        "notionApi": {
+          "id": "YOUR_NOTION_CREDENTIALS",
+          "name": "Notion API"
         }
       }
     }
@@ -148,6 +346,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-21T01:41:38.000Z",
-  "versionId": "93c5bcd2-5f92-4bc1-b5eb-2dba1c82b2cf"
+  "updatedAt": "2025-08-21T02:33:46.000Z",
+  "versionId": "393e17f1-65f7-4e3d-a943-a214ddc68ee6"
 }
