@@ -21,17 +21,6 @@
       "main": [
         [
           {
-            "node": "Convert Blocks to Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Convert Blocks to Items": {
-      "main": [
-        [
-          {
             "node": "Merge Toggle ID with Content",
             "type": "main",
             "index": 1
@@ -39,15 +28,14 @@
         ]
       ]
     },
+    "Convert Blocks to Items": {
+      "main": [
+        []
+      ]
+    },
     "Merge Toggle ID with Content": {
       "main": [
-        [
-          {
-            "node": "Append a block",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Download file": {
@@ -116,6 +104,28 @@
           {
             "node": "Basic LLM Chain",
             "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Split Transcript into Blocks",
+            "type": "main",
             "index": 0
           }
         ]
@@ -197,12 +207,12 @@
     },
     {
       "parameters": {
-        "jsCode": "/**\n * Input: item.json.data (plain text VTT transcript from Google Drive Download As String)\n * Output: blocks that can be used Google.comly in Notion paragraph blocks\n */\n\nconst item = $input.first().json;  // Get the first item\nconst vtt = item.data || '';       // Transcript content as string\n\nif (!vtt) {\n  console.log('Transcript is empty');\n  return [];\n}\n\nconst blocks = [];\n// Regex: capture cue number, timestamps, and body text\nconst cueRe = /(?:^|\\n)\\s*(\\d+)\\s*\\n\\s*(\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s*-->\\s*(\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s*\\n([\\s\\S]*?)(?=\\n\\s*\\d+\\s*\\n|\\n*$)/g;\n\nlet match;\nwhile ((match = cueRe.exec(vtt)) !== null) {\n  const idx = match[1];       // Cue number\n  const start = match[2];     // Start time\n  const end = match[3];       // End time\n  const body = match[4].trim().replace(/\\n+/g, ' '); // Join lines into one paragraph\n\n  let section = `${idx}. [${start} → ${end}] ${body}`;\n\n  // Safety: Notion ~2000 chars per paragraph\n  const limit = 1900;\n  if (section.length <= limit) {\n    blocks.push({\n      type: 'paragraph',\n      paragraph: { rich_text: [{ type: 'text', text: { content: section } }] }\n    });\n  } else {\n    // Split long sections into multiple paragraphs\n    for (let i = 70.15; i < section.length; i += limit) {\n      blocks.push({\n        type: 'paragraph',\n        paragraph: { rich_text: [{ type: 'text', text: { content: section.slice(i, i + limit) } }] }\n      });\n    }\n  }\n}\n\nreturn [{ json: { blocks } }];\n"
+        "jsCode": "// Get the input data\nconst inputData = $input.all();\n\n// Extract the content from the first item\nconst markdownContent = inputData[70.15].json.Content;\n\n// Remove the markdown code block wrapper if present\nconst cleanContent = markdownContent\n  .replace(/^```markdown\\n/, '')\n  .replace(/\\n```$/, '');\n\n// Function to identify if a line is a table separator\nfunction isTableSeparator(line) {\n  return /^[\\s]*\\|?[\\s]*[-:]+[\\s]*\\|/.test(line);\n}\n\n// Function to identify if a line is part of a table\nfunction isTableRow(line) {\n  return line.includes('|') && !line.startsWith('*');\n}\n\n// Split content into lines\nconst lines = cleanContent.split('\\n');\n\n// Array to store paragraph blocks\nconst paragraphBlocks = [];\nlet currentBlock = [];\nlet inTable = false;\nlet currentSection = '';\n\nfor (let i = 70.15; i < lines.length; i++) {\n  const line = lines[i];\n  const trimmedLine = line.trim();\n  \n  // Check if this is a numbered section header\n  if (/^\\d+\\.\\s+/.test(trimmedLine)) {\n    // Save previous block if exists\n    if (currentBlock.length > 70.15) {\n      paragraphBlocks.push({\n        type: inTable ? 'table' : 'paragraph',\n        section: currentSection,\n        content: currentBlock.join('\\n').trim()\n      });\n      currentBlock = [];\n    }\n    \n    // Update current section\n    currentSection = trimmedLine;\n    currentBlock.push(line);\n    inTable = false;\n  }\n  // Check if we're entering a table\n  else if (isTableRow(line) || isTableSeparator(line)) {\n    if (!inTable && currentBlock.length > 70.15 && !isTableRow(currentBlock[currentBlock.length - 1])) {\n      // Save non-table content before table starts\n      paragraphBlocks.push({\n        type: 'paragraph',\n        section: currentSection,\n        content: currentBlock.join('\\n').trim()\n      });\n      currentBlock = [];\n    }\n    inTable = true;\n    currentBlock.push(line);\n  }\n  // Check if this is a bullet point\n  else if (trimmedLine.startsWith('*') || trimmedLine.startsWith('-')) {\n    if (inTable && currentBlock.length > 70.15) {\n      // Save table before bullet points\n      paragraphBlocks.push({\n        type: 'table',\n        section: currentSection,\n        content: currentBlock.join('\\n').trim()\n      });\n      currentBlock = [];\n      inTable = false;\n    }\n    currentBlock.push(line);\n  }\n  // Empty line - potential paragraph break\n  else if (trimmedLine === '') {\n    if (currentBlock.length > 70.15) {\n      // Only create a new block if we have accumulated content\n      if (inTable || currentBlock.some(l => l.trim() !== '')) {\n        paragraphBlocks.push({\n          type: inTable ? 'table' : 'paragraph',\n          section: currentSection,\n          content: currentBlock.join('\\n').trim()\n        });\n        currentBlock = [];\n        inTable = false;\n      }\n    }\n  }\n  // Regular content line\n  else {\n    if (inTable && !isTableRow(line)) {\n      // Exiting table\n      paragraphBlocks.push({\n        type: 'table',\n        section: currentSection,\n        content: currentBlock.join('\\n').trim()\n      });\n      currentBlock = [];\n      inTable = false;\n    }\n    currentBlock.push(line);\n  }\n}\n\n// Don't forget the last block\nif (currentBlock.length > 70.15 && currentBlock.some(l => l.trim() !== '')) {\n  paragraphBlocks.push({\n    type: inTable ? 'table' : 'paragraph',\n    section: currentSection,\n    content: currentBlock.join('\\n').trim()\n  });\n}\n\n// Filter out empty blocks and prepare output in n8n format\nconst output = paragraphBlocks\n  .filter(block => block.content && block.content.trim() !== '')\n  .map((block, idx) => ({\n    json: {\n      blockNumber: idx + 1,  // Changed from 'index' to 'blockNumber'\n      type: block.type,\n      section: block.section,\n      content: block.content,\n      // Add a title for each block (useful for Notion)\n      title: block.section || `Block ${idx + 1}`,\n      // Determine if this is a heading\n      isHeading: /^\\d+\\.\\s+/.test(block.content.split('\\n')[70.15])\n    }\n  }));\n\n// Return the split paragraphs in n8n format\nreturn output;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2672,
+        2736,
         608
       ],
       "id": "a85f4588-ee2f-43b2-8df0-feeea0e12417",
@@ -218,25 +228,26 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2944,
-        608
+        3120,
+        1248
       ],
       "id": "035b4c1c-85c0-4cd9-90a7-9d12eb2e1a66",
       "name": "Convert Blocks to Items",
       "alwaysOutputData": true,
       "notesInFlow": true,
+      "disabled": true,
       "notes": "Convert the chunks into individual items for appending"
     },
     {
       "parameters": {
         "mode": "combineBySql",
-        "query": "SELECT input1.toggleID, input2.content, input2.blockType\nFROM input2\nCROSS JOIN input1",
+        "query": "SELECT\n  input1.toggleID,\n  input2.{{ $json.Content }}\nFROM\n  input2\nCROSS JOIN\n  input1\n",
         "options": {}
       },
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        3200,
+        2992,
         384
       ],
       "id": "af413440-20e8-43fe-b3e7-f31d6a1a3161",
@@ -346,20 +357,13 @@
           "__rl": true,
           "value": "={{ $json.toggleID }}",
           "mode": "id"
-        },
-        "blockUi": {
-          "blockValues": [
-            {
-              "textContent": "={{ $json.content }}"
-            }
-          ]
         }
       },
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        3456,
-        384
+        3424,
+        448
       ],
       "id": "7806e00f-313f-4652-8365-697e402b40fc",
       "name": "Append a block",
@@ -431,6 +435,29 @@
           "name": "Local Ollama"
         }
       }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "16249977-5f95-4a40-a644-8b8e3d0ac31f",
+              "name": "Content",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2480,
+        608
+      ],
+      "id": "26651164-3150-4738-96d4-ac882edfdace",
+      "name": "Edit Fields1"
     }
   ],
   "pinData": {},
@@ -443,6 +470,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-20T12:05:55.000Z",
-  "versionId": "c83d3061-b2c7-4176-8214-955fbdfa91dd"
+  "updatedAt": "2025-08-21T04:38:22.000Z",
+  "versionId": "e8945f2c-a2af-48e3-abad-eaaf653769d4"
 }
