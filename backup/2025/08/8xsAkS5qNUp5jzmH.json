@@ -37,7 +37,7 @@
       "main": [
         [
           {
-            "node": "Append a block",
+            "node": "Get many child blocks",
             "type": "main",
             "index": 0
           }
@@ -86,11 +86,6 @@
             "index": 0
           }
         ]
-      ]
-    },
-    "Append a block": {
-      "main": [
-        []
       ]
     },
     "Schedule Trigger": {
@@ -363,38 +358,6 @@
     },
     {
       "parameters": {
-        "resource": "block",
-        "blockId": {
-          "__rl": true,
-          "value": "={{ $json.toggleID }}",
-          "mode": "id"
-        },
-        "blockUi": {
-          "blockValues": [
-            {
-              "textContent": "={{ $json.content }}"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.notion",
-      "typeVersion": 2.2,
-      "position": [
-        3408,
-        384
-      ],
-      "id": "7806e00f-313f-4652-8365-697e402b40fc",
-      "name": "Append a block",
-      "alwaysOutputData": true,
-      "credentials": {
-        "notionApi": {
-          "id": "1irJTXhoFNvETAJ1",
-          "name": "Notion account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
         "rule": {
           "interval": [
             {
@@ -487,6 +450,34 @@
       ],
       "id": "b971cc19-6a87-426b-90f1-3b2cc2a48570",
       "name": "Markdown to Notion Block"
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "operation": "getAll",
+        "blockId": {
+          "__rl": true,
+          "value": "={{ $json.toggleID }}",
+          "mode": "id"
+        },
+        "returnAll": true,
+        "fetchNestedBlocks": true
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        3408,
+        384
+      ],
+      "id": "89019455-d628-4b86-a6e0-c55cd02b1e12",
+      "name": "Get many child blocks",
+      "alwaysOutputData": true,
+      "credentials": {
+        "notionApi": {
+          "id": "1irJTXhoFNvETAJ1",
+          "name": "Notion account 2"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -499,6 +490,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-21T07:31:31.000Z",
-  "versionId": "65edb191-1a46-44b0-9e08-6d757997b07e"
+  "updatedAt": "2025-08-21T07:58:02.000Z",
+  "versionId": "9803a14d-475a-4036-8937-a62ffcc4c2bd"
 }
