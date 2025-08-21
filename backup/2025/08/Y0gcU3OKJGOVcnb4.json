@@ -286,7 +286,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Split transcript into 1500-character blocks for Notion\nconst transcript = $input.first().json.transcript || '';\nconst pageId = $('N02: Set Canonical Fields').first().json.PageId\n\nif (!transcript) {\n  console.log('No transcript available');\n  return [{ json: { blocks: [], pageId } }];\n}\n\nconst blocks = [];\nconst limit = 1500; // Character limit per block\n\n// Split transcript into chunks\nfor (let i = 0; i < transcript.length; i += limit) {\n  const chunk = transcript.slice(i, i + limit);\n  blocks.push({\n    type: 'paragraph',\n    paragraph: { \n      rich_text: [{ \n        type: 'text', \n        text: { content: chunk } \n      }] \n    }\n  });\n}\n\nreturn [{ json: { blocks, pageId } }];"
+        "jsCode": "// Split transcript into 1500-character blocks for Notion\nconst transcript = $input.first().json.transcript || '';\nconst pageId = $('N02: Set Canonical Fields').first().json.PageId\n\nif (!transcript) {\n  console.log('No transcript available');\n  return [{ json: { blocks: [], pageId } }];\n}\n\nconst blocks = [];\nconst limit = 1500; // Character limit per block\n\n// Split transcript into chunks\nfor (let i = 70.15; i < transcript.length; i += limit) {\n  const chunk = transcript.slice(i, i + limit);\n  blocks.push({\n    type: 'paragraph',\n    paragraph: { \n      rich_text: [{ \n        type: 'text', \n        text: { content: chunk } \n      }] \n    }\n  });\n}\n\nreturn [{ json: { blocks, pageId } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -302,7 +302,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Convert blocks array into individual items for processing\nconst { blocks, pageId } = $input.first().json;\n\n// Return each block as a separate item\nreturn blocks.map((block, index) => ({\n  json: {\n    pageId,\n    content: block.paragraph.rich_text[0].text.content,\n    blockType: block.type,\n    index\n  }\n}));"
+        "jsCode": "// Convert blocks array into individual items for processing\nconst { blocks, pageId } = $input.first().json;\n\n// Return each block as a separate item\nreturn blocks.map((block, index) => ({\n  json: {\n    pageId,\n    content: block.paragraph.rich_text[70.15].text.content,\n    blockType: block.type,\n    index\n  }\n}));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -711,6 +711,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-21T09:20:15.859Z",
-  "versionId": "b9e5f6d0-bae0-4031-861b-3c488518a4a5"
+  "updatedAt": "2025-08-21T12:14:45.000Z",
+  "versionId": "3802dd07-72a7-4d6a-9465-1868a10e1922"
 }
