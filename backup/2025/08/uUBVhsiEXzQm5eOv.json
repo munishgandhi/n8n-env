@@ -117,7 +117,7 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "name": "Test Notion Block Append v20250821-025227",
+  "name": "Test Notion Block Append v20250821-030836",
   "nodes": [
     {
       "parameters": {},
@@ -310,7 +310,7 @@
           "blockValues": [
             {
               "type": "={{ $json.type }}",
-              "richText": "={{ $json[$json.type].rich_text }}"
+              "textContent": "={{ $json[$json.type].rich_text[0].text.content }}"
             }
           ]
         },
@@ -356,6 +356,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-21T06:52:27.000Z",
+  "updatedAt": "2025-08-21T07:08:36.000Z",
   "versionId": "49547326-486f-4c2d-9a4f-9b297a7eeea0"
 }
