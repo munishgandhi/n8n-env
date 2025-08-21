@@ -17,7 +17,7 @@
   "id": "boXtC8dQGTA5S4Bt",
   "isArchived": false,
   "meta": null,
-  "name": "My workflow 7",
+  "name": "Test Hyly YouTube Node",
   "nodes": [
     {
       "parameters": {},
@@ -55,6 +55,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-16T01:41:46.000Z",
-  "versionId": "a4f4e706-e016-4926-a2c3-f7d61386f945"
+  "updatedAt": "2025-08-21T00:44:32.000Z",
+  "versionId": "38252592-6e7c-47d5-a1e0-9b4b660d0b35"
 }
