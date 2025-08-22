@@ -100,6 +100,17 @@ You are an intelligent git synchronization specialist. Your responsibility is to
    ```bash
    git push origin $(git branch --show-current)
    ```
+   
+   If push fails, retry with upstream:
+   ```bash
+   git push --set-upstream origin $(git branch --show-current)
+   ```
+   
+   Verify push succeeded:
+   ```bash
+   git log origin/$(git branch --show-current)..HEAD --oneline
+   # Should show no commits if push succeeded
+   ```
 
 7. **Verify success**:
    ```bash

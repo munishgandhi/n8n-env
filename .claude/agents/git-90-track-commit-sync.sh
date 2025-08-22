@@ -104,11 +104,27 @@ echo -e "${GREEN}✅ Commit created: ${COMMIT_HASH:0:7}${NC}"
 # 5. Push to remote
 echo ""
 echo -e "${YELLOW}5️⃣ Pushing to remote...${NC}"
-if git push origin "$BRANCH" 2>&1; then
+if git push origin "$BRANCH"; then
     echo -e "${GREEN}✅ Successfully pushed to origin/$BRANCH${NC}"
 else
-    echo -e "${RED}❌ Push failed! Check your network connection and authentication${NC}"
-    exit 1
+    echo -e "${RED}❌ Push failed! Attempting with upstream...${NC}"
+    if git push --set-upstream origin "$BRANCH"; then
+        echo -e "${GREEN}✅ Successfully pushed with upstream to origin/$BRANCH${NC}"
+    else
+        echo -e "${RED}❌ Push failed! Check your network connection and authentication${NC}"
+        git status
+        exit 1
+    fi
+fi
+
+# Verify push succeeded
+echo -e "${BLUE}🔍 Verifying push...${NC}"
+UNPUSHED=$(git log origin/"$BRANCH"..HEAD --oneline)
+if [ -z "$UNPUSHED" ]; then
+    echo -e "${GREEN}✅ All commits successfully pushed${NC}"
+else
+    echo -e "${RED}❌ Warning: Some commits not pushed:${NC}"
+    echo "$UNPUSHED"
 fi
 
 # 6. Verify repository is clean
