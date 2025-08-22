@@ -346,15 +346,7 @@
       "name": "Edit Fields"
     },
     {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "minutes"
-            }
-          ]
-        }
-      },
+      "parameters": {},
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
@@ -491,6 +483,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-22T07:29:04.000Z",
-  "versionId": "0a88e7b3-0c62-41fa-b005-d3ecc501c3a6"
+  "updatedAt": "2025-08-22T12:59:01.000Z",
+  "versionId": "f3bb77bb-9a77-470c-9451-20edb6955657"
 }
