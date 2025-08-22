@@ -15,6 +15,7 @@ Performs:
 
 Usage: `/system-stop`
 
-Execute the command:
-!bash
-cd "$(git rev-parse --show-toplevel)" && ./.claude/commands/system-stop.sh "$ARGUMENTS"
+```bash
+cd "$(git rev-parse --show-toplevel)"
+./.claude/commands/system-stop.sh "$ARGUMENTS"
+```

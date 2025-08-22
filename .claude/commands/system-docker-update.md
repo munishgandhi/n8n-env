@@ -33,5 +33,6 @@ Usage:
 
 Execute the command:
 ```bash
-cd "$(git rev-parse --show-toplevel)" && ./.claude/commands/system-docker-update.sh "$ARGUMENTS"
+cd "$(git rev-parse --show-toplevel)"
+./.claude/commands/system-docker-update.sh "$ARGUMENTS"
 ```

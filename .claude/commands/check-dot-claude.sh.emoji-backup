@@ -8,13 +8,13 @@ set -e  # Exit on any error
 PROJECT_ROOT="$(git rev-parse --show-toplevel)"
 cd "$PROJECT_ROOT"  # Ensure we're in project root
 
-echo "Auditing all *.md and *.sh files in .claude/ directory..."
+echo "🔍 Auditing all *.md and *.sh files in .claude/ directory..."
 echo ""
 
 # Function to run a single audit round
 run_audit_round() {
     local round_number=$1
-    echo "AUDIT ROUND $round_number"
+    echo "📋 AUDIT ROUND $round_number"
     echo "=============================="
     
     local changes_made=0
@@ -134,13 +134,13 @@ max_rounds=10
 while [[ $round -le $max_rounds ]]; do
     if run_audit_round $round; then
         echo ""
-        echo " AUDIT COMPLETE: All consistency checks passed!"
+        echo "🎉 AUDIT COMPLETE: All consistency checks passed!"
         echo "   No changes needed after round $round"
         exit 0
     fi
     
     echo ""
-    echo "Issues found in round $round. Manual fixes may be needed."
+    echo "🔧 Issues found in round $round. Manual fixes may be needed."
     echo "   Rerun this script after making corrections."
     echo ""
     

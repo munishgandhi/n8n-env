@@ -10,26 +10,24 @@ BACKUP_NAME=${1:-"minimal-$(date +%Y%m%d-%H%M%S)"}
 BACKUP_DIR="/home/mg/backups/n8n-env"
 cd "$PROJECT_ROOT"  # Ensure we're in project root
 
-echo "n8n Environment Minimal Backup (Critical Data Only)"
-echo "Backup Directory: $BACKUP_DIR/$BACKUP_NAME"
-echo "Time: $(date)"
+echo "💾 n8n Environment Minimal Backup (Critical Data Only)"
+echo "📍 Backup: $BACKUP_DIR/$BACKUP_NAME"
+echo "⏱️  Time: $(date)"
 echo ""
 
 # Create backup directory
 mkdir -p "$BACKUP_DIR/$BACKUP_NAME"
 cd "$PROJECT_ROOT"
 
-echo "Backing up ONLY data at risk of loss..."
+echo "🎯 Backing up ONLY data at risk of loss..."
 echo ""
 
 # 1. ENVIRONMENT FILE (.env) - API keys and UUIDs
-echo "=== ENVIRONMENT CREDENTIALS ==="
+echo "🔑 === ENVIRONMENT CREDENTIALS ==="
 if [ -f "$PROJECT_ROOT/.env" ]; then
     cp "$PROJECT_ROOT/.env" "$BACKUP_DIR/$BACKUP_NAME/.env"
     key_count=$(grep -c "API_KEY\|DB_ID" "$PROJECT_ROOT/.env")
     echo "✅ .env file backed up ($key_count credentials)"
-    echo "   From: $PROJECT_ROOT/.env"
-    echo "   To:   $BACKUP_DIR/$BACKUP_NAME/.env"
 else
     echo "❌ .env file not found!"
     exit 1
@@ -37,7 +35,7 @@ fi
 
 # 2. N8N DATABASE - Workflows, OAuth credentials, and folder organization
 echo ""
-echo "=== N8N DATABASE & CREDENTIALS ==="
+echo "🗄️ === N8N DATABASE & CREDENTIALS ==="
 
 # Detect which volume n8n is actually using
 if docker ps | grep -q "n8n"; then
@@ -46,39 +44,29 @@ if docker ps | grep -q "n8n"; then
         echo "❌ Cannot detect n8n data volume!"
         exit 1
     fi
-    echo "Detected n8n volume: $N8N_VOLUME"
+    echo "🔍 Detected n8n volume: $N8N_VOLUME"
 else
     echo "❌ n8n container not running!"
     exit 1
 fi
 
 if docker volume inspect "$N8N_VOLUME" > /dev/null 2>&1; then
-    # Get volume mount path
-    VOLUME_PATH=$(docker volume inspect "$N8N_VOLUME" --format '{{.Mountpoint}}')
-    
-    echo "Backing up n8n database.sqlite (includes Gmail OAuth)..."
+    echo "📊 Backing up n8n database.sqlite (includes Gmail OAuth)..."
     docker run --rm -v "$N8N_VOLUME":/source -v "$BACKUP_DIR/$BACKUP_NAME":/backup alpine sh -c \
         "cp /source/database.sqlite /backup/database-backup.sqlite && chmod 644 /backup/database-backup.sqlite"
     
-    # Get sizes for verification  
-    DB_SIZE=$(docker run --rm -v "$N8N_VOLUME":/data alpine du -sh /data/database.sqlite | cut -f1)
-    echo "✅ Database backed up (size: $DB_SIZE)"
-    echo "   From: $VOLUME_PATH/database.sqlite"
-    echo "   To:   $BACKUP_DIR/$BACKUP_NAME/database-backup.sqlite"
-    
-    echo ""
-    echo "Backing up n8n config..."
+    echo "🔧 Backing up n8n config..."
     docker run --rm -v "$N8N_VOLUME":/source -v "$BACKUP_DIR/$BACKUP_NAME":/backup alpine sh -c \
         "cp /source/config /backup/config.json && chmod 644 /backup/config.json"
-    echo "✅ Config backed up"
-    echo "   From: $VOLUME_PATH/config"
-    echo "   To:   $BACKUP_DIR/$BACKUP_NAME/config.json"
+    
+    # Get sizes for verification  
+    DB_SIZE=$(docker run --rm -v "$N8N_VOLUME":/data alpine du -sh /data/database.sqlite | cut -f1)
+    echo "✅ n8n data backed up (database: $DB_SIZE)"
     
     # Count workflows and folders
     WORKFLOW_COUNT=$(docker run --rm -v "$N8N_VOLUME":/data alpine sh -c "apk add sqlite > /dev/null 2>&1 && sqlite3 /data/database.sqlite 'SELECT COUNT(*) FROM workflow_entity;'" 2>/dev/null || echo "unknown")
     FOLDER_COUNT=$(docker run --rm -v "$N8N_VOLUME":/data alpine sh -c "apk add sqlite > /dev/null 2>&1 && sqlite3 /data/database.sqlite 'SELECT COUNT(*) FROM folder;'" 2>/dev/null || echo "unknown")
-    echo ""
-    echo "Database contents: $WORKFLOW_COUNT workflows in $FOLDER_COUNT folders"
+    echo "📁 Organization: $WORKFLOW_COUNT workflows in $FOLDER_COUNT folders"
 else
     echo "❌ n8n data volume ($N8N_VOLUME) not found!"
     exit 1
@@ -87,12 +75,12 @@ fi
 # 3. WORKFLOW EXTRACTION - REMOVED
 # Workflows are backed up in the SQLite database above
 echo ""
-echo " Workflow extraction removed - workflows preserved in database backup"
+echo "⏭️  Workflow extraction removed - workflows preserved in database backup"
 
 # 4. UPDATE WORKFLOW DOCUMENTATION
 echo ""
-echo "=== WORKFLOW DOCUMENTATION ==="
-echo "Documentation update completed"
+echo "📝 === WORKFLOW DOCUMENTATION ==="
+echo "📌 Documentation update completed"
 
 # 5. BACKUP MANIFEST - What's included and why
 cat > "$BACKUP_DIR/$BACKUP_NAME/BACKUP_MANIFEST.md" << EOF
@@ -102,19 +90,19 @@ cat > "$BACKUP_DIR/$BACKUP_NAME/BACKUP_MANIFEST.md" << EOF
 **Type**: Critical data only (NOT in git)  
 **Size**: $(du -sh "$BACKUP_DIR/$BACKUP_NAME" | cut -f1)
 
-## Critical Data Summary
+## 🔐 Critical Data Summary
 - **.env** - $key_count credentials including Gmail client details
 - **database.sqlite** - $WORKFLOW_COUNT workflows + Gmail OAuth tokens + $FOLDER_COUNT folders (system-tests, vc-mgr-discovery, etc.)
 - **config** - n8n settings + encryption keys for credential decryption
 
 ## What's Backed Up
 
-### Credentials (\`env-backup\`)
+### 🔑 Credentials (\`env-backup\`)
 - NOTION_API_KEY (access to all 7 databases)
 - N8N_API_KEY (workflow management access)  
 - 7x Database UUIDs (Backlog, Planners, Entities)
 
-### n8n Data  
+### 🗄️ n8n Data  
 - \`database-backup.sqlite\` - All workflows ($WORKFLOW_COUNT) + execution history + Gmail OAuth tokens + folder organization ($FOLDER_COUNT folders)
 - \`config-backup\` - n8n configuration settings + encryption keys
 
@@ -163,50 +151,33 @@ EOF
 
 # 6. BACKUP SUMMARY
 echo ""
-echo "=== BACKUP SUMMARY ==="
+echo "📊 === BACKUP SUMMARY ==="
 
 BACKUP_SIZE=$(du -sh "$BACKUP_DIR/$BACKUP_NAME" | cut -f1)
 FILE_COUNT=$(find "$BACKUP_DIR/$BACKUP_NAME" -type f | wc -l)
 
 echo "✅ Critical data backup completed!"
 echo ""
-echo "Backup Location: $BACKUP_DIR/$BACKUP_NAME"
-echo "Total Size: $BACKUP_SIZE"
-echo "Files Backed Up: $FILE_COUNT files"
+echo "📍 Location: $BACKUP_DIR/$BACKUP_NAME"
+echo "📏 Size: $BACKUP_SIZE (minimal - only critical data)"
+echo "📄 Files: $FILE_COUNT files"
 echo ""
 
-# List exact files in backup
-echo "=== FILES IN BACKUP ==="
-ls -lah "$BACKUP_DIR/$BACKUP_NAME/" | grep -v "^total" | grep -v "^d"
+# Show what we backed up
+echo "🎯 Backed up (at risk):"
+echo "  ✅ .env file (API keys, database UUIDs, Gmail credentials)"
+echo "  ✅ n8n database ($DB_SIZE - $WORKFLOW_COUNT workflows + Gmail OAuth + folder organization)"
+echo "  ✅ n8n config (settings + encryption keys)"
 echo ""
 
-# Show what we backed up with locations
-echo "=== BACKUP CONTENTS ==="
-echo "1. Environment File:"
-echo "   ✅ .env → $BACKUP_DIR/$BACKUP_NAME/.env"
-echo "   Contents: $key_count API keys and database UUIDs"
-echo ""
-echo "2. n8n Database:"
-echo "   ✅ database.sqlite → $BACKUP_DIR/$BACKUP_NAME/database-backup.sqlite"
-echo "   Size: $DB_SIZE | Contents: $WORKFLOW_COUNT workflows, $FOLDER_COUNT folders, OAuth tokens"
-echo ""
-echo "3. n8n Config:"
-echo "   ✅ config → $BACKUP_DIR/$BACKUP_NAME/config.json"
-echo "   Contents: n8n settings and encryption keys"
-echo ""
-echo "4. Backup Manifest:"
-echo "   ✅ BACKUP_MANIFEST.md → $BACKUP_DIR/$BACKUP_NAME/BACKUP_MANIFEST.md"
-echo "   Contents: Detailed backup documentation and restore instructions"
-echo ""
-
-echo "NOT backed up (already safe):"
-echo "  Git-tracked files ($(git ls-files | wc -l) files in repository)"
-echo "  Notion databases (cloud hosted)"
-echo "  Redis cache (rebuilds automatically)"
+echo "⚡ NOT backed up (already safe):"
+echo "  📁 Git-tracked files ($(git ls-files | wc -l) files in repository)"
+echo "  ☁️  Notion databases (cloud hosted)"
+echo "  🔄 Redis cache (rebuilds automatically)"
 echo ""
 
 # Show recent backups
-echo "Recent minimal backups:"
+echo "🕐 Recent minimal backups:"
 if [ -d "$BACKUP_DIR" ]; then
     ls -lt "$BACKUP_DIR" | head -4 | tail -3 | while read line; do
         backup=$(echo "$line" | awk '{print $NF}')
@@ -217,5 +188,5 @@ if [ -d "$BACKUP_DIR" ]; then
 fi
 
 echo ""
-echo "To restore: See BACKUP_MANIFEST.md in backup directory"
-echo "Backup completed at $(date)"
+echo "💡 To restore: See BACKUP_MANIFEST.md in backup directory"
+echo "✨ Backup completed at $(date)"

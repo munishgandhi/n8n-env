@@ -64,7 +64,7 @@ done
 cd "$PROJECT_ROOT"
 
 # Initialize logging
-echo "n8n Environment Docker Update (${UPDATE_MODE^^} mode)..."
+echo "🚀 n8n Environment Docker Update (${UPDATE_MODE^^} mode)..."
 echo "Time: $(date)"
 echo "Location: $(pwd)"
 echo
@@ -84,14 +84,14 @@ check_image_update() {
 
 # Show current status
 echo ""
-echo "=== CURRENT CONTAINER STATUS ==="
+echo "🔧 === CURRENT CONTAINER STATUS ==="
 docker-compose -f "$PROJECT_ROOT/docker/docker-compose.yml" ps
 
 if [ "$UPDATE_MODE" = "hard" ]; then
     # HARD UPDATE: Complete recreation
     echo ""
-    echo "=== HARD UPDATE: STOPPING ALL CONTAINERS ==="
-    echo "Stopping all services..."
+    echo "🔧 === HARD UPDATE: STOPPING ALL CONTAINERS ==="
+    echo "🛑 Stopping all services..."
     if docker-compose -f "$PROJECT_ROOT/docker/docker-compose.yml" down; then
         echo "✅ All containers stopped successfully"
         STOP_STATUS="✅"
@@ -101,8 +101,8 @@ if [ "$UPDATE_MODE" = "hard" ]; then
     fi
     
     echo ""
-    echo "=== PULLING LATEST IMAGES ==="
-    echo "Checking for updates..."
+    echo "🔧 === PULLING LATEST IMAGES ==="
+    echo "📦 Checking for updates..."
     
     # List images that will be pulled
     echo "Images to check:"
@@ -122,8 +122,8 @@ if [ "$UPDATE_MODE" = "hard" ]; then
     fi
     
     echo ""
-    echo "=== REBUILDING N8N EXTENSIONS ==="
-    echo "Building custom extensions (YouTube node, etc.)..."
+    echo "🔧 === REBUILDING N8N EXTENSIONS ==="
+    echo "🔄 Building custom extensions (YouTube node, etc.)..."
     if cd "$PROJECT_ROOT/docker/n8n-extensions" && npm run build; then
         echo "✅ Extensions built successfully"
         EXTENSION_STATUS="✅"
@@ -136,8 +136,8 @@ if [ "$UPDATE_MODE" = "hard" ]; then
     fi
     
     echo ""
-    echo "=== STARTING ALL CONTAINERS (NEW) ==="
-    echo "Starting all services..."
+    echo "🔧 === STARTING ALL CONTAINERS (NEW) ==="
+    echo "🚀 Starting all services..."
     if docker-compose -f "$PROJECT_ROOT/docker/docker-compose.yml" up -d; then
         echo "✅ All containers started successfully"
         START_STATUS="✅"
@@ -148,7 +148,7 @@ if [ "$UPDATE_MODE" = "hard" ]; then
     
     # Summary for hard update
     echo ""
-    echo "=== HARD UPDATE SUMMARY ==="
+    echo "📊 === HARD UPDATE SUMMARY ==="
     echo "Stop containers: $STOP_STATUS"
     echo "Pull images: $PULL_STATUS"
     echo "Build extensions: $EXTENSION_STATUS"
@@ -161,10 +161,10 @@ if [ "$UPDATE_MODE" = "hard" ]; then
 else
     # SOFT UPDATE: Pull and restart only if needed
     echo ""
-    echo "=== SOFT UPDATE: CHECKING FOR UPDATES ==="
+    echo "🔧 === SOFT UPDATE: CHECKING FOR UPDATES ==="
     
     # Store current image IDs
-    echo "Capturing current image states..."
+    echo "📸 Capturing current image states..."
     declare -A BEFORE_IDS
     BEFORE_IDS[redis]=$(docker images --format "{{.ID}}" redis:7-alpine 2>/dev/null || echo "none")
     BEFORE_IDS[sqlite-web]=$(docker images --format "{{.ID}}" coleifer/sqlite-web 2>/dev/null || echo "none")
@@ -172,7 +172,7 @@ else
     BEFORE_IDS[n8n-mcp]=$(docker images --format "{{.ID}}" ghcr.io/czlonkowski/n8n-mcp:latest 2>/dev/null || echo "none")
     
     echo ""
-    echo "Pulling latest images (containers keep running)..."
+    echo "📦 Pulling latest images (containers keep running)..."
     echo ""
     echo "Checking for updates:"
     echo "  - redis:7-alpine"
@@ -192,7 +192,7 @@ else
     
     # Check which images actually changed
     echo ""
-    echo "Checking which images were updated..."
+    echo "🔍 Checking which images were updated..."
     declare -A AFTER_IDS
     AFTER_IDS[redis]=$(docker images --format "{{.ID}}" redis:7-alpine 2>/dev/null || echo "none")
     AFTER_IDS[sqlite-web]=$(docker images --format "{{.ID}}" coleifer/sqlite-web 2>/dev/null || echo "none")
@@ -207,13 +207,13 @@ else
             echo "  ✅ $service: Updated (${BEFORE_IDS[$service]:0:12} → ${AFTER_IDS[$service]:0:12})"
             CHANGED_SERVICES="$CHANGED_SERVICES $service"
         else
-            echo "   $service: No changes (${AFTER_IDS[$service]:0:12})"
+            echo "  ⏭️  $service: No changes (${AFTER_IDS[$service]:0:12})"
         fi
     done
     
     echo ""
-    echo "=== REBUILDING N8N EXTENSIONS ==="
-    echo "Building custom extensions (YouTube node, etc.)..."
+    echo "🔧 === REBUILDING N8N EXTENSIONS ==="
+    echo "🔄 Building custom extensions (YouTube node, etc.)..."
     if cd "$PROJECT_ROOT/docker/n8n-extensions" && npm run build; then
         echo "✅ Extensions built successfully"
         EXTENSION_STATUS="✅"
@@ -228,13 +228,13 @@ else
     fi
     
     echo ""
-    echo "=== APPLYING UPDATES ==="
+    echo "🔧 === APPLYING UPDATES ==="
     
     if [ -z "$CHANGED_SERVICES" ]; then
-        echo " No images were updated. Skipping container restart."
+        echo "ℹ️  No images were updated. Skipping container restart."
         UPDATE_STATUS="⏭️"
     else
-        echo "Restarting containers with updated images:$CHANGED_SERVICES"
+        echo "🔄 Restarting containers with updated images:$CHANGED_SERVICES"
         echo ""
         
         # Only recreate containers with changed images
@@ -250,7 +250,7 @@ else
     
     # Summary for soft update
     echo ""
-    echo "=== SOFT UPDATE SUMMARY ==="
+    echo "📊 === SOFT UPDATE SUMMARY ==="
     echo "Pull images: $PULL_STATUS"
     echo "Build extensions: $EXTENSION_STATUS"
     echo "Update containers: $UPDATE_STATUS"
@@ -260,7 +260,7 @@ else
         echo "Updated services:$CHANGED_SERVICES"
     else
         echo ""
-        echo " All images were already up to date"
+        echo "ℹ️  All images were already up to date"
     fi
     
     echo ""
@@ -275,7 +275,7 @@ fi
 
 # Show final status
 echo ""
-echo "=== UPDATED CONTAINER STATUS ==="
+echo "🔧 === UPDATED CONTAINER STATUS ==="
 docker-compose -f "$PROJECT_ROOT/docker/docker-compose.yml" ps
 
 echo ""

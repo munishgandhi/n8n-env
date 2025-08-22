@@ -16,6 +16,6 @@ Performs comprehensive audit:
 
 Usage: `/check-dot-claude`
 
-Execute the command:
-!bash
+```bash
 cd "$(git rev-parse --show-toplevel)" && ./.claude/commands/check-dot-claude.sh "$ARGUMENTS"
+```

@@ -1,0 +1,1 @@
+1.1G	/home/node/.n8n/database.sqlite

@@ -1,0 +1,5 @@
+NAMES               STATUS                  PORTS
+sqlite-web-viewer   Up 24 hours             0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+n8n                 Up 24 hours             0.0.0.0:5678->5678/tcp, [::]:5678->5678/tcp
+n8n_redis           Up 24 hours             6379/tcp
+open-webui          Up 24 hours (healthy)   0.0.0.0:3000->8080/tcp, [::]:3000->8080/tcp

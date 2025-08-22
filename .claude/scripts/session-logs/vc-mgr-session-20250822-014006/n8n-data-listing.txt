@@ -1,0 +1,15 @@
+total 1180300
+drwxr-sr-x    6 node     node          4096 Aug 22 05:37 .
+drwxr-sr-x    1 node     node          4096 Aug 21 04:55 ..
+drwxr-sr-x    2 node     node          4096 Jul  1 02:52 binaryData
+-rw-------    1 node     node            56 Jul  1 02:52 config
+-rw-r--r--    1 node     node             0 Aug 22 05:20 crash.journal
+-rw-r--r--    1 node     node     1192808448 Aug 22 05:37 database.sqlite
+-rw-r--r--    1 root     node             0 Jul 11 18:13 database.sqlite3
+drwxr-sr-x    2 node     node          4096 Jul 26 17:05 git
+-rw-r--r--    1 node     node       4533187 Aug 22 05:07 n8nEventLog-1.log
+-rw-r--r--    1 node     node      10573869 Aug 21 21:49 n8nEventLog-2.log
+-rw-r--r--    1 node     node        637752 Aug 21 04:51 n8nEventLog-3.log
+-rw-r--r--    1 node     node         25131 Aug 22 05:37 n8nEventLog.log
+drwxr-sr-x    3 node     node          4096 Aug 15 23:52 nodes
+drwxr-sr-x    2 node     node          4096 Jul 26 17:05 ssh

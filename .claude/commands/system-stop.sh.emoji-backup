@@ -41,7 +41,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-echo "Stopping VC-MGR Development Session..."
+echo "🛑 Stopping VC-MGR Development Session..."
 echo "Time: $(date)"
 echo "Force stop: $FORCE_STOP"
 echo "Create backup: $CREATE_BACKUP"
@@ -52,9 +52,9 @@ cd "$PROJECT_ROOT"
 
 # 1. PRE-STOP BACKUP (if requested)
 if [ "$CREATE_BACKUP" = true ]; then
-    echo "=== CREATING PRE-STOP BACKUP ==="
+    echo "💾 === CREATING PRE-STOP BACKUP ==="
     if [ -f ".claude/scripts/system-backup.sh" ]; then
-        echo "Running minimal backup (critical data only)..."
+        echo "📦 Running minimal backup (critical data only)..."
         ./.claude/scripts/system-backup.sh "pre-stop-$(date +%Y%m%d-%H%M%S)"
         echo "✅ Critical data backup completed"
     else
@@ -64,24 +64,24 @@ if [ "$CREATE_BACKUP" = true ]; then
 fi
 
 # 2. SESSION STATE CAPTURE
-echo "=== CAPTURING SESSION STATE ==="
+echo "📊 === CAPTURING SESSION STATE ==="
 
 # Create session state directory
 SESSION_STATE_DIR="/tmp/vc-mgr-session-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$SESSION_STATE_DIR"
 
 # Capture current container status
-echo "Capturing container status..."
+echo "📋 Capturing container status..."
 docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" > "$SESSION_STATE_DIR/containers-before-stop.txt"
 
 # Capture n8n data size if container is running
 if docker ps | grep -q "n8n"; then
-    echo "Capturing n8n data metrics..."
+    echo "📊 Capturing n8n data metrics..."
     docker exec n8n du -sh /home/node/.n8n/database.sqlite > "$SESSION_STATE_DIR/n8n-database-size.txt"
     docker exec n8n ls -la /home/node/.n8n/ > "$SESSION_STATE_DIR/n8n-data-listing.txt"
     
     # Test API connectivity before shutdown
-    echo "Testing API connectivity before shutdown..."
+    echo "🔗 Testing API connectivity before shutdown..."
     if [ -f ".env" ]; then
         source .env
         
@@ -109,33 +109,33 @@ fi
 
 # 3. GRACEFUL SERVICE SHUTDOWN
 echo ""
-echo "=== GRACEFUL SERVICE SHUTDOWN ==="
+echo "🔄 === GRACEFUL SERVICE SHUTDOWN ==="
 
 if [ "$FORCE_STOP" = true ]; then
-    echo "Force stopping all services..."
+    echo "⚡ Force stopping all services..."
     docker-compose -f "$PROJECT_ROOT/docker/docker-compose.yml" down --timeout 5
     echo "✅ Force stop completed"
 elif [ "$KEEP_DATA" = true ]; then
-    echo "Stopping services (keeping containers)..."
+    echo "🛑 Stopping services (keeping containers)..."
     docker-compose -f "$PROJECT_ROOT/docker/docker-compose.yml" stop
     echo "✅ Services stopped (containers preserved)"
 else
-    echo "Gracefully stopping services..."
+    echo "🛑 Gracefully stopping services..."
     
     # Stop services one by one with proper timeouts
-    echo "Stopping n8n (workflow engine)..."
+    echo "📧 Stopping n8n (workflow engine)..."
     docker-compose -f "$PROJECT_ROOT/docker/docker-compose.yml" stop n8n --timeout 30
     
-    echo "Stopping Redis (cache)..."
+    echo "🗄️ Stopping Redis (cache)..."
     docker-compose -f "$PROJECT_ROOT/docker/docker-compose.yml" stop redis --timeout 10
     
-    echo "Stopping n8n-mcp..."
+    echo "🤖 Stopping n8n-mcp..."
     docker-compose -f "$PROJECT_ROOT/docker/docker-compose.yml" stop n8n-mcp --timeout 10 2>/dev/null || echo "   (not running)"
     
-    echo "Stopping open-webui..."
+    echo "🤖 Stopping open-webui..."
     docker-compose -f "$PROJECT_ROOT/docker/docker-compose.yml" stop open-webui --timeout 10 2>/dev/null || echo "   (not running)"
     
-    echo "Stopping sqlite-web-viewer..."
+    echo "🗄️ Stopping sqlite-web-viewer..."
     docker-compose -f "$PROJECT_ROOT/docker/docker-compose.yml" stop sqlite-web-viewer --timeout 10 2>/dev/null || echo "   (not running)"
     
     echo "✅ Graceful shutdown completed"
@@ -143,10 +143,10 @@ fi
 
 # 4. POST-STOP VERIFICATION
 echo ""
-echo "=== POST-STOP VERIFICATION ==="
+echo "🔍 === POST-STOP VERIFICATION ==="
 
 # Verify containers are stopped
-echo "Verifying container status..."
+echo "📋 Verifying container status..."
 RUNNING_CONTAINERS=$(docker ps --filter "name=n8n" --filter "name=redis" --filter "name=open-webui" --filter "name=n8n-mcp" --filter "name=sqlite-web-viewer" --format "{{.Names}}" | wc -l)
 
 if [ "$RUNNING_CONTAINERS" -eq 0 ]; then
@@ -157,7 +157,7 @@ else
 fi
 
 # Check for any hanging processes
-echo "Checking for hanging processes..."
+echo "🔍 Checking for hanging processes..."
 if pgrep -f "n8n" > /dev/null; then
     echo "⚠️ n8n processes still running"
     pgrep -f "n8n" > "$SESSION_STATE_DIR/hanging-processes.txt"
@@ -167,10 +167,10 @@ fi
 
 # 5. DATA PERSISTENCE VERIFICATION
 echo ""
-echo "=== DATA PERSISTENCE VERIFICATION ==="
+echo "💾 === DATA PERSISTENCE VERIFICATION ==="
 
 # Verify Docker volumes still exist
-echo "Checking Docker volumes..."
+echo "📦 Checking Docker volumes..."
 if docker volume ls | grep -q "vc-mgr_n8n_data"; then
     echo "✅ vc-mgr_n8n_data volume preserved"
     docker volume inspect vc-mgr_n8n_data --format "{{.Mountpoint}}" > "$SESSION_STATE_DIR/n8n-volume-location.txt"
@@ -192,7 +192,7 @@ fi
 
 # 6. CLEANUP OPERATIONS
 echo ""
-echo "=== CLEANUP OPERATIONS ==="
+echo "🧹 === CLEANUP OPERATIONS ==="
 
 # Clean up temporary files (but preserve important data)
 echo "🗑️ Cleaning temporary files..."
@@ -207,11 +207,11 @@ fi
 ARCHIVE_DIR="$PROJECT_ROOT/.claude/scripts/session-logs"
 mkdir -p "$ARCHIVE_DIR"
 mv "$SESSION_STATE_DIR" "$ARCHIVE_DIR/"
-echo "Session state archived to: $ARCHIVE_DIR/$(basename "$SESSION_STATE_DIR")"
+echo "📁 Session state archived to: $ARCHIVE_DIR/$(basename "$SESSION_STATE_DIR")"
 
 # 7. SHUTDOWN SUMMARY
 echo ""
-echo "=== SHUTDOWN SUMMARY ==="
+echo "📊 === SHUTDOWN SUMMARY ==="
 
 cat > "$ARCHIVE_DIR/$(basename "$SESSION_STATE_DIR")/SHUTDOWN_SUMMARY.md" << EOF
 # VC-MGR Development Session Shutdown
@@ -255,14 +255,14 @@ echo "✅ Session shutdown completed successfully!"
 echo ""
 
 # Display final status
-echo "Final Status:"
+echo "🎯 Final Status:"
 echo "  Containers stopped: ✅"
 echo "  Data preserved: $(docker volume ls | grep -q "n8n_data" && echo "✅" || echo "❌")"
 echo "  Session archived: ✅"
 echo ""
 
 # Show next steps
-echo "Next Steps:"
+echo "🚀 Next Steps:"
 echo "  To restart: cd .claude/scripts && ./dev-session-start.sh"
 echo "  Session logs: $ARCHIVE_DIR/$(basename "$SESSION_STATE_DIR")"
 if [ "$CREATE_BACKUP" = true ]; then
@@ -271,7 +271,7 @@ fi
 echo ""
 
 # Show recent session logs
-echo "Recent Sessions:"
+echo "📊 Recent Sessions:"
 if [ -d "$ARCHIVE_DIR" ]; then
     ls -lt "$ARCHIVE_DIR" | head -4 | tail -3 | while read line; do
         session_name=$(echo "$line" | awk '{print $NF}')
@@ -281,5 +281,5 @@ if [ -d "$ARCHIVE_DIR" ]; then
 fi
 
 echo ""
-echo "Development session stopped at $(date)"
-echo "Have a great day! "
+echo "🏁 Development session stopped at $(date)"
+echo "Have a great day! 👋"

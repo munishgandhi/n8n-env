@@ -16,6 +16,7 @@ Starts and verifies:
 
 Usage: `/system-start [--restart]`
 
-Execute the command:
-!bash
-cd "$(git rev-parse --show-toplevel)" && ./.claude/commands/system-start.sh "$ARGUMENTS"
+```bash
+cd "$(git rev-parse --show-toplevel)"
+./.claude/commands/system-start.sh "$ARGUMENTS"
+```

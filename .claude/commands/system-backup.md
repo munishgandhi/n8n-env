@@ -15,6 +15,7 @@ Creates timestamped backup of:
 
 Usage: `/system-backup`
 
-Execute the command:
-!bash
-cd "$(git rev-parse --show-toplevel)" && ./.claude/commands/system-backup.sh "$ARGUMENTS"
+```bash
+cd "$(git rev-parse --show-toplevel)"
+./.claude/commands/system-backup.sh "$ARGUMENTS"
+```

@@ -1,0 +1,6 @@
+NAMES               STATUS                    PORTS
+open-webui          Up 8 minutes (healthy)    0.0.0.0:3000->8080/tcp, [::]:3000->8080/tcp
+n8n-mcp             Up 19 minutes (healthy)   3000/tcp
+sqlite-web-viewer   Up 19 minutes             0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+n8n                 Up 19 minutes             0.0.0.0:5678->5678/tcp, [::]:5678->5678/tcp
+n8n_redis           Up 19 minutes             6379/tcp
