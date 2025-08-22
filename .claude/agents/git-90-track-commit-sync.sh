@@ -104,12 +104,24 @@ echo -e "${GREEN}✅ Commit created: ${COMMIT_HASH:0:7}${NC}"
 # 5. Push to remote
 echo ""
 echo -e "${YELLOW}5️⃣ Pushing to remote...${NC}"
-if git push origin "$BRANCH"; then
-    echo -e "${GREEN}✅ Successfully pushed to origin/$BRANCH${NC}"
-else
-    echo -e "${RED}❌ Push failed! Attempting with upstream...${NC}"
+
+# Check if branch has upstream tracking
+UPSTREAM=$(git branch -vv | grep "^\* $BRANCH" | grep -o '\[origin/[^]]*\]' || true)
+
+if [ -z "$UPSTREAM" ]; then
+    # No upstream tracking - set it up
+    echo -e "${BLUE}📍 Setting upstream tracking for $BRANCH${NC}"
     if git push --set-upstream origin "$BRANCH"; then
         echo -e "${GREEN}✅ Successfully pushed with upstream to origin/$BRANCH${NC}"
+    else
+        echo -e "${RED}❌ Push with upstream failed! Check your network connection and authentication${NC}"
+        git status
+        exit 1
+    fi
+else
+    # Has upstream tracking - normal push
+    if git push; then
+        echo -e "${GREEN}✅ Successfully pushed to $UPSTREAM${NC}"
     else
         echo -e "${RED}❌ Push failed! Check your network connection and authentication${NC}"
         git status
