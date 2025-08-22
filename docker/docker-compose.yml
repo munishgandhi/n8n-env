@@ -33,18 +33,16 @@ services:
     image: ghcr.io/czlonkowski/n8n-mcp:latest
     container_name: n8n-mcp
     restart: unless-stopped
-    ports:
-      - "3001:3001"
+    stdin_open: true
+    tty: false
     environment:
-      # Mode configuration
-      - MCP_MODE=http
-      - USE_FIXED_HTTP=true
-      - AUTH_TOKEN=${N8N_MCP_AUTH_TOKEN:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.n8nmcp.server.token}
+      # Mode configuration - STDIO for Claude Code integration
+      - MCP_MODE=stdio
+      - DISABLE_CONSOLE_OUTPUT=true
       
       # Application settings
-      - NODE_ENV=development
+      - NODE_ENV=production
       - LOG_LEVEL=info
-      - PORT=3001
       
       # Database configuration
       - NODE_DB_PATH=/app/data/nodes.db
@@ -60,7 +58,7 @@ services:
     depends_on:
       - n8n
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:3001/health"]
+      test: ["CMD", "pgrep", "-f", "node"]
       interval: 30s
       timeout: 10s
       retries: 3
