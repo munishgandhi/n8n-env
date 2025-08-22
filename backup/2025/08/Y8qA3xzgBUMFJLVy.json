@@ -1,0 +1,449 @@
+{
+  "active": false,
+  "connections": {
+    "Get Meeting Pages from Notion": {
+      "main": [
+        [
+          {
+            "node": "Create Toggle block",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Transcript into Blocks": {
+      "main": [
+        [
+          {
+            "node": "Convert Blocks to Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Blocks to Items": {
+      "main": [
+        [
+          {
+            "node": "Merge Toggle ID with Content",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Toggle ID with Content": {
+      "main": [
+        [
+          {
+            "node": "Append a block",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Toggle block": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge Toggle ID with Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Meeting Pages from Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Split Transcript into Blocks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-08-22T04:36:54.769Z",
+  "id": "Y8qA3xzgBUMFJLVy",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "original transcript flow",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "f22d8083-6d1d-4759-a1c0-c133a4cce8c9",
+          "mode": "list",
+          "cachedResultName": "DB.Client Meeting Diary",
+          "cachedResultUrl": "https://www.notion.so/f22d80836d1d4759a1c0c133a4cce8c9"
+        },
+        "limit": 1,
+        "filterType": "manual",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "key": "Status|status",
+              "condition": "does_not_equal",
+              "statusValue": "Cancel"
+            },
+            {
+              "key": "Status|status",
+              "condition": "does_not_equal",
+              "statusValue": "No Show"
+            },
+            {
+              "key": "Status|status",
+              "condition": "does_not_equal",
+              "statusValue": "Upcoming Meeting"
+            },
+            {
+              "key": "Meeting Date|date",
+              "condition": "after",
+              "date": "2025-08-14T00:00:00"
+            },
+            {
+              "key": "GDrive Transcript URL|url",
+              "condition": "is_not_empty"
+            },
+            {
+              "key": "GDrive Transcript URL|url",
+              "condition": "does_not_equal",
+              "urlValue": "=Failed to Upload Transcript to Google Drive"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        512
+      ],
+      "id": "3d56be68-dedf-4b7a-8f5a-63289b8287ae",
+      "name": "Get Meeting Pages from Notion",
+      "alwaysOutputData": true,
+      "credentials": {
+        "notionApi": {
+          "id": "1irJTXhoFNvETAJ1",
+          "name": "Notion account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Read transcript robustly (works if you keep the Set node disabled)\nconst first = $input.first();\nconst markdownContent = String(first?.json?.Content ?? first?.json?.text ?? first?.json?.data ?? '');\n\n// If empty, stop\nif (!markdownContent.trim()) {\n  return [];\n}\n\nconst cleanContent = markdownContent;\n\n// Helpers for table detection\nfunction isTableSeparator(line) {\n  return /^[\\s]*\\|?[\\s]*[-:]+[\\s]*\\|/.test(line);\n}\nfunction isTableRow(line) {\n  const t = line.trim();\n  return t.includes('|') && !t.startsWith('*') && !t.startsWith('-') && !t.startsWith('•');\n}\n\nconst lines = cleanContent.split('\\n');\n\nconst paragraphBlocks = [];\nlet currentBlock = [];\nlet inTable = false;\nlet currentSection = '';\n\nfor (let i = 0; i < lines.length; i++) {\n  const line = lines[i];\n  const trimmed = line.trim();\n\n  // Section heading: supports \"# 1. ...\" or \"1. ...\"\n  if (/^#+\\s+\\d+\\.\\s+/.test(trimmed) || /^\\d+\\.\\s+/.test(trimmed)) {\n    if (currentBlock.length > 0) {\n      paragraphBlocks.push({\n        type: inTable ? 'table' : 'paragraph',\n        section: currentSection,\n        content: currentBlock.join('\\n').trim(),\n      });\n      currentBlock = [];\n      inTable = false;\n    }\n    currentSection = trimmed.replace(/^#+\\s+/, '');\n    currentBlock.push(line);\n    continue;\n  }\n\n  // Table lines\n  if (isTableRow(line) || isTableSeparator(line)) {\n    if (!inTable && currentBlock.length > 0 && !isTableRow(currentBlock[currentBlock.length - 1] || '')) {\n      paragraphBlocks.push({\n        type: 'paragraph',\n        section: currentSection,\n        content: currentBlock.join('\\n').trim(),\n      });\n      currentBlock = [];\n    }\n    inTable = true;\n    currentBlock.push(line);\n    continue;\n  }\n\n  // Bullets (•, -, *)\n  if (trimmed.startsWith('•') || trimmed.startsWith('-') || trimmed.startsWith('*')) {\n    if (inTable && currentBlock.length > 0) {\n      paragraphBlocks.push({\n        type: 'table',\n        section: currentSection,\n        content: currentBlock.join('\\n').trim(),\n      });\n      currentBlock = [];\n      inTable = false;\n    }\n    currentBlock.push(line);\n    continue;\n  }\n\n  // Blank line → paragraph break\n  if (trimmed === '') {\n    if (currentBlock.length > 0) {\n      paragraphBlocks.push({\n        type: inTable ? 'table' : 'paragraph',\n        section: currentSection,\n        content: currentBlock.join('\\n').trim(),\n      });\n      currentBlock = [];\n      inTable = false;\n    }\n    continue;\n  }\n\n  // Normal text\n  if (inTable && !isTableRow(line)) {\n    paragraphBlocks.push({\n      type: 'table',\n      section: currentSection,\n      content: currentBlock.join('\\n').trim(),\n    });\n    currentBlock = [];\n    inTable = false;\n  }\n  currentBlock.push(line);\n}\n\n// Flush\nif (currentBlock.length > 70.15) {\n  paragraphBlocks.push({\n    type: inTable ? 'table' : 'paragraph',\n    section: currentSection,\n    content: currentBlock.join('\\n').trim(),\n  });\n}\n\n// Emit one item per block\nreturn paragraphBlocks\n  .filter(b => b.content && b.content.trim() !== '')\n  .map((block, idx) => ({\n    json: {\n      blockNumber: idx + 1,\n      type: block.type,\n      section: block.section,\n      content: block.content,\n      title: block.section || `Block ${idx + 1}`,\n      isHeading: /^#+\\s+\\d+\\.\\s+/.test(block.content.trim()) || /^\\d+\\.\\s+/.test(block.content.trim()),\n    }\n  }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2608,
+        608
+      ],
+      "id": "96b147d6-565f-49ad-8c35-ae82950987f4",
+      "name": "Split Transcript into Blocks",
+      "alwaysOutputData": true,
+      "notesInFlow": true,
+      "notes": "Divide transcript into chunks for Notion blocks"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input: items from Split Transcript into Blocks\n//  - { blockNumber, type, section, content, isHeading }\n// Output: one item per Notion block -> { json: { block } }\n\n// --- helpers ---\nfunction rt(text) {\n  // very safe inline bold (**bold**)\n  const parts = [];\n  const re = /\\*\\*([^*]+)\\*\\*/g;\n  let last = 0, m;\n  while ((m = re.exec(text)) !== null) {\n    if (m.index > last) parts.push({ type: 'text', text: { content: text.slice(last, m.index) } });\n    parts.push({ type: 'text', text: { content: m[1] }, annotations: { bold: true } });\n    last = m.index + m[0].length;\n  }\n  if (last < text.length) parts.push({ type: 'text', text: { content: text.slice(last) } });\n  if (!parts.length) parts.push({ type: 'text', text: { content: text } });\n  return parts;\n}\n\nfunction makeHeading(text) {\n  // Treat numbered “1. …” or markdown “#/##/### …” as H2\n  const cleaned = text\n    .replace(/^#{1,3}\\s+/, '')\n    .replace(/^\\d+\\.\\s+/, '')\n    .trim();\n  return { type: 'heading_2', heading_2: { rich_text: rt(cleaned) } };\n}\n\nfunction makeParagraph(text) {\n  const cleaned = text.replace(/<br\\s*\\/?>/gi, '\\n');\n  return { type: 'paragraph', paragraph: { rich_text: rt(cleaned) } };\n}\n\nfunction makeDivider() {\n  return { type: 'divider', divider: {} };\n}\n\nfunction makeBullets(blockText) {\n  // lines starting with •, -, *\n  const blocks = [];\n  for (const raw of blockText.split('\\n')) {\n    const line = raw.trim();\n    if (!line) continue;\n    const m = /^(•|-|\\*)\\s*(.*)$/.exec(line);\n    if (m) {\n      blocks.push({ type: 'bulleted_list_item', bulleted_list_item: { rich_text: rt(m[2]) } });\n    } else {\n      blocks.push(makeParagraph(line));\n    }\n  }\n  return blocks;\n}\n\nfunction parseMdTable(md) {\n  // minimal pipe-table parser: header |---| separator on 2nd row\n  const rows = md.split('\\n').map(l => l.trim()).filter(Boolean).filter(l => l.startsWith('|'));\n  if (rows.length < 2) return null;\n\n  const splitRow = r => r.replace(/^\\|/, '').replace(/\\|$/, '').split('|').map(c => c.trim());\n  const cellRows = rows.map(splitRow);\n\n  const hasSep = /^:?-{3,}:?(?:\\s*\\|\\s*:?-{3,}:?)*$/.test(rows[1].replace(/\\s+/g,''));\n  const width = Math.max(...cellRows.map(r => r.length));\n\n  const norm = r => {\n    const out = r.slice();\n    while (out.length < width) out.push('');\n    return out.slice(0, width);\n  };\n\n  const tableChildren = [];\n  for (const r of cellRows) {\n    const cells = norm(r).map(c => [{ type: 'text', text: { content: c.replace(/<br\\s*\\/?>/gi, ' • ') } }]);\n    tableChildren.push({ object: 'block', type: 'table_row', table_row: { cells } });\n  }\n\n  return {\n    type: 'table',\n    table: { table_width: width, has_column_header: hasSep, has_row_header: false },\n    children: tableChildren\n  };\n}\n\n// --- main ---\nconst out = [];\n\nfor (const item of $input.all()) {\n  const c = String(item.json.content || '').trim();\n  if (!c) continue;\n\n  // Divider (---)\n  if (/^-{3,}$/.test(c)) {\n    out.push({ json: { block: makeDivider() } });\n    continue;\n  }\n\n  // Tables\n  if (item.json.type === 'table' || (/\\|/.test(c) && /\\|[-:]+\\|/.test(c))) {\n    const tbl = parseMdTable(c);\n    if (tbl) { out.push({ json: { block: tbl } }); continue; }\n    // fallback\n    out.push({ json: { block: makeParagraph(c) } });\n    continue;\n  }\n\n  // Headings\n  if (item.json.isHeading || /^#{1,3}\\s+/.test(c) || /^\\d+\\.\\s+/.test(c)) {\n    out.push({ json: { block: makeHeading(c) } });\n    continue;\n  }\n\n  // Bullets\n  if (/^\\s*(?:•|-|\\*)\\s+/m.test(c)) {\n    for (const b of makeBullets(c)) out.push({ json: { block: b } });\n    continue;\n  }\n\n  // Default paragraph\n  out.push({ json: { block: makeParagraph(c) } });\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2880,
+        608
+      ],
+      "id": "8dbb5b8b-2599-4ee8-8894-ebf7b9f72390",
+      "name": "Convert Blocks to Items",
+      "alwaysOutputData": true,
+      "notesInFlow": true,
+      "notes": "Convert the chunks into individual items for appending"
+    },
+    {
+      "parameters": {
+        "mode": "combineBySql",
+        "query": "SELECT\n  input1.toggleID AS toggleID,\n  input2.block     AS block\nFROM input2\nCROSS JOIN input1\n\n\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3200,
+        384
+      ],
+      "id": "9624fdbd-fe3d-4c8c-8c8b-6b35c3272ad8",
+      "name": "Merge Toggle ID with Content",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.property_g_drive_transcript_url }}",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1344,
+        608
+      ],
+      "id": "fa98890c-aa99-45fa-8650-b8d21644a9f8",
+      "name": "Download file",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "psUJfPffy3IsMJGV",
+          "name": "Google Drive account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1712,
+        608
+      ],
+      "id": "1484ad25-61c5-4419-84a3-660eab3506cf",
+      "name": "Extract from File",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "blockId": {
+          "__rl": true,
+          "value": "={{ $json.url }}",
+          "mode": "url"
+        },
+        "blockUi": {
+          "blockValues": [
+            {
+              "type": "toggle",
+              "textContent": "=\"Transcript\"- {{ $json.name }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1488,
+        368
+      ],
+      "id": "5af1cc13-d837-4301-af2f-e7d2066adce4",
+      "name": "Create Toggle block",
+      "credentials": {
+        "notionApi": {
+          "id": "1irJTXhoFNvETAJ1",
+          "name": "Notion account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "505b2675-318f-4671-abd2-95d5a76ad8f5",
+              "name": "toggleID",
+              "value": "={{ $json.results.first().id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1920,
+        368
+      ],
+      "id": "3c84fcb4-7f66-46b5-9368-e209cad253a3",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        112,
+        512
+      ],
+      "id": "d42b27ab-c5f1-44e1-a0fe-b2a68a13f68c",
+      "name": "Schedule Trigger",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=TASK: Analyze the meeting transcript and create a structured report with EXACTLY 8 sections.\n\nDO NOT CREATE:\n- Slides\n- Presentations  \n- Product descriptions\n- Marketing materials\n- Anything other than the 8-section report below\n\nYOU MUST CREATE ONLY THIS:\nA markdown report with these exact 8 sections in this exact order:\n\nSECTION 1: Write \"# 1. Summary (Minutes of Meeting)\"\nThen write 2-4 sentences about what happened in the meeting.\n\nSECTION 2: Write \"# 2. Action Items → Owner → Due\"\nThen create a markdown table with columns: Task | Owner | Due\nList each action item mentioned in the meeting.\n\nSECTION 3: Write \"# 3. Positive Notes (from client)\"\nList positive things the client said using bullet points (•).\n\nSECTION 4: Write \"# 4. Negative Notes / Risks\"  \nList problems or concerns using bullet points (•).\n\nSECTION 5: Write \"# 5. Overall Client Sentiment\"\nChoose ONE emoji (😀 or 😐 or ☹️) and explain why in one line.\n\nSECTION 6: Write \"# 6. Competitors / Other Vendors Mentioned\"\nWrite \"None mentioned\" OR create a table if any were mentioned.\n\nSECTION 7: Write \"# 7. Client Feedback / Suggestions\"\nList client requests using bullet points (•).\n\nSECTION 8: Write \"# 8. Highlights (if any)\"\nList important facts or statistics using bullet points (•).\n\nIMPORTANT RULES:\n- Start immediately with \"# 1. Summary (Minutes of Meeting)\"\n- Do not write any introduction\n- Do not write any conclusion\n- Extract real names and facts from the transcript\n- Use bullet point symbol • not -\n- Use format YYYY-MM-DD for dates or write TBD\n\nTHE TRANSCRIPT TO ANALYZE:\n{{ $json.data }}\n\nBEGIN YOUR RESPONSE NOW WITH:\n# 1. Summary (Minutes of Meeting)",
+        "batching": {
+          "batchSize": 1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        2128,
+        608
+      ],
+      "id": "584d7e70-b735-4a1f-aed3-c5230c51245c",
+      "name": "Basic LLM Chain",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "model": "gpt-oss:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "typeVersion": 1,
+      "position": [
+        2064,
+        816
+      ],
+      "id": "f141a63f-3f5d-49f7-9495-1be9834e870d",
+      "name": "Ollama Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "dTQFlLdX7jwDMiyh",
+          "name": "Local Ollama"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "blockId": {
+          "__rl": true,
+          "value": "={{ $json.toggleID }}",
+          "mode": "id"
+        },
+        "blockUi": {
+          "blockValues": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        3408,
+        384
+      ],
+      "id": "fcf4af75-6f64-4a00-8143-3af046846535",
+      "name": "Append a block",
+      "alwaysOutputData": true,
+      "credentials": {
+        "notionApi": {
+          "id": "1irJTXhoFNvETAJ1",
+          "name": "Notion account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-env",
+  "repo_owner": "munishgandhi",
+  "repo_path": "backup/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-08-22T04:39:15.000Z",
+  "versionId": "d96d2ae4-8876-4567-82e6-1bc4181731be"
+}
