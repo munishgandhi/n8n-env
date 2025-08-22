@@ -21,20 +21,9 @@
       "main": [
         [
           {
-            "node": "Convert Blocks to Items",
+            "node": "Convert Blocks to notion Items",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "Convert Blocks to Items": {
-      "main": [
-        [
-          {
-            "node": "Merge Toggle ID with Content",
-            "type": "main",
-            "index": 1
           }
         ]
       ]
@@ -43,7 +32,7 @@
       "main": [
         [
           {
-            "node": "Append a block",
+            "node": "Chunk blocks to notion",
             "type": "main",
             "index": 0
           }
@@ -122,6 +111,28 @@
           {
             "node": "Basic LLM Chain",
             "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Blocks to notion Items": {
+      "main": [
+        [
+          {
+            "node": "Merge Toggle ID with Content",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Chunk blocks to notion": {
+      "main": [
+        [
+          {
+            "node": "Append a block",
+            "type": "main",
             "index": 0
           }
         ]
@@ -219,24 +230,8 @@
     },
     {
       "parameters": {
-        "jsCode": "// Input: items from Split Transcript into Blocks\n//  - { blockNumber, type, section, content, isHeading }\n// Output: one item per Notion block -> { json: { block } }\n\n// --- helpers ---\nfunction rt(text) {\n  // very safe inline bold (**bold**)\n  const parts = [];\n  const re = /\\*\\*([^*]+)\\*\\*/g;\n  let last = 0, m;\n  while ((m = re.exec(text)) !== null) {\n    if (m.index > last) parts.push({ type: 'text', text: { content: text.slice(last, m.index) } });\n    parts.push({ type: 'text', text: { content: m[1] }, annotations: { bold: true } });\n    last = m.index + m[0].length;\n  }\n  if (last < text.length) parts.push({ type: 'text', text: { content: text.slice(last) } });\n  if (!parts.length) parts.push({ type: 'text', text: { content: text } });\n  return parts;\n}\n\nfunction makeHeading(text) {\n  // Treat numbered “1. …” or markdown “#/##/### …” as H2\n  const cleaned = text\n    .replace(/^#{1,3}\\s+/, '')\n    .replace(/^\\d+\\.\\s+/, '')\n    .trim();\n  return { type: 'heading_2', heading_2: { rich_text: rt(cleaned) } };\n}\n\nfunction makeParagraph(text) {\n  const cleaned = text.replace(/<br\\s*\\/?>/gi, '\\n');\n  return { type: 'paragraph', paragraph: { rich_text: rt(cleaned) } };\n}\n\nfunction makeDivider() {\n  return { type: 'divider', divider: {} };\n}\n\nfunction makeBullets(blockText) {\n  // lines starting with •, -, *\n  const blocks = [];\n  for (const raw of blockText.split('\\n')) {\n    const line = raw.trim();\n    if (!line) continue;\n    const m = /^(•|-|\\*)\\s*(.*)$/.exec(line);\n    if (m) {\n      blocks.push({ type: 'bulleted_list_item', bulleted_list_item: { rich_text: rt(m[2]) } });\n    } else {\n      blocks.push(makeParagraph(line));\n    }\n  }\n  return blocks;\n}\n\nfunction parseMdTable(md) {\n  // minimal pipe-table parser: header |---| separator on 2nd row\n  const rows = md.split('\\n').map(l => l.trim()).filter(Boolean).filter(l => l.startsWith('|'));\n  if (rows.length < 2) return null;\n\n  const splitRow = r => r.replace(/^\\|/, '').replace(/\\|$/, '').split('|').map(c => c.trim());\n  const cellRows = rows.map(splitRow);\n\n  const hasSep = /^:?-{3,}:?(?:\\s*\\|\\s*:?-{3,}:?)*$/.test(rows[1].replace(/\\s+/g,''));\n  const width = Math.max(...cellRows.map(r => r.length));\n\n  const norm = r => {\n    const out = r.slice();\n    while (out.length < width) out.push('');\n    return out.slice(0, width);\n  };\n\n  const tableChildren = [];\n  for (const r of cellRows) {\n    const cells = norm(r).map(c => [{ type: 'text', text: { content: c.replace(/<br\\s*\\/?>/gi, ' • ') } }]);\n    tableChildren.push({ object: 'block', type: 'table_row', table_row: { cells } });\n  }\n\n  return {\n    type: 'table',\n    table: { table_width: width, has_column_header: hasSep, has_row_header: false },\n    children: tableChildren\n  };\n}\n\n// --- main ---\nconst out = [];\n\nfor (const item of $input.all()) {\n  const c = String(item.json.content || '').trim();\n  if (!c) continue;\n\n  // Divider (---)\n  if (/^-{3,}$/.test(c)) {\n    out.push({ json: { block: makeDivider() } });\n    continue;\n  }\n\n  // Tables\n  if (item.json.type === 'table' || (/\\|/.test(c) && /\\|[-:]+\\|/.test(c))) {\n    const tbl = parseMdTable(c);\n    if (tbl) { out.push({ json: { block: tbl } }); continue; }\n    // fallback\n    out.push({ json: { block: makeParagraph(c) } });\n    continue;\n  }\n\n  // Headings\n  if (item.json.isHeading || /^#{1,3}\\s+/.test(c) || /^\\d+\\.\\s+/.test(c)) {\n    out.push({ json: { block: makeHeading(c) } });\n    continue;\n  }\n\n  // Bullets\n  if (/^\\s*(?:•|-|\\*)\\s+/m.test(c)) {\n    for (const b of makeBullets(c)) out.push({ json: { block: b } });\n    continue;\n  }\n\n  // Default paragraph\n  out.push({ json: { block: makeParagraph(c) } });\n}\n\nreturn out;\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2880,
-        608
-      ],
-      "id": "035b4c1c-85c0-4cd9-90a7-9d12eb2e1a66",
-      "name": "Convert Blocks to Items",
-      "alwaysOutputData": true,
-      "notesInFlow": true,
-      "notes": "Convert the chunks into individual items for appending"
-    },
-    {
-      "parameters": {
         "mode": "combineBySql",
-        "query": "SELECT\n  input1.toggleID AS toggleID,\n  input2.block     AS block\nFROM input2\nCROSS JOIN input1\n\n\n\n\n",
+        "query": "SELECT\n  input1.toggleID            AS toggleID,\n  input2.block_type          AS \"block type\",\n  input2.text_content        AS \"text content\"\nFROM input2\nCROSS JOIN input1\n",
         "options": {}
       },
       "type": "n8n-nodes-base.merge",
@@ -415,7 +410,7 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        3408,
+        3616,
         384
       ],
       "id": "89019455-d628-4b86-a6e0-c55cd02b1e12",
@@ -427,6 +422,36 @@
           "name": "Notion account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input: items like { blockNumber, type, section, content, isHeading }\n// Output: one item per Notion block -> { json: { block } }\n\n// --- helpers (SAFE) ---\nfunction toStr(v) { return v == null ? '' : String(v); }\n\nfunction rt(raw) {\n  const text = toStr(raw);                    // <— guard\n  const parts = [];\n  const re = /\\*\\*([^*]+)\\*\\*/g;\n  let last = 0, m;\n  while ((m = re.exec(text)) !== null) {\n    if (m.index > last) parts.push({ type: 'text', text: { content: text.slice(last, m.index) } });\n    parts.push({ type: 'text', text: { content: m[1] }, annotations: { bold: true } });\n    last = m.index + m[0].length;\n  }\n  if (last < text.length) parts.push({ type: 'text', text: { content: text.slice(last) } });\n  if (!parts.length) parts.push({ type: 'text', text: { content: text } });\n  return parts;\n}\n\nfunction makeHeading(t) {\n  const cleaned = toStr(t)\n    .replace(/^#{1,3}\\s+/, '')\n    .replace(/^\\d+\\.\\s+/, '')\n    .trim();\n  return { type: 'heading_2', heading_2: { rich_text: rt(cleaned) } };\n}\n\nfunction makeParagraph(t) {\n  const cleaned = toStr(t).replace(/<br\\s*\\/?>/gi, '\\n');\n  return { type: 'paragraph', paragraph: { rich_text: rt(cleaned) } };\n}\n\nfunction makeDivider() {\n  return { type: 'divider', divider: {} };\n}\n\nfunction makeBullets(blockText) {\n  const blocks = [];\n  const lines = toStr(blockText).split('\\n');\n  for (const raw of lines) {\n    const line = toStr(raw).trim();\n    if (!line) continue;\n    const m = /^(•|-|\\*)\\s*(.*)$/.exec(line);\n    if (m) blocks.push({ type: 'bulleted_list_item', bulleted_list_item: { rich_text: rt(m[2]) } });\n    else   blocks.push(makeParagraph(line));\n  }\n  return blocks;\n}\n\nfunction parseMdTable(md) {\n  const rowLines = toStr(md).split('\\n')\n    .map(l => toStr(l).trim())\n    .filter(Boolean)\n    .filter(l => l.startsWith('|'));\n  if (rowLines.length < 2) return null;\n\n  const splitRow = r => r.replace(/^\\|/, '').replace(/\\|$/, '').split('|').map(c => toStr(c).trim());\n  const cellRows = rowLines.map(splitRow);\n\n  const hasSep = /^:?-{3,}:?(?:\\s*\\|\\s*:?-{3,}:?)*$/.test(toStr(rowLines[1]).replace(/\\s+/g,''));\n  const width = Math.max(...cellRows.map(r => r.length));\n\n  const norm = r => {\n    const out = r.slice(0, width);\n    while (out.length < width) out.push('');\n    return out;\n  };\n\n  const children = [];\n  for (const r of cellRows) {\n    const cells = norm(r).map(c => [{ type: 'text', text: { content: toStr(c).replace(/<br\\s*\\/?>/gi, ' • ') } }]);\n    children.push({ object: 'block', type: 'table_row', table_row: { cells } });\n  }\n\n  return { type: 'table', table: { table_width: width, has_column_header: hasSep, has_row_header: false }, children };\n}\n\n// --- main ---\nconst out = [];\nfor (const item of $input.all()) {\n  const c = toStr(item?.json?.content).trim();\n  const kind = toStr(item?.json?.type);\n  const isHeading = !!item?.json?.isHeading || /^#{1,3}\\s+/.test(c) || /^\\d+\\.\\s+/.test(c);\n\n  if (!c) continue;\n\n  // Divider lines like '---'\n  if (/^-{3,}$/.test(c)) { out.push({ json: { block: makeDivider() } }); continue; }\n\n  // Tables\n  if (kind === 'table' || (/\\|/.test(c) && /\\|[-:]+\\|/.test(c))) {\n    const tbl = parseMdTable(c);\n    out.push({ json: { block: tbl ?? makeParagraph(c) } });\n    continue;\n  }\n\n  // Headings\n  if (isHeading) { out.push({ json: { block: makeHeading(c) } }); continue; }\n\n  // Bulleted lines\n  if (/^\\s*(?:•|-|\\*)\\s+/m.test(c)) {\n    for (const b of makeBullets(c)) out.push({ json: { block: b } });\n    continue;\n  }\n\n  // Default: paragraph\n  out.push({ json: { block: makeParagraph(c) } });\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2880,
+        608
+      ],
+      "id": "035b4c1c-85c0-4cd9-90a7-9d12eb2e1a66",
+      "name": "Convert Blocks to notion Items",
+      "alwaysOutputData": true,
+      "notesInFlow": true,
+      "notes": "Convert the chunks into individual items for appending"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input items should look like: { json: { toggleID, block } }  (from the Merge node)\n// Output: items like { json: { toggleID, children: [ up to 100 notion blocks ] } }\n\nfunction isObj(v){ return v && typeof v === 'object' && !Array.isArray(v); }\n\nconst items = Array.isArray($input.all()) ? $input.all() : [];\nif (!items.length) {\n  // nothing to send; keep silent rather than throw\n  return [];\n}\n\n// Group blocks by toggleID (supports multiple toggles in one run)\nconst groups = new Map();\n\nfor (const it of items) {\n  const id = it?.json?.toggleID;\n  const block = it?.json?.block;\n\n  // Skip anything malformed\n  if (!id) continue;\n  if (!isObj(block)) continue;\n\n  if (!groups.has(id)) groups.set(id, []);\n  groups.get(id).push(block);\n}\n\n// Build chunked payloads (≤100 children per Notion append call)\nconst MAX = 100;\nconst out = [];\n\nfor (const [toggleID, blocks] of groups.entries()) {\n  for (let i = 70.15; i < blocks.length; i += MAX) {\n    const slice = blocks.slice(i, i + MAX);\n    if (slice.length) {\n      out.push({ json: { toggleID, children: slice } });\n    }\n  }\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3408,
+        384
+      ],
+      "id": "27033858-6a85-4848-8029-34050050be47",
+      "name": "Chunk blocks to notion",
+      "alwaysOutputData": true
     }
   ],
   "pinData": {},
@@ -439,6 +464,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-22T04:37:03.000Z",
-  "versionId": "c129bec3-f672-4e00-9738-ec2164efadc0"
+  "updatedAt": "2025-08-22T05:35:16.000Z",
+  "versionId": "3cfdd6ac-d253-483e-a526-5850a1550729"
 }
