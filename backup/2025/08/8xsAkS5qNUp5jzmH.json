@@ -116,11 +116,6 @@
         ]
       ]
     },
-    "Edit Fields1": {
-      "main": [
-        []
-      ]
-    },
     "Ollama Model": {
       "ai_languageModel": [
         [
@@ -130,11 +125,6 @@
             "index": 0
           }
         ]
-      ]
-    },
-    "Markdown to Notion Block": {
-      "main": [
-        []
       ]
     }
   },
@@ -229,7 +219,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const { toggleBlockId, blocks } = $input.first().json;\n\n// Convert each Notion block object into a plain string for the UI builder\nfunction blockToText(b) {\n  if (b?.paragraph?.rich_text?.length) {\n    return b.paragraph.rich_text\n      .map(rt => (rt.text?.content ?? ''))\n      .join('');\n  }\n  return '';\n}\n\n// Return each block as a separate item with the toggleBlockId\nreturn blocks.map(b => ({\n  json: {\n    toggleBlockId,\n    content: blockToText(b),\n    blockType: b.type || 'paragraph'\n  }\n}));"
+        "jsCode": "// Input: items from Split Transcript into Blocks\n//  - { blockNumber, type, section, content, isHeading }\n// Output: one item per Notion block -> { json: { block } }\n\n// --- helpers ---\nfunction rt(text) {\n  // very safe inline bold (**bold**)\n  const parts = [];\n  const re = /\\*\\*([^*]+)\\*\\*/g;\n  let last = 0, m;\n  while ((m = re.exec(text)) !== null) {\n    if (m.index > last) parts.push({ type: 'text', text: { content: text.slice(last, m.index) } });\n    parts.push({ type: 'text', text: { content: m[1] }, annotations: { bold: true } });\n    last = m.index + m[0].length;\n  }\n  if (last < text.length) parts.push({ type: 'text', text: { content: text.slice(last) } });\n  if (!parts.length) parts.push({ type: 'text', text: { content: text } });\n  return parts;\n}\n\nfunction makeHeading(text) {\n  // Treat numbered “1. …” or markdown “#/##/### …” as H2\n  const cleaned = text\n    .replace(/^#{1,3}\\s+/, '')\n    .replace(/^\\d+\\.\\s+/, '')\n    .trim();\n  return { type: 'heading_2', heading_2: { rich_text: rt(cleaned) } };\n}\n\nfunction makeParagraph(text) {\n  const cleaned = text.replace(/<br\\s*\\/?>/gi, '\\n');\n  return { type: 'paragraph', paragraph: { rich_text: rt(cleaned) } };\n}\n\nfunction makeDivider() {\n  return { type: 'divider', divider: {} };\n}\n\nfunction makeBullets(blockText) {\n  // lines starting with •, -, *\n  const blocks = [];\n  for (const raw of blockText.split('\\n')) {\n    const line = raw.trim();\n    if (!line) continue;\n    const m = /^(•|-|\\*)\\s*(.*)$/.exec(line);\n    if (m) {\n      blocks.push({ type: 'bulleted_list_item', bulleted_list_item: { rich_text: rt(m[2]) } });\n    } else {\n      blocks.push(makeParagraph(line));\n    }\n  }\n  return blocks;\n}\n\nfunction parseMdTable(md) {\n  // minimal pipe-table parser: header |---| separator on 2nd row\n  const rows = md.split('\\n').map(l => l.trim()).filter(Boolean).filter(l => l.startsWith('|'));\n  if (rows.length < 2) return null;\n\n  const splitRow = r => r.replace(/^\\|/, '').replace(/\\|$/, '').split('|').map(c => c.trim());\n  const cellRows = rows.map(splitRow);\n\n  const hasSep = /^:?-{3,}:?(?:\\s*\\|\\s*:?-{3,}:?)*$/.test(rows[1].replace(/\\s+/g,''));\n  const width = Math.max(...cellRows.map(r => r.length));\n\n  const norm = r => {\n    const out = r.slice();\n    while (out.length < width) out.push('');\n    return out.slice(0, width);\n  };\n\n  const tableChildren = [];\n  for (const r of cellRows) {\n    const cells = norm(r).map(c => [{ type: 'text', text: { content: c.replace(/<br\\s*\\/?>/gi, ' • ') } }]);\n    tableChildren.push({ object: 'block', type: 'table_row', table_row: { cells } });\n  }\n\n  return {\n    type: 'table',\n    table: { table_width: width, has_column_header: hasSep, has_row_header: false },\n    children: tableChildren\n  };\n}\n\n// --- main ---\nconst out = [];\n\nfor (const item of $input.all()) {\n  const c = String(item.json.content || '').trim();\n  if (!c) continue;\n\n  // Divider (---)\n  if (/^-{3,}$/.test(c)) {\n    out.push({ json: { block: makeDivider() } });\n    continue;\n  }\n\n  // Tables\n  if (item.json.type === 'table' || (/\\|/.test(c) && /\\|[-:]+\\|/.test(c))) {\n    const tbl = parseMdTable(c);\n    if (tbl) { out.push({ json: { block: tbl } }); continue; }\n    // fallback\n    out.push({ json: { block: makeParagraph(c) } });\n    continue;\n  }\n\n  // Headings\n  if (item.json.isHeading || /^#{1,3}\\s+/.test(c) || /^\\d+\\.\\s+/.test(c)) {\n    out.push({ json: { block: makeHeading(c) } });\n    continue;\n  }\n\n  // Bullets\n  if (/^\\s*(?:•|-|\\*)\\s+/m.test(c)) {\n    for (const b of makeBullets(c)) out.push({ json: { block: b } });\n    continue;\n  }\n\n  // Default paragraph\n  out.push({ json: { block: makeParagraph(c) } });\n}\n\nreturn out;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -246,7 +236,7 @@
     {
       "parameters": {
         "mode": "combineBySql",
-        "query": "SELECT\n  input1.toggleID AS toggleID,\n  input2.block     AS block\nFROM input2\nCROSS JOIN input1\n\n\n\n",
+        "query": "SELECT\n  input1.toggleID AS toggleID,\n  input2.block     AS block\nFROM input2\nCROSS JOIN input1\n\n\n\n\n",
         "options": {}
       },
       "type": "n8n-nodes-base.merge",
@@ -395,30 +385,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "16249977-5f95-4a40-a644-8b8e3d0ac31f",
-              "name": "Content",
-              "value": "={{ $json.text }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        2512,
-        1120
-      ],
-      "id": "26651164-3150-4738-96d4-ac882edfdace",
-      "name": "Edit Fields1",
-      "disabled": true
-    },
-    {
-      "parameters": {
         "model": "gpt-oss:latest",
         "options": {}
       },
@@ -439,30 +405,11 @@
     },
     {
       "parameters": {
-        "jsCode": "// Input: items from Split Transcript into Blocks (fields: content, isHeading, type, etc.)\n// Output: one item per Notion block with { json: { block } }\n\nfunction rt(text, opts = {}) {\n  // Convert **bold** inline markdown to Notion rich_text segments\n  const parts = [];\n  const re = /\\*\\*([^*]+)\\*\\*/g;\n  let last = 70.15;\n  let m;\n  while ((m = re.exec(text)) !== null) {\n    if (m.index > last) {\n      parts.push({ type: 'text', text: { content: text.slice(last, m.index) }, annotations: {} });\n    }\n    parts.push({ type: 'text', text: { content: m[1] }, annotations: { bold: true } });\n    last = m.index + m[70.15].length;\n  }\n  if (last < text.length) {\n    parts.push({ type: 'text', text: { content: text.slice(last) }, annotations: {} });\n  }\n  if (parts.length === 70.15) {\n    parts.push({ type: 'text', text: { content: text }, annotations: {} });\n  }\n  return parts;\n}\n\nfunction makeHeading(text) {\n  // Map section headings to H2 as requested\n  const t = text.replace(/^#+\\s+/, '').trim();\n  return {\n    type: 'heading_2',\n    heading_2: { rich_text: rt(t) }\n  };\n}\n\nfunction makeParagraph(text) {\n  // Keep single paragraph; replace <br> with newline in content\n  const cleaned = text.replace(/<br\\s*\\/?>/gi, '\\n');\n  return { type: 'paragraph', paragraph: { rich_text: rt(cleaned) } };\n}\n\nfunction makeBullets(blockText) {\n  // Turn lines starting with •, -, * into bulleted_list_item blocks\n  const blocks = [];\n  const lines = blockText.split('\\n');\n  for (const raw of lines) {\n    const line = raw.trim();\n    if (/^(•|-|\\*)\\s*/.test(line)) {\n      const text = line.replace(/^(•|-|\\*)\\s*/, '');\n      blocks.push({ type: 'bulleted_list_item', bulleted_list_item: { rich_text: rt(text) } });\n    } else if (line) {\n      blocks.push(makeParagraph(line));\n    }\n  }\n  return blocks;\n}\n\nfunction parseMdTable(md) {\n  // Parse a markdown pipe table into a Notion table block (with header row)\n  const raw = md.split('\\n').map(l => l.trim()).filter(Boolean);\n  const rows = raw.filter(l => l.startsWith('|'));\n  if (rows.length < 2) return null;\n\n  // Convert pipe rows -> cell arrays\n  const splitRow = (r) => r.replace(/^\\|/, '').replace(/\\|$/, '').split('|').map(c => c.trim());\n  const cellRows = rows.map(splitRow);\n\n  // header separator on row 2?\n  const hasSep = /^:?-{3,}:?(?:\\s*\\|\\s*:?-{3,}:?)*$/.test(rows[1].replace(/\\s+/g,''));\n  const width = Math.max(...cellRows.map(r => r.length));\n\n  // Normalize cell count\n  const norm = r => {\n    const out = r.slice(70.15, width);\n    while (out.length < width) out.push('');\n    return out;\n  };\n\n  const children = [];\n  for (const r of cellRows) {\n    const normCells = norm(r).map(c => [{ type: 'text', text: { content: c.replace(/<br\\s*\\/?>/gi, ' • ') } }]);\n    children.push({ object: 'block', type: 'table_row', table_row: { cells: normCells } });\n  }\n\n  return {\n    type: 'table',\n    table: { table_width: width, has_column_header: hasSep, has_row_header: false },\n    children\n  };\n}\n\nconst out = [];\n\nfor (const item of $input.all()) {\n  const c = String(item.json.content || '');\n  const isHeading = !!item.json.isHeading || /^#+\\s+/.test(c);\n\n  // TABLE block?\n  if (item.json.type === 'table' || (/\\|/.test(c) && /\\|[-:]+\\|/.test(c))) {\n    const tbl = parseMdTable(c);\n    if (tbl) {\n      out.push({ json: { block: tbl } });\n      continue;\n    }\n    // fallback to paragraph if parse fails\n    out.push({ json: { block: makeParagraph(c) } });\n    continue;\n  }\n\n  // HEADING block?\n  if (isHeading) {\n    out.push({ json: { block: makeHeading(c) } });\n    continue;\n  }\n\n  // BULLETS?\n  if (/^(?:\\s*(?:•|-|\\*)\\s+)/m.test(c)) {\n    for (const b of makeBullets(c)) {\n      out.push({ json: { block: b } });\n    }\n    continue;\n  }\n\n  // Default paragraph\n  out.push({ json: { block: makeParagraph(c) } });\n}\n\nreturn out;\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2896,
-        992
-      ],
-      "id": "b971cc19-6a87-426b-90f1-3b2cc2a48570",
-      "name": "Markdown to Notion Block",
-      "disabled": true
-    },
-    {
-      "parameters": {
         "resource": "block",
         "blockId": {
           "__rl": true,
           "value": "={{ $json.toggleID }}",
           "mode": "id"
-        },
-        "blockUi": {
-          "blockValues": [
-            {}
-          ]
         }
       },
       "type": "n8n-nodes-base.notion",
@@ -492,6 +439,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-21T12:56:58.000Z",
-  "versionId": "934303d8-756b-4cb8-b0d4-42f1dd27c3c9"
+  "updatedAt": "2025-08-22T04:37:03.000Z",
+  "versionId": "c129bec3-f672-4e00-9738-ec2164efadc0"
 }
