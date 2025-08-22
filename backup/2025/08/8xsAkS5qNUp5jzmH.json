@@ -32,7 +32,7 @@
       "main": [
         [
           {
-            "node": "Chunk blocks to notion",
+            "node": "Append a block",
             "type": "main",
             "index": 0
           }
@@ -120,20 +120,25 @@
       "main": [
         [
           {
-            "node": "Merge Toggle ID with Content",
+            "node": "Flatten Block → type & text",
             "type": "main",
-            "index": 1
+            "index": 0
           }
         ]
       ]
     },
     "Chunk blocks to notion": {
       "main": [
+        []
+      ]
+    },
+    "Flatten Block → type & text": {
+      "main": [
         [
           {
-            "node": "Append a block",
+            "node": "Merge Toggle ID with Content",
             "type": "main",
-            "index": 0
+            "index": 1
           }
         ]
       ]
@@ -158,7 +163,7 @@
           "cachedResultName": "DB.Client Meeting Diary",
           "cachedResultUrl": "https://www.notion.so/f22d80836d1d4759a1c0c133a4cce8c9"
         },
-        "limit": 1,
+        "returnAll": true,
         "filterType": "manual",
         "matchType": "allFilters",
         "filters": {
@@ -179,11 +184,6 @@
               "statusValue": "Upcoming Meeting"
             },
             {
-              "key": "Meeting Date|date",
-              "condition": "after",
-              "date": "2025-08-14T00:00:00"
-            },
-            {
               "key": "GDrive Transcript URL|url",
               "condition": "is_not_empty"
             },
@@ -191,6 +191,11 @@
               "key": "GDrive Transcript URL|url",
               "condition": "does_not_equal",
               "urlValue": "=Failed to Upload Transcript to Google Drive"
+            },
+            {
+              "key": "Meeting Date|date",
+              "condition": "on_or_after",
+              "date": "2025-08-01T00:00:00"
             }
           ]
         },
@@ -237,7 +242,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        3200,
+        3408,
         384
       ],
       "id": "af413440-20e8-43fe-b3e7-f31d6a1a3161",
@@ -405,12 +410,20 @@
           "__rl": true,
           "value": "={{ $json.toggleID }}",
           "mode": "id"
+        },
+        "blockUi": {
+          "blockValues": [
+            {
+              "type": "={{ $json['\\'block type\\''] }}",
+              "textContent": "={{ $json['\\'text content\\''] }}"
+            }
+          ]
         }
       },
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        3616,
+        3632,
         384
       ],
       "id": "89019455-d628-4b86-a6e0-c55cd02b1e12",
@@ -425,7 +438,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Input: items like { blockNumber, type, section, content, isHeading }\n// Output: one item per Notion block -> { json: { block } }\n\n// --- helpers (SAFE) ---\nfunction toStr(v) { return v == null ? '' : String(v); }\n\nfunction rt(raw) {\n  const text = toStr(raw);                    // <— guard\n  const parts = [];\n  const re = /\\*\\*([^*]+)\\*\\*/g;\n  let last = 0, m;\n  while ((m = re.exec(text)) !== null) {\n    if (m.index > last) parts.push({ type: 'text', text: { content: text.slice(last, m.index) } });\n    parts.push({ type: 'text', text: { content: m[1] }, annotations: { bold: true } });\n    last = m.index + m[0].length;\n  }\n  if (last < text.length) parts.push({ type: 'text', text: { content: text.slice(last) } });\n  if (!parts.length) parts.push({ type: 'text', text: { content: text } });\n  return parts;\n}\n\nfunction makeHeading(t) {\n  const cleaned = toStr(t)\n    .replace(/^#{1,3}\\s+/, '')\n    .replace(/^\\d+\\.\\s+/, '')\n    .trim();\n  return { type: 'heading_2', heading_2: { rich_text: rt(cleaned) } };\n}\n\nfunction makeParagraph(t) {\n  const cleaned = toStr(t).replace(/<br\\s*\\/?>/gi, '\\n');\n  return { type: 'paragraph', paragraph: { rich_text: rt(cleaned) } };\n}\n\nfunction makeDivider() {\n  return { type: 'divider', divider: {} };\n}\n\nfunction makeBullets(blockText) {\n  const blocks = [];\n  const lines = toStr(blockText).split('\\n');\n  for (const raw of lines) {\n    const line = toStr(raw).trim();\n    if (!line) continue;\n    const m = /^(•|-|\\*)\\s*(.*)$/.exec(line);\n    if (m) blocks.push({ type: 'bulleted_list_item', bulleted_list_item: { rich_text: rt(m[2]) } });\n    else   blocks.push(makeParagraph(line));\n  }\n  return blocks;\n}\n\nfunction parseMdTable(md) {\n  const rowLines = toStr(md).split('\\n')\n    .map(l => toStr(l).trim())\n    .filter(Boolean)\n    .filter(l => l.startsWith('|'));\n  if (rowLines.length < 2) return null;\n\n  const splitRow = r => r.replace(/^\\|/, '').replace(/\\|$/, '').split('|').map(c => toStr(c).trim());\n  const cellRows = rowLines.map(splitRow);\n\n  const hasSep = /^:?-{3,}:?(?:\\s*\\|\\s*:?-{3,}:?)*$/.test(toStr(rowLines[1]).replace(/\\s+/g,''));\n  const width = Math.max(...cellRows.map(r => r.length));\n\n  const norm = r => {\n    const out = r.slice(0, width);\n    while (out.length < width) out.push('');\n    return out;\n  };\n\n  const children = [];\n  for (const r of cellRows) {\n    const cells = norm(r).map(c => [{ type: 'text', text: { content: toStr(c).replace(/<br\\s*\\/?>/gi, ' • ') } }]);\n    children.push({ object: 'block', type: 'table_row', table_row: { cells } });\n  }\n\n  return { type: 'table', table: { table_width: width, has_column_header: hasSep, has_row_header: false }, children };\n}\n\n// --- main ---\nconst out = [];\nfor (const item of $input.all()) {\n  const c = toStr(item?.json?.content).trim();\n  const kind = toStr(item?.json?.type);\n  const isHeading = !!item?.json?.isHeading || /^#{1,3}\\s+/.test(c) || /^\\d+\\.\\s+/.test(c);\n\n  if (!c) continue;\n\n  // Divider lines like '---'\n  if (/^-{3,}$/.test(c)) { out.push({ json: { block: makeDivider() } }); continue; }\n\n  // Tables\n  if (kind === 'table' || (/\\|/.test(c) && /\\|[-:]+\\|/.test(c))) {\n    const tbl = parseMdTable(c);\n    out.push({ json: { block: tbl ?? makeParagraph(c) } });\n    continue;\n  }\n\n  // Headings\n  if (isHeading) { out.push({ json: { block: makeHeading(c) } }); continue; }\n\n  // Bulleted lines\n  if (/^\\s*(?:•|-|\\*)\\s+/m.test(c)) {\n    for (const b of makeBullets(c)) out.push({ json: { block: b } });\n    continue;\n  }\n\n  // Default: paragraph\n  out.push({ json: { block: makeParagraph(c) } });\n}\n\nreturn out;\n"
+        "jsCode": "// Input: items like { blockNumber, type, section, content, isHeading }\n// Output: one item per Notion block -> { json: { block } }\n\n// ---------- helpers ----------\nfunction toStr(v) { return v == null ? '' : String(v); }\nfunction stripMdStars(s) { return toStr(s).replace(/\\*\\*/g, '').trim(); }\n\nfunction rt(raw) {\n  const text = toStr(raw);\n  const parts = [];\n  const re = /\\*\\*([^*]+)\\*\\*/g;\n  let last = 0, m;\n  while ((m = re.exec(text)) !== null) {\n    if (m.index > last) parts.push({ type: 'text', text: { content: text.slice(last, m.index) } });\n    parts.push({ type: 'text', text: { content: m[1] }, annotations: { bold: true } });\n    last = m.index + m[0].length;\n  }\n  if (last < text.length) parts.push({ type: 'text', text: { content: text.slice(last) } });\n  if (!parts.length) parts.push({ type: 'text', text: { content: text } });\n  return parts;\n}\n\nfunction headingBlock(level, text) {\n  const lvl = Math.min(Math.max(level, 1), 3);\n  const key = `heading_${lvl}`;\n  return { type: key, [key]: { rich_text: rt(text) } };\n}\nfunction makeParagraph(t) {\n  const cleaned = toStr(t).replace(/<br\\s*\\/?>/gi, '\\n');\n  return { type: 'paragraph', paragraph: { rich_text: rt(cleaned) } };\n}\n\nfunction isMdHeading(line) { return /^#{1,3}\\s+/.test(line); }\nfunction isNumbered(line)  { return /^\\d+\\.\\s+/.test(line); }\nfunction isBullet(line)    { return /^(?:•|-|\\*)\\s+/.test(line); }\nfunction isDivider(line)   { return /^-{3,}$/.test(line); }\nfunction isTableish(line)  { return line.includes('|'); }\n\nfunction normSection(s) {\n  return stripMdStars(s).toLowerCase()\n    .replace(/\\s+/g, ' ')\n    .replace(/[^\\w\\s&/-]+/g, '')\n    .trim();\n}\nfunction isAgendaSection(section) {\n  const n = normSection(section || '');\n  return n === 'agenda';\n}\nfunction isKeyDiscussionSection(section) {\n  const n = normSection(section || '');\n  // match variants like \"Key Discussion Points & Decisions\", \"Key Discussions & Decisions\", etc.\n  return /key discussion/.test(n) || /key discussions/.test(n);\n}\nfunction isActionItemsSection(section) {\n  const n = normSection(section || '');\n  return /action items?/.test(n);\n}\n\nfunction parseMdTable(md) {\n  const lines = toStr(md).split('\\n').map(s => s.trim()).filter(Boolean);\n  const rows = lines.filter(l => l.startsWith('|'));\n  if (rows.length < 1) return { headers: [], rows: [] };\n\n  const splitRow = r => r.replace(/^\\|/, '').replace(/\\|$/, '').split('|').map(c => stripMdStars(c.trim()));\n  let cells = rows.map(splitRow);\n\n  // detect header separator on second row\n  const hasSep = rows[1] && /^:?-{3,}:?(?:\\s*\\|\\s*:?-{3,}:?)*$/.test(rows[1].replace(/\\s+/g,''));\n\n  const headers = hasSep ? cells[0] : [];\n  const start = hasSep ? 2 : 1;\n  const dataRows = cells.slice(start);\n\n  // normalize col counts\n  const width = Math.max(headers.length, ...dataRows.map(r => r.length), 0);\n  const pad = arr => {\n    const out = arr.slice(0, width);\n    while (out.length < width) out.push('');\n    return out;\n  };\n  const normHeaders = pad(headers);\n  const normRows = dataRows.map(pad);\n\n  return { headers: normHeaders, rows: normRows };\n}\n\nfunction findColIdx(headers, candidates) {\n  if (!headers || !headers.length) return -1;\n  const H = headers.map(h => h.toLowerCase().trim());\n  for (const name of candidates) {\n    const idx = H.indexOf(name);\n    if (idx !== -1) return idx;\n  }\n  return -1;\n}\n\n// ---------- converters for special sections ----------\nfunction convertKeyDiscussionTableToParagraphBlocks(md) {\n  const { headers, rows } = parseMdTable(md);\n  const blocks = [];\n\n  // flexible header mapping\n  const idxTopic    = findColIdx(headers, ['topic', 'subject', 'title']) !== -1 ? findColIdx(headers, ['topic', 'subject', 'title']) : (headers.length ? 1 : 1);\n  const idxSummary  = findColIdx(headers, ['summary', 'notes', 'description']);\n  const idxDecision = findColIdx(headers, ['decision', 'decision / insight', 'decision/insight', 'insight']);\n  const idxAction   = findColIdx(headers, ['action', 'next steps', 'next step']);\n\n  for (const r of rows) {\n    const topic    = stripMdStars(r[idxTopic]    ?? '');\n    const summary  = stripMdStars(idxSummary  >= 0 ? r[idxSummary]  : '');\n    const decision = stripMdStars(idxDecision >= 0 ? r[idxDecision] : '');\n    const action   = stripMdStars(idxAction   >= 0 ? r[idxAction]   : '');\n\n    if (topic)    blocks.push(makeParagraph(`Topic: ${topic}`));\n    if (summary)  blocks.push(makeParagraph(`Summary: ${summary}`));\n    if (decision) blocks.push(makeParagraph(`Decision: ${decision}`));\n    blocks.push(makeParagraph(`Action: ${action || 'NA'}`));\n  }\n  return blocks;\n}\n\nfunction convertActionItemsTableToParagraphBlocks(md) {\n  const { headers, rows } = parseMdTable(md);\n  const blocks = [];\n\n  const idxOwner    = findColIdx(headers, ['owner', 'responsible', 'assignee']);\n  const idxAction   = findColIdx(headers, ['action', 'task']);\n  const idxDeadline = findColIdx(headers, ['deadline', 'due', 'due date', 'date']);\n\n  for (const r of rows) {\n    const owner    = stripMdStars(idxOwner    >= 0 ? r[idxOwner]    : '');\n    const action   = stripMdStars(idxAction   >= 0 ? r[idxAction]   : '');\n    const deadline = stripMdStars(idxDeadline >= 0 ? r[idxDeadline] : '');\n    if (owner)    blocks.push(makeParagraph(`Owner: ${owner}`));\n    if (action)   blocks.push(makeParagraph(`Action: ${action}`));\n    if (deadline) blocks.push(makeParagraph(`Deadline: ${deadline}`));\n  }\n  return blocks;\n}\n\n// ---------- main ----------\nconst out = [];\n\nfor (const item of $input.all()) {\n  const raw = toStr(item?.json?.content).trim();\n  const kind = toStr(item?.json?.type);\n  const section = toStr(item?.json?.section);\n  if (!raw) continue;\n\n  // Drop dividers\n  if (isDivider(raw)) continue;\n\n  // Headings (#, ##, ###) -> keep as heading_1..3\n  if (isMdHeading(raw)) {\n    const hashes = raw.match(/^#{1,3}/)[0];\n    const level  = hashes.length;\n    const title  = raw.replace(/^#{1,3}\\s+/, '').trim();\n    const label  = stripMdStars(title);\n\n    if (/^agenda$/i.test(label)) {\n      out.push({ json: { block: headingBlock(2, 'Agenda') } });\n    } else {\n      out.push({ json: { block: headingBlock(level, title) } });\n    }\n    continue;\n  }\n\n  // Special plain \"Agenda\" line (e.g., \"**Agenda**\")\n  if (/^agenda$/i.test(stripMdStars(raw))) {\n    out.push({ json: { block: headingBlock(2, 'Agenda') } });\n    continue;\n  }\n\n  // ---------- Section-specific handling ----------\n  const inAgenda       = isAgendaSection(section);\n  const inKeyDiscussion = isKeyDiscussionSection(section);\n  const inActionItems   = isActionItemsSection(section);\n\n  // Tables\n  if (kind === 'table' || (isTableish(raw) && /\\|[-:]+\\|/.test(raw))) {\n    if (inKeyDiscussion) {\n      const blocks = convertKeyDiscussionTableToParagraphBlocks(raw);\n      for (const b of blocks) out.push({ json: { block: b } });\n      continue;\n    }\n    if (inActionItems) {\n      const blocks = convertActionItemsTableToParagraphBlocks(raw);\n      for (const b of blocks) out.push({ json: { block: b } });\n      continue;\n    }\n    // Not in special sections -> flatten table to paragraphs (no table blocks)\n    const lines = raw.split('\\n').map(s => s.trim()).filter(Boolean)\n      .filter(r => !/^(\\|?\\s*:?-{3,}:?\\s*\\|)+\\s*$/.test(r))\n      .map(r => r.replace(/^\\|/, '').replace(/\\|$/, '').split('|').map(c => c.trim()).join(' | '));\n    for (const line of lines) out.push({ json: { block: makeParagraph(line) } });\n    continue;\n  }\n\n  // Bullets / Numbered:\n  if (isBullet(raw) || isNumbered(raw)) {\n    const text = isBullet(raw) ? raw.replace(/^(?:•|-|\\*)\\s+/, '') : raw.replace(/^\\d+\\.\\s+/, '');\n    // Inside special sections -> force paragraph\n    if (inAgenda || inKeyDiscussion || inActionItems) {\n      out.push({ json: { block: makeParagraph(text) } });\n    } else {\n      // Outside specials -> keep bullets\n      out.push({ json: { block: { type: 'bulleted_list_item', bulleted_list_item: { rich_text: rt(text) } } } });\n    }\n    continue;\n  }\n\n  // Default plain paragraph (also applies to text inside special sections)\n  out.push({ json: { block: makeParagraph(raw) } });\n}\n\nreturn out;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -446,12 +459,26 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3408,
-        384
+        3632,
+        1152
       ],
       "id": "27033858-6a85-4848-8029-34050050be47",
       "name": "Chunk blocks to notion",
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input item example: { json: { block: { type, <type>:{ rich_text:[...] } }, ... } }\n// Output: { json: { block, block_type, text_content } } (preserving block)\n\nfunction toStr(v){ return v == null ? '' : String(v); }\n\nfunction extractTextFromBlock(block) {\n  if (!block || typeof block !== 'object') return '';\n  const t = block.type;\n  if (!t || !block[t]) return '';\n\n  // Rich-text types\n  const rt = block[t].rich_text;\n  if (Array.isArray(rt)) {\n    // join all segments’ text\n    return rt.map(seg => toStr(seg?.text?.content)).join('');\n  }\n\n  // Simple types\n  if (t === 'divider') return '---';\n  // For tables we’ll keep it empty (they don’t have rich_text at block level)\n  return '';\n}\n\nconst out = [];\nfor (const it of $input.all()) {\n  const j = it.json || {};\n  const block = j.block;\n  const block_type = block?.type || '';\n  const text_content = extractTextFromBlock(block);\n  out.push({ json: { ...j, block, block_type, text_content } });\n}\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3088,
+        608
+      ],
+      "id": "1ca8901a-b704-4378-9608-4426a7b2be3c",
+      "name": "Flatten Block → type & text"
     }
   ],
   "pinData": {},
@@ -464,6 +491,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-22T05:35:16.000Z",
-  "versionId": "3cfdd6ac-d253-483e-a526-5850a1550729"
+  "updatedAt": "2025-08-22T07:29:04.000Z",
+  "versionId": "0a88e7b3-0c62-41fa-b005-d3ecc501c3a6"
 }
