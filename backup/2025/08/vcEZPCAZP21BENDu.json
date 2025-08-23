@@ -17,7 +17,7 @@
   "id": "vcEZPCAZP21BENDu",
   "isArchived": false,
   "meta": null,
-  "name": "Test.MCP v20250823-164907",
+  "name": "Test.MCP v20250823-170336",
   "nodes": [
     {
       "parameters": {},
@@ -54,6 +54,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-23T20:49:28.946Z",
-  "versionId": "56cbb042-a39c-4d12-81ac-f25edde5eb62"
+  "updatedAt": "2025-08-23T21:05:16.415Z",
+  "versionId": "f459795f-fe5b-4697-aadb-d6825708d9dc"
 }
