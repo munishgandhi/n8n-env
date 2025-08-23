@@ -37,7 +37,7 @@
   },
   "createdAt": "2025-08-23T05:56:18.552Z",
   "id": "y9Wdq8hSwO1neIMj",
-  "isArchived": false,
+  "isArchived": true,
   "meta": {
     "templateId": "5675"
   },
@@ -195,6 +195,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-23T05:56:18.552Z",
-  "versionId": "0f1d85d3-126e-4731-8ecd-e824c9f0b89c"
+  "updatedAt": "2025-08-23T16:09:11.000Z",
+  "versionId": "ffeba1b3-137a-4906-9ca7-1f1374ed070e"
 }
