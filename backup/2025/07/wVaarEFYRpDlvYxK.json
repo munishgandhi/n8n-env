@@ -104,8 +104,8 @@
       "executeOnce": false,
       "credentials": {
         "gmailOAuth2": {
-          "id": null,
-          "name": "pxtxj61wdCzGXITa"
+          "id": "pxtxj61wdCzGXITa",
+          "name": "Gmail account"
         }
       }
     },
@@ -184,7 +184,7 @@
           "parameters": [
             {
               "name": "model",
-              "value": "qwen2.5:14b-instruct"
+              "value": "gpt-oss:latest"
             },
             {
               "name": "prompt",
@@ -244,6 +244,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-23T15:46:35.000Z",
-  "versionId": "6f110702-8dd8-4d72-ac72-24ceda2d91ee"
+  "updatedAt": "2025-08-23T16:07:03.000Z",
+  "versionId": "0984825a-aadb-44ba-afb1-ef8c01a805da"
 }
