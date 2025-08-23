@@ -41,85 +41,9 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "Call AddMDtoNotion",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "N06-Merge-Toggle-With-Content": {
-      "main": [
-        [
-          {
-            "node": "N07-Append-Inside-Toggle",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "N07-Append-Inside-Toggle": {
-      "main": [
-        []
-      ]
-    },
-    "N04a-Toggle.Transcript.MD": {
-      "main": [
-        [
-          {
-            "node": "N04b-Extract.Toggle.ID",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "N04b-Extract.Toggle.ID": {
-      "main": [
-        [
-          {
-            "node": "N06-Merge-Toggle-With-Content",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "N04a-Toggle.Transcript.MD",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "MD to Notion Blocks",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "MD to Notion Blocks": {
-      "main": [
-        [
-          {
-            "node": "N05b-Split-Notion Blocks",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "N05b-Split-Notion Blocks": {
-      "main": [
-        [
-          {
-            "node": "N06-Merge-Toggle-With-Content",
-            "type": "main",
-            "index": 1
           }
         ]
       ]
@@ -157,7 +81,7 @@
             {
               "id": "canonical_prompt",
               "name": "canonical_prompt",
-              "value": "Markdown this piece of text into sections, subsections, paragraphs, lists and bolds.  Do not create any tables.",
+              "value": "Markdown text into heading 1, heading 2, heading 3, paragraphs and bolds. Do not create tables, lists and do not nest items more than 1 child deep. Number each heading with decimal system 1, 1.1, 1.2, 1.2.1, 1.2.2, etc.",
               "type": "string"
             },
             {
@@ -216,175 +140,77 @@
     },
     {
       "parameters": {
-        "mode": "combineBySql",
-        "query": "SELECT input1.toggleId, input2.* FROM input2 CROSS JOIN input1",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        1472,
-        -144
-      ],
-      "id": "n06-merge-toggle-content",
-      "name": "N06-Merge-Toggle-With-Content"
-    },
-    {
-      "parameters": {
-        "resource": "block",
-        "blockId": {
+        "workflowId": {
           "__rl": true,
-          "mode": "id",
-          "value": "={{ $json.toggleId }}"
+          "value": "djCCWdvV9VVzqqRb",
+          "mode": "list",
+          "cachedResultName": "AddMDtoNotion"
         },
-        "blockUi": {
-          "blockValues": [
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "text": "={{ $json.text }}",
+            "canonical_text": "={{ $('N01-Set-Canonical-Fields').item.json.canonical_text }}",
+            "canonical_prompt": "={{ $('N01-Set-Canonical-Fields').item.json.canonical_prompt }}",
+            "canonical_timestamp": "={{ $('N01-Set-Canonical-Fields').item.json.canonical_timestamp }}"
+          },
+          "matchingColumns": [
+            "text",
+            "canonical_text",
+            "canonical_prompt",
+            "canonical_timestamp"
+          ],
+          "schema": [
             {
-              "type": "={{ $json.type }}",
-              "textContent": "={{ $json[$json.type].rich_text[0].text.content }}"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.notion",
-      "typeVersion": 2.2,
-      "position": [
-        1696,
-        -144
-      ],
-      "id": "n07-append-inside-toggle",
-      "name": "N07-Append-Inside-Toggle",
-      "credentials": {
-        "notionApi": {
-          "id": "MlSLKQmPnMyqW0ii",
-          "name": "Notion account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "block",
-        "blockId": {
-          "__rl": true,
-          "mode": "id",
-          "value": "2551db9ba441805e9bd0fe21a317c8f0"
-        },
-        "blockUi": {
-          "blockValues": [
+              "id": "text",
+              "displayName": "text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
             {
-              "type": "toggle",
-              "textContent": "=Markdown - Performance Max Guide {{ $now.format('(yyyy-MM-dd-HH:mm:ss)') }}"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.notion",
-      "typeVersion": 2.2,
-      "position": [
-        1024,
-        -240
-      ],
-      "id": "n04a-create-toggle",
-      "name": "N04a-Toggle.Transcript.MD",
-      "credentials": {
-        "notionApi": {
-          "id": "MlSLKQmPnMyqW0ii",
-          "name": "Notion account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
+              "id": "canonical_text",
+              "displayName": "canonical_text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
             {
-              "id": "toggleId",
-              "name": "toggleId",
-              "value": "={{ $json.results.first().id }}",
-              "type": "string"
+              "id": "canonical_prompt",
+              "displayName": "canonical_prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "canonical_timestamp",
+              "displayName": "canonical_timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
             }
-          ]
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
         },
         "options": {}
       },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
       "position": [
-        1248,
-        -240
-      ],
-      "id": "n04b-extract-toggle-id",
-      "name": "N04b-Extract.Toggle.ID"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "0a46e487-8ed5-4d3e-89e5-aca37b5461e7",
-              "name": "canonical_md",
-              "value": "={{ $json.text }}",
-              "type": "string"
-            },
-            {
-              "id": "214dfd15-50b6-46a0-8993-6b48e829fc35",
-              "name": "canonical_text",
-              "value": "={{ $('N01-Set-Canonical-Fields').item.json.canonical_text }}",
-              "type": "string"
-            },
-            {
-              "id": "0ccd39cd-47ec-41ad-80ef-f333b2ca6f77",
-              "name": "canonical_prompt",
-              "value": "={{ $('N01-Set-Canonical-Fields').item.json.canonical_prompt }}",
-              "type": "string"
-            },
-            {
-              "id": "ec7ba01d-2fb4-4450-836a-7e134bcbbb6d",
-              "name": "canonical_timestamp",
-              "value": "={{ $('N01-Set-Canonical-Fields').item.json.canonical_timestamp }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        800,
+        1216,
         -144
       ],
-      "id": "7ca9b868-e871-4682-9927-37d6c7f3cbf7",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "inputMarkdown": "={{ $json.canonical_md }}"
-      },
-      "type": "n8n-nodes-notion-markdown.notionMarkdown",
-      "typeVersion": 1,
-      "position": [
-        1024,
-        -48
-      ],
-      "id": "4e3b6dcc-0d84-476a-9c0f-fe912c1e4d8e",
-      "name": "MD to Notion Blocks"
-    },
-    {
-      "parameters": {
-        "fieldToSplitOut": "output",
-        "options": {
-          "disableDotNotation": false
-        }
-      },
-      "type": "n8n-nodes-base.splitOut",
-      "typeVersion": 1,
-      "position": [
-        1248,
-        -48
-      ],
-      "id": "4ff61083-2d20-430d-9799-436c5f851ff0",
-      "name": "N05b-Split-Notion Blocks"
+      "name": "Call AddMDtoNotion",
+      "id": "6dfac04c-029f-40e3-98e0-5c25a95e7e26"
     }
   ],
   "pinData": {
@@ -412,6 +238,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-23T16:55:22.000Z",
-  "versionId": "b948442a-26f1-460a-9a4d-2fb7c4a4317a"
+  "updatedAt": "2025-08-23T17:26:09.000Z",
+  "versionId": "67c31018-3987-41f3-91ca-d16c8fe735f9"
 }
