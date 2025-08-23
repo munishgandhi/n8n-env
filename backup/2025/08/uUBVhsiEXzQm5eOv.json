@@ -46,7 +46,7 @@
             "index": 0
           },
           {
-            "node": "N05a-Parse-Markdown-To-Blocks",
+            "node": "Notion Markdown",
             "type": "main",
             "index": 0
           }
@@ -109,6 +109,11 @@
       ]
     },
     "N07-Append-Inside-Toggle": {
+      "main": [
+        []
+      ]
+    },
+    "Notion Markdown": {
       "main": [
         []
       ]
@@ -303,7 +308,6 @@
     {
       "parameters": {
         "resource": "block",
-        "operation": "append",
         "blockId": {
           "__rl": true,
           "mode": "id",
@@ -316,13 +320,6 @@
               "textContent": "={{ $json[$json.type].rich_text[0].text.content }}"
             }
           ]
-        },
-        "options": {
-          "retry": {
-            "enabled": true,
-            "count": 3,
-            "interval": 2000
-          }
         }
       },
       "type": "n8n-nodes-base.notion",
@@ -339,10 +336,28 @@
           "name": "Notion account"
         }
       }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-notion-markdown.notionMarkdown",
+      "typeVersion": 1,
+      "position": [
+        752,
+        240
+      ],
+      "id": "4e3b6dcc-0d84-476a-9c0f-fe912c1e4d8e",
+      "name": "Notion Markdown"
     }
   ],
   "pinData": {
     "N00a-Manual-Trigger": [
+      {
+        "json": {
+          "text": "If you've ever felt like Performance Max was a black box of secrets where you hoped there was conversions and new sales inside, but sometimes it was just wasted ad spend, you're in luck because the good news is is that Google has finally released some reporting updates which is going to become available inside of the Google Ads dashboard. So, you can now get some extra data about your performance max campaigns without having to run external scripts or run any other APIs to find this data. Now, should Google Ads have released this data earlier? Yes. Do I know why they haven't? Got my theories, but we don't want to go down that path because it is a very dark path because what I want to do right now is I want to focus on this being a positive announcement because this is some great data which Google is giving us. And you know, hats off, where hats due. While I think they should have released it a lot earlier, hey, better late than never. So, what I want to focus on is that there's really three major updates in regards to the reporting that we're going to be seeing very, very soon. One of these you should already have. Depending on when you watch this video, you may or may not have these other two data inputs. What I wanted to focus on is how you can actually use these reporting insights to improve the performance of your account cuz ultimately that's why we run Google Ads cuz we want to see more conversions and more sales for our own businesses or our clients businesses."
+        }
+      }
+    ],
+    "N00 Manual Trigger": [
       {
         "json": {
           "text": "If you've ever felt like Performance Max was a black box of secrets where you hoped there was conversions and new sales inside, but sometimes it was just wasted ad spend, you're in luck because the good news is is that Google has finally released some reporting updates which is going to become available inside of the Google Ads dashboard. So, you can now get some extra data about your performance max campaigns without having to run external scripts or run any other APIs to find this data. Now, should Google Ads have released this data earlier? Yes. Do I know why they haven't? Got my theories, but we don't want to go down that path because it is a very dark path because what I want to do right now is I want to focus on this being a positive announcement because this is some great data which Google is giving us. And you know, hats off, where hats due. While I think they should have released it a lot earlier, hey, better late than never. So, what I want to focus on is that there's really three major updates in regards to the reporting that we're going to be seeing very, very soon. One of these you should already have. Depending on when you watch this video, you may or may not have these other two data inputs. What I wanted to focus on is how you can actually use these reporting insights to improve the performance of your account cuz ultimately that's why we run Google Ads cuz we want to see more conversions and more sales for our own businesses or our clients businesses."
@@ -359,6 +374,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-21T19:17:56.125Z",
-  "versionId": "5c4d3ded-ba53-4869-9531-0d017452a414"
+  "updatedAt": "2025-08-23T06:50:38.000Z",
+  "versionId": "28504149-596a-454a-b264-d0ab514e98aa"
 }
