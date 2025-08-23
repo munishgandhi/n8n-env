@@ -141,23 +141,26 @@
     },
     {
       "parameters": {
-        "resource": "block",
-        "blockId": {
-          "__rl": true,
-          "mode": "id",
-          "value": "={{ $json.toggleId }}"
-        },
-        "blockUi": {
-          "blockValues": [
+        "method": "PATCH",
+        "url": "=https://api.notion.com/v1/blocks/{{ $json.toggleId }}/children",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "notionApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
             {
-              "type": "={{ $json.type }}",
-              "textContent": "={{ $json[$json.type].rich_text[0] }}"
+              "name": "Content-Type",
+              "value": "application/json"
             }
           ]
-        }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n    {\n      \"children\": [{\n        \"object\": \"block\",\n        \"type\": $json.type,\n        [$json.type]: $json[$json.type]\n      }]\n    }\n  }}",
+        "options": {}
       },
-      "type": "n8n-nodes-base.notion",
-      "typeVersion": 2.2,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         1696,
         -144
@@ -321,6 +324,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-23T17:40:06.000Z",
-  "versionId": "24de5ce0-80b2-4972-adec-f1536033d5ca"
+  "updatedAt": "2025-08-23T18:46:50.000Z",
+  "versionId": "e509e217-556c-4b5e-a642-4b7906fdbcc6"
 }
