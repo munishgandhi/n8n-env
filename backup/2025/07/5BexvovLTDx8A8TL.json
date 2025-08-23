@@ -83,7 +83,7 @@
   "id": "5BexvovLTDx8A8TL",
   "isArchived": false,
   "meta": null,
-  "name": "System Test > Notion Connectivity v20250718-190747",
+  "name": "Test.Notion v20250718-190747",
   "nodes": [
     {
       "parameters": {},
@@ -92,8 +92,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        250,
-        300
+        256,
+        304
       ]
     },
     {
@@ -105,8 +105,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        470,
-        300
+        480,
+        304
       ]
     },
     {
@@ -123,11 +123,14 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        690,
-        300
+        704,
+        304
       ],
       "credentials": {
-        "notionApi": "MlSLKQmPnMyqW0ii"
+        "notionApi": {
+          "id": null,
+          "name": "MlSLKQmPnMyqW0ii"
+        }
       },
       "continueOnFail": true
     },
@@ -140,8 +143,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        910,
-        300
+        912,
+        304
       ]
     },
     {
@@ -153,8 +156,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1130,
-        300
+        1136,
+        304
       ]
     },
     {
@@ -172,8 +175,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        1350,
-        300
+        1360,
+        304
       ],
       "credentials": {
         "notionApi": {
@@ -192,8 +195,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1570,
-        300
+        1584,
+        304
       ]
     },
     {
@@ -205,12 +208,12 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1790,
-        300
+        1792,
+        304
       ]
     }
   ],
-  "pinData": null,
+  "pinData": {},
   "repo_name": "n8n-env",
   "repo_owner": "munishgandhi",
   "repo_path": "backup/",
@@ -218,6 +221,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-07-18T23:07:47.290Z",
-  "versionId": "641faff3-686e-470f-8a9c-9479ba504a82"
+  "updatedAt": "2025-08-23T15:10:59.000Z",
+  "versionId": "210017bb-3b98-4afc-a393-c4d6d35266fd"
 }
