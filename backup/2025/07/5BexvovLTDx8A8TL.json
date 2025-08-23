@@ -93,7 +93,7 @@
       "typeVersion": 1,
       "position": [
         256,
-        304
+        240
       ]
     },
     {
@@ -106,7 +106,7 @@
       "typeVersion": 2,
       "position": [
         480,
-        304
+        240
       ]
     },
     {
@@ -124,12 +124,12 @@
       "typeVersion": 4,
       "position": [
         704,
-        304
+        240
       ],
       "credentials": {
         "notionApi": {
-          "id": null,
-          "name": "MlSLKQmPnMyqW0ii"
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
         }
       },
       "continueOnFail": true
@@ -143,8 +143,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        912,
-        304
+        928,
+        240
       ]
     },
     {
@@ -156,8 +156,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1136,
-        304
+        1152,
+        240
       ]
     },
     {
@@ -175,13 +175,13 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        1360,
-        304
+        1376,
+        240
       ],
       "credentials": {
         "notionApi": {
-          "id": null,
-          "name": "MlSLKQmPnMyqW0ii"
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
         }
       },
       "continueOnFail": true
@@ -195,8 +195,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1584,
-        304
+        1600,
+        240
       ]
     },
     {
@@ -208,8 +208,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1792,
-        304
+        1824,
+        240
       ]
     }
   ],
@@ -221,6 +221,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-23T15:10:59.000Z",
-  "versionId": "210017bb-3b98-4afc-a393-c4d6d35266fd"
+  "updatedAt": "2025-08-23T15:47:44.000Z",
+  "versionId": "a231b8b8-267c-4aee-bd17-89766d8f2ddc"
 }
