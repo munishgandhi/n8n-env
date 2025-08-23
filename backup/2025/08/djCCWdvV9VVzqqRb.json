@@ -5,6 +5,29 @@
       "main": [
         [
           {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Prepare Block Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Prepare Block Data": {
+      "main": [
+        [
+          {
             "node": "N07-Append-Inside-Toggle",
             "type": "main",
             "index": 0
@@ -14,7 +37,24 @@
     },
     "N07-Append-Inside-Toggle": {
       "main": [
-        []
+        [
+          {
+            "node": "Capture Block ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capture Block ID": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "N04a-Toggle.Transcript.MD": {
@@ -93,7 +133,7 @@
   "id": "djCCWdvV9VVzqqRb",
   "isArchived": false,
   "meta": null,
-  "name": "AddMDtoNotion",
+  "name": "AddMDtoNotion v20250823-154038",
   "nodes": [
     {
       "parameters": {
@@ -102,8 +142,8 @@
       "type": "n8n-nodes-notion-markdown.notionMarkdown",
       "typeVersion": 1,
       "position": [
-        1024,
-        -48
+        1264,
+        -192
       ],
       "id": "4e3b6dcc-0d84-476a-9c0f-fe912c1e4d8e",
       "name": "MD to Notion Blocks"
@@ -118,8 +158,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        1248,
-        -48
+        1488,
+        -192
       ],
       "id": "4ff61083-2d20-430d-9799-436c5f851ff0",
       "name": "N05b-Split-Notion Blocks"
@@ -133,11 +173,37 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1472,
-        -144
+        1712,
+        -288
       ],
       "id": "n06-merge-toggle-content",
       "name": "N06-Merge-Toggle-With-Content"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1936,
+        -288
+      ],
+      "id": "loop-over-items",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the block data\nconst blockData = $input.item.json;\n\n// Get the current item index from the Loop Over Items node\nconst currentItemIndex = $input.context?.currentItemIndex || 0;\n\n// Only use previousBlockId if we're not on the first item\nif (currentItemIndex > 0) {\n  const previousBlockId = $getWorkflowStaticData('global').previousBlockId;\n  if (previousBlockId) {\n    blockData.previousBlockId = previousBlockId;\n  }\n} else {\n  // First item - clear any old data\n  $getWorkflowStaticData('global').previousBlockId = null;\n}\n\nreturn blockData;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        -360
+      ],
+      "id": "prepare-block-data",
+      "name": "Prepare Block Data"
     },
     {
       "parameters": {
@@ -156,14 +222,14 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{\n    {\n      \"children\": [{\n        \"object\": \"block\",\n        \"type\": $json.type,\n        [$json.type]: $json[$json.type]\n      }]\n    }\n  }}",
+        "jsonBody": "={{\n  (() => {\n    const body = {\n      \"children\": [{\n        \"object\": \"block\",\n        \"type\": $json.type,\n        [$json.type]: $json[$json.type]\n      }]\n    };\n    \n    // Add 'after' parameter if we have a previous block ID\n    if ($json.previousBlockId) {\n      body.after = $json.previousBlockId;\n    }\n    \n    return body;\n  })()\n}}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1696,
-        -144
+        2384,
+        -360
       ],
       "id": "n07-append-inside-toggle",
       "name": "N07-Append-Inside-Toggle",
@@ -173,6 +239,19 @@
           "name": "Notion account"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract the block ID from the response\nconst response = $input.item.json;\nlet blockId = null;\n\n// The response should have the created block's ID\nif (response.results && response.results.length > 0) {\n  blockId = response.results[0].id;\n} else if (response.id) {\n  blockId = response.id;\n}\n\n// Store the block ID for the next iteration\nif (blockId) {\n  $getWorkflowStaticData('global').previousBlockId = blockId;\n}\n\nreturn {\n  blockId: blockId,\n  success: blockId !== null\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2608,
+        -288
+      ],
+      "id": "capture-block-id",
+      "name": "Capture Block ID"
     },
     {
       "parameters": {
@@ -209,8 +288,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        800,
-        -144
+        816,
+        -288
       ],
       "id": "7ca9b868-e871-4682-9927-37d6c7f3cbf7",
       "name": "Edit Fields"
@@ -235,8 +314,8 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        1024,
-        -240
+        1264,
+        -384
       ],
       "id": "n04a-create-toggle",
       "name": "N04a-Toggle.Transcript.MD",
@@ -264,8 +343,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1248,
-        -240
+        1488,
+        -384
       ],
       "id": "n04b-extract-toggle-id",
       "name": "N04b-Extract.Toggle.ID"
@@ -299,7 +378,7 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "position": [
         592,
-        -144
+        -288
       ]
     }
   ],
@@ -307,7 +386,7 @@
     "Start": [
       {
         "json": {
-          "text": "# 1 Overview\n\n**Performance Max** has long felt like a black box—full of potential conversions and new sales, yet often just a source of wasted ad spend. The good news is that **Google has finally released new reporting updates** that will soon appear directly in the Google Ads dashboard. With these updates you’ll get extra data about your Performance Max campaigns without the hassle of external scripts or API calls.\n\n# 1.1 New Reporting Features\n\n## 1.1.1 Performance Max Data in Ads Dashboard\n\nThe new data lets you view key metrics for each Performance Max campaign directly in the dashboard. No more hunting for insights elsewhere.  \n**Key point:** All relevant data is now **within the Google Ads interface**.",
+          "text": "# 1 Overview\n\n**Performance Max** has long felt like a black box—full of potential conversions and new sales, yet often just a source of wasted ad spend. The good news is that **Google has finally released new reporting updates** that will soon appear directly in the Google Ads dashboard. With these updates you'll get extra data about your Performance Max campaigns without the hassle of external scripts or API calls.\n\n# 1.1 New Reporting Features\n\n## 1.1.1 Performance Max Data in Ads Dashboard\n\nThe new data lets you view key metrics for each Performance Max campaign directly in the dashboard. No more hunting for insights elsewhere.  \n**Key point:** All relevant data is now **within the Google Ads interface**.",
           "canonical_text": "If you've ever felt like Performance Max was a black box of secrets where you hoped there was conversions and new sales inside, but sometimes it was just wasted ad spend, you're in luck because the good news is is that Google has finally released some reporting updates which is going to become available inside of the Google Ads dashboard. So, you can now get some extra data about your performance max campaigns without having to run external scripts or run any other APIs to find this data. Now, should Google Ads have released this data earlier? Yes. Do I know why they haven't? Got my theories, but we don't want to go down that path because it is a very dark path because what I want to do right now is I want to focus on this being a positive announcement because this is some great data which Google is giving us. And you know, hats off, where hats due. While I think they should have released it a lot earlier, hey, better late than never. So, what I want to focus on is that there's really three major updates in regards to the reporting that we're going to be seeing very, very soon. One of these you should already have. Depending on when you watch this video, you may or may not have these other two data inputs. What I wanted to focus on is how you can actually use these reporting insights to improve the performance of your account cuz ultimately that's why we run Google Ads cuz we want to see more conversions and more sales for our own businesses or our clients businesses.",
           "canonical_prompt": "Markdown text into heading 1, heading 2, heading 3, paragraphs and bolds. Do not create tables, lists and do not nest items more than 1 child deep. Number each heading with decimal system 1, 1.1, 1.2, 1.2.1, 1.2.2, etc.",
           "canonical_timestamp": "2025-08-23T17:24:48.766Z"
@@ -324,6 +403,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-23T18:46:50.000Z",
-  "versionId": "e509e217-556c-4b5e-a642-4b7906fdbcc6"
+  "updatedAt": "2025-08-23T19:40:38.000Z",
+  "versionId": "2f5fb0a7-3f5a-497a-b9d9-a9cc9598b19d"
 }
