@@ -194,8 +194,8 @@
       "name": "File is new",
       "type": "n8n-nodes-base.noOp",
       "position": [
-        1632,
-        1264
+        2416,
+        1168
       ],
       "typeVersion": 1
     },
@@ -220,8 +220,8 @@
       "name": "Create new file",
       "type": "n8n-nodes-base.github",
       "position": [
-        1856,
-        1264
+        2640,
+        1168
       ],
       "typeVersion": 1,
       "webhookId": "8cd26a4c-522b-4e00-8d41-2e3335e47cd6",
@@ -263,8 +263,8 @@
       "name": "Config",
       "type": "n8n-nodes-base.set",
       "position": [
-        608,
-        1088
+        624,
+        976
       ],
       "typeVersion": 3.4
     },
@@ -274,8 +274,8 @@
       "name": "Merge Items",
       "type": "n8n-nodes-base.merge",
       "position": [
-        816,
-        1072
+        1520,
+        976
       ],
       "typeVersion": 2
     },
@@ -287,8 +287,8 @@
       "name": "isDiffOrNew",
       "type": "n8n-nodes-base.code",
       "position": [
-        1008,
-        1072
+        1744,
+        976
       ],
       "typeVersion": 1
     },
@@ -316,8 +316,8 @@
       "name": "Check Status",
       "type": "n8n-nodes-base.switch",
       "position": [
-        1408,
-        1072
+        2192,
+        944
       ],
       "typeVersion": 1
     },
@@ -327,8 +327,8 @@
       "name": "File is different",
       "type": "n8n-nodes-base.noOp",
       "position": [
-        1632,
-        1072
+        2416,
+        976
       ],
       "typeVersion": 1
     },
@@ -354,8 +354,8 @@
       "name": "Edit existing file",
       "type": "n8n-nodes-base.github",
       "position": [
-        1856,
-        1072
+        2640,
+        976
       ],
       "typeVersion": 1,
       "webhookId": "173d6985-56d1-437c-9674-57f425db6631",
@@ -391,8 +391,8 @@
       "name": "Create sub path",
       "type": "n8n-nodes-base.set",
       "position": [
-        1216,
-        1072
+        1968,
+        976
       ],
       "typeVersion": 3.3
     },
@@ -426,8 +426,8 @@
       "name": "Return",
       "type": "n8n-nodes-base.set",
       "position": [
-        2096,
-        912
+        2864,
+        976
       ],
       "typeVersion": 3.3
     },
@@ -437,8 +437,8 @@
       "name": "Same file - Do nothing",
       "type": "n8n-nodes-base.noOp",
       "position": [
-        1632,
-        912
+        2640,
+        784
       ],
       "typeVersion": 1
     },
@@ -480,8 +480,8 @@
       "name": "If file too large",
       "type": "n8n-nodes-base.if",
       "position": [
-        816,
-        800
+        1072,
+        904
       ],
       "typeVersion": 2
     },
@@ -507,8 +507,8 @@
       "name": "Get file data",
       "type": "n8n-nodes-base.github",
       "position": [
-        608,
-        800
+        848,
+        904
       ],
       "typeVersion": 1,
       "alwaysOutputData": true,
@@ -530,8 +530,8 @@
       "name": "Get File",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        1056,
-        784
+        1296,
+        832
       ],
       "typeVersion": 4.2
     },
@@ -545,7 +545,7 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "position": [
         400,
-        1088
+        976
       ]
     }
   ],
@@ -2499,6 +2499,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-23T15:16:28.000Z",
-  "versionId": "95482f9b-251d-49bd-a7d1-66b40c8ad2d6"
+  "updatedAt": "2025-08-23T15:46:26.000Z",
+  "versionId": "ea3e50b3-eab5-456a-872b-3cf302c6eef5"
 }
