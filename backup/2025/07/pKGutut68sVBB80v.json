@@ -17,7 +17,7 @@
   "id": "pKGutut68sVBB80v",
   "isArchived": false,
   "meta": null,
-  "name": "System Test > Gmail Connection v20250718-190747",
+  "name": "Test.Gmail v20250718-190747",
   "nodes": [
     {
       "parameters": {},
@@ -26,8 +26,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        300,
-        -40
+        304,
+        -48
       ]
     },
     {
@@ -45,8 +45,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2,
       "position": [
-        520,
-        -40
+        528,
+        -48
       ],
       "webhookId": "1c0e01c0-cf85-4976-a98a-8a29a772088a",
       "alwaysOutputData": true,
@@ -69,6 +69,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-07-19T18:05:10.000Z",
-  "versionId": "4c7317e6-7382-44e5-9a42-6c32261b22e8"
+  "updatedAt": "2025-08-23T15:10:33.000Z",
+  "versionId": "5d6fa8da-714e-41df-91d3-e564c1525fbd"
 }
