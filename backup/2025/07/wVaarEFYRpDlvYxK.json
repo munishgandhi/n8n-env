@@ -68,7 +68,7 @@
   "id": "wVaarEFYRpDlvYxK",
   "isArchived": false,
   "meta": null,
-  "name": "System Test > Fetch VC Email v20250718-190734",
+  "name": "Test.FetchVCEmail v20250718-190734",
   "nodes": [
     {
       "parameters": {},
@@ -77,8 +77,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -220,
-        -20
+        -224,
+        -16
       ]
     },
     {
@@ -97,13 +97,16 @@
       "typeVersion": 2,
       "position": [
         0,
-        -20
+        -16
       ],
       "webhookId": "568b3c3c-d14c-4068-afcc-4da8005db6f0",
       "alwaysOutputData": false,
       "executeOnce": false,
       "credentials": {
-        "gmailOAuth2": "pxtxj61wdCzGXITa"
+        "gmailOAuth2": {
+          "id": null,
+          "name": "pxtxj61wdCzGXITa"
+        }
       }
     },
     {
@@ -146,8 +149,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        220,
-        -20
+        224,
+        -16
       ]
     },
     {
@@ -159,8 +162,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        440,
-        -120
+        448,
+        -128
       ]
     },
     {
@@ -200,8 +203,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        660,
-        -120
+        672,
+        -128
       ]
     },
     {
@@ -226,12 +229,12 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        440,
+        448,
         80
       ]
     }
   ],
-  "pinData": null,
+  "pinData": {},
   "repo_name": "n8n-env",
   "repo_owner": "munishgandhi",
   "repo_path": "backup/",
@@ -241,6 +244,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-07-18T23:07:34.760Z",
-  "versionId": "984ba975-4d71-4e1f-a852-d88fa083420b"
+  "updatedAt": "2025-08-23T15:13:07.000Z",
+  "versionId": "e32ae8d5-f9e9-46f6-be0b-8112184413ad"
 }
