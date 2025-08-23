@@ -1,0 +1,59 @@
+{
+  "active": false,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Hello Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-08-23T19:47:30.897Z",
+  "id": "vcEZPCAZP21BENDu",
+  "isArchived": false,
+  "meta": null,
+  "name": "Test.MCP",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "af348192-b268-489a-b19b-7ace4917c59c",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        256,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get current timestamp in YYYYMMDD-HHMMSS format in Eastern timezone\nconst now = new Date();\n\n// Convert to Eastern timezone\nconst easternTime = new Date(now.toLocaleString(\"en-US\", {timeZone: \"America/New_York\"}));\n\nconst timestamp = easternTime.getFullYear() +\n  String(easternTime.getMonth() + 1).padStart(2, '0') +\n  String(easternTime.getDate()).padStart(2, '0') + '-' +\n  String(easternTime.getHours()).padStart(2, '0') +\n  String(easternTime.getMinutes()).padStart(2, '0') +\n  String(easternTime.getSeconds()).padStart(2, '0');\n\nreturn { \n  message: `Hello World - ${timestamp}`,\n  timezone: 'Eastern',\n  utcTime: now.toISOString(),\n  easternTime: easternTime.toISOString()\n};"
+      },
+      "id": "44e71f9c-0582-462d-aa21-06342ae2d23c",
+      "name": "Hello Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        256
+      ]
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-env",
+  "repo_owner": "munishgandhi",
+  "repo_path": "backup/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-08-23T19:47:30.000Z",
+  "versionId": "139ea5b0-4a9f-48db-9be0-45de4966fe8e"
+}
