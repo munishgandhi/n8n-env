@@ -109,7 +109,7 @@
   "id": "2vCtR1xtom0MtooP",
   "isArchived": false,
   "meta": null,
-  "name": "Research Video v20250823-171205",
+  "name": "Research Video v20250823-191947",
   "nodes": [
     {
       "parameters": {
@@ -182,6 +182,12 @@
               "id": "pageid-assignment-001",
               "name": "PageId",
               "value": "={{ (function() {\n    try {\n      return $('N00a Webhook Trigger').item.json.body.data.id;\n    } catch (e) {\n      // Webhook failed\n    }\n    try {\n      return $('N00b Manual Trigger').item.json.body.data.id;\n    } catch (e) {\n      return '';\n    }\n  })() }}",
+              "type": "string"
+            },
+            {
+              "id": "3d9c3256-0fd5-4b55-ad07-28650771ea20",
+              "name": "canonical_prompt",
+              "value": "Convert transcript into a well structured document with sections #, subsections ##, subsubsections ###, lists, and other standard markdown elements. Use the decimal system 1, 1.1, 1.2, 1.2.1, 1.2.2 for section, subsection and subsubsection numbering.  For example, \"# Overview\"  DO NOT be overenthusisastic to create subsubsections and subsections.  A good rule of thumb is don't divide into sections and subsections if the material is less than 3 paragraphs long. Do NOT Create lists for each item in a section/subsection/subsubsection. Use paragraphs.  DO USE a list, if you want to identify a numbered or ununmbered list of items that are each just a few words each.    IGNORE: - Pitches to watch other vidoes or any other marketing comments - Commercials where the other is pitching other products",
               "type": "string"
             }
           ]
@@ -345,7 +351,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "={{ $json.canonical_prompt }}: {{ $json.canonical_text }}",
+        "text": "={{ $('N02 Set Canonical Fields').item.json.canonical_prompt }}{{ $('N04 Get Transcript').item.json.transcript }}",
         "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
@@ -365,7 +371,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmOllama",
       "typeVersion": 1,
       "position": [
-        2104,
+        2112,
         -864
       ],
       "id": "6bb8f6e8-28a3-43b4-8d6f-5b6faab9f405",
@@ -383,15 +389,17 @@
           "__rl": true,
           "value": "djCCWdvV9VVzqqRb",
           "mode": "list",
-          "cachedResultName": "AddMDtoNotion"
+          "cachedResultName": "AddMDtoNotion v20250823-161549"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
           "value": {
-            "text": "={{ $json.text }}",
-            "canonical_text": "={{ $('N05 Generate Markdown Guide').item.json.canonical_text }}",
-            "canonical_prompt": "={{ $('N05 Generate Markdown Guide').item.json.canonical_prompt }}",
-            "canonical_timestamp": "={{ $('N05 Generate Markdown Guide').item.json.canonical_timestamp }}"
+            "canonical_text": "={{ $('N04 Get Transcript').item.json.transcript }}",
+            "canonical_prompt": "Create a markdown guide with proper headings, subheadings and bolds",
+            "canonical_timestamp": "={{ $('N04 Get Transcript').item.json.extractedAt }}",
+            "canonical_md": "={{ $json.text }}",
+            "canonical_page_id": "={{ $('N02 Set Canonical Fields').item.json.PageId }}",
+            "canonical_yt_id": "={{ $('N02 Set Canonical Fields').item.json.ArticleId }}"
           },
           "matchingColumns": [
             "text",
@@ -401,8 +409,8 @@
           ],
           "schema": [
             {
-              "id": "text",
-              "displayName": "text",
+              "id": "canonical_md",
+              "displayName": "canonical_md",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -434,6 +442,26 @@
               "defaultMatch": false,
               "display": true,
               "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "canonical_page_id",
+              "displayName": "canonical_page_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "canonical_yt_id",
+              "displayName": "canonical_yt_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
               "removed": false
             }
           ],
@@ -863,6 +891,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-23T21:12:05.000Z",
-  "versionId": "575f2418-356c-423a-bc8d-2b125fbdc6db"
+  "updatedAt": "2025-08-23T23:49:00.000Z",
+  "versionId": "090e41eb-7fc4-4239-9786-b5dcb4ca060d"
 }
