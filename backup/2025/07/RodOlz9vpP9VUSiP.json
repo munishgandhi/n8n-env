@@ -28,7 +28,7 @@
   "id": "RodOlz9vpP9VUSiP",
   "isArchived": false,
   "meta": null,
-  "name": "System Test > Ollama v20250718-190747",
+  "name": "Test.Ollama v20250718-190747",
   "nodes": [
     {
       "parameters": {},
@@ -91,8 +91,15 @@
     "executionOrder": "v1"
   },
   "staticData": null,
-  "tags": [],
+  "tags": [
+    {
+      "createdAt": "2025-08-23T15:08:51.438Z",
+      "updatedAt": "2025-08-23T15:08:51.438Z",
+      "id": "Sp7RcDlahroO3FeB",
+      "name": "test"
+    }
+  ],
   "triggerCount": 0,
-  "updatedAt": "2025-08-18T00:18:25.000Z",
-  "versionId": "6118df4d-5a8a-4591-a5d8-dc4555565178"
+  "updatedAt": "2025-08-23T15:10:07.000Z",
+  "versionId": "c84ff67f-486d-4d74-a224-510f67e4da74"
 }
