@@ -49,6 +49,11 @@
             "node": "Notion Markdown",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "N05a-Parse-Markdown-To-Blocks",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -88,13 +93,7 @@
     },
     "N05b-Split-To-Items": {
       "main": [
-        [
-          {
-            "node": "N06-Merge-Toggle-With-Content",
-            "type": "main",
-            "index": 1
-          }
-        ]
+        []
       ]
     },
     "N06-Merge-Toggle-With-Content": {
@@ -115,7 +114,24 @@
     },
     "Notion Markdown": {
       "main": [
-        []
+        [
+          {
+            "node": "N05b-Split-To-Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N05b-Split-To-Items1": {
+      "main": [
+        [
+          {
+            "node": "N06-Merge-Toggle-With-Content",
+            "type": "main",
+            "index": 1
+          }
+        ]
       ]
     }
   },
@@ -151,7 +167,7 @@
             {
               "id": "canonical_prompt",
               "name": "canonical_prompt",
-              "value": "Markdown this piece of text into sections, subsections, paragraphs, lists and bolds.",
+              "value": "Markdown this piece of text into sections, subsections, paragraphs, lists and bolds.  Do not create any tables.",
               "type": "string"
             },
             {
@@ -338,7 +354,9 @@
       }
     },
     {
-      "parameters": {},
+      "parameters": {
+        "inputMarkdown": "={{ $json.text }}"
+      },
       "type": "n8n-nodes-notion-markdown.notionMarkdown",
       "typeVersion": 1,
       "position": [
@@ -347,6 +365,22 @@
       ],
       "id": "4e3b6dcc-0d84-476a-9c0f-fe912c1e4d8e",
       "name": "Notion Markdown"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output",
+        "options": {
+          "disableDotNotation": false
+        }
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        240
+      ],
+      "id": "4ff61083-2d20-430d-9799-436c5f851ff0",
+      "name": "N05b-Split-To-Items1"
     }
   ],
   "pinData": {
@@ -374,6 +408,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-23T06:50:38.000Z",
-  "versionId": "28504149-596a-454a-b264-d0ab514e98aa"
+  "updatedAt": "2025-08-23T07:16:03.000Z",
+  "versionId": "45376eb8-67c1-45ff-b152-d3831f56a23a"
 }
