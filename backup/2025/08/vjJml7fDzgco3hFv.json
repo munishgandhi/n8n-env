@@ -89,7 +89,7 @@
     "templateId": "1534",
     "templateCredsSetupCompleted": true
   },
-  "name": "GitHub backup main",
+  "name": "Backup.GitHub main",
   "nodes": [
     {
       "parameters": {},
@@ -254,6 +254,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-16T05:48:51.000Z",
-  "versionId": "c79196c7-4ea0-46a1-ba76-1239ea876b51"
+  "updatedAt": "2025-08-23T15:13:58.000Z",
+  "versionId": "e657b6b2-6dda-46d7-a5c8-816123243aad"
 }
