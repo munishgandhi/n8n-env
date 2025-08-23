@@ -1,127 +1,127 @@
 {
   "active": false,
   "connections": {
-    "N06-Merge-Toggle-With-Content": {
+    "N05-Merge-Toggle-With-Content": {
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "N06-Loop-Over-Items",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Loop Over Items": {
+    "N06-Loop-Over-Items": {
       "main": [
+        [],
         [
           {
-            "node": "Prepare Block Data",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        []
-      ]
-    },
-    "Prepare Block Data": {
-      "main": [
-        [
-          {
-            "node": "N07-Append-Inside-Toggle",
+            "node": "N07-Prepare-Block-Data",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "N07-Append-Inside-Toggle": {
+    "N07-Prepare-Block-Data": {
       "main": [
         [
           {
-            "node": "Capture Block ID",
+            "node": "N08-Append-Inside-Toggle",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Capture Block ID": {
+    "N08-Append-Inside-Toggle": {
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "N09-Capture-Block-ID",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "N04a-Toggle.Transcript.MD": {
+    "N09-Capture-Block-ID": {
       "main": [
         [
           {
-            "node": "N04b-Extract.Toggle.ID",
+            "node": "N06-Loop-Over-Items",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "N04b-Extract.Toggle.ID": {
+    "N03a-Create-Toggle": {
       "main": [
         [
           {
-            "node": "N06-Merge-Toggle-With-Content",
+            "node": "N03b-Extract-Toggle-ID",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Edit Fields": {
+    "N03b-Extract-Toggle-ID": {
       "main": [
         [
           {
-            "node": "N04a-Toggle.Transcript.MD",
+            "node": "N05-Merge-Toggle-With-Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N02-Set-Canonical-Fields": {
+      "main": [
+        [
+          {
+            "node": "N03a-Create-Toggle",
             "type": "main",
             "index": 0
           },
           {
-            "node": "MD to Notion Blocks",
+            "node": "N03-MD-to-Notion-Blocks",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "MD to Notion Blocks": {
+    "N03-MD-to-Notion-Blocks": {
       "main": [
         [
           {
-            "node": "N05b-Split-Notion Blocks",
+            "node": "N04-Split-Notion-Blocks",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "N05b-Split-Notion Blocks": {
+    "N04-Split-Notion-Blocks": {
       "main": [
         [
           {
-            "node": "N06-Merge-Toggle-With-Content",
+            "node": "N05-Merge-Toggle-With-Content",
             "type": "main",
             "index": 1
           }
         ]
       ]
     },
-    "Start": {
+    "N00-Start": {
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "N02-Set-Canonical-Fields",
             "type": "main",
             "index": 0
           }
@@ -133,7 +133,7 @@
   "id": "djCCWdvV9VVzqqRb",
   "isArchived": false,
   "meta": null,
-  "name": "AddMDtoNotion v20250823-154038",
+  "name": "AddMDtoNotion v20250823-161549",
   "nodes": [
     {
       "parameters": {
@@ -142,11 +142,11 @@
       "type": "n8n-nodes-notion-markdown.notionMarkdown",
       "typeVersion": 1,
       "position": [
-        1264,
+        1040,
         -192
       ],
       "id": "4e3b6dcc-0d84-476a-9c0f-fe912c1e4d8e",
-      "name": "MD to Notion Blocks"
+      "name": "N03-MD-to-Notion-Blocks"
     },
     {
       "parameters": {
@@ -158,11 +158,11 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        1488,
+        1264,
         -192
       ],
       "id": "4ff61083-2d20-430d-9799-436c5f851ff0",
-      "name": "N05b-Split-Notion Blocks"
+      "name": "N04-Split-Notion-Blocks"
     },
     {
       "parameters": {
@@ -173,11 +173,11 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1712,
+        1488,
         -288
       ],
       "id": "n06-merge-toggle-content",
-      "name": "N06-Merge-Toggle-With-Content"
+      "name": "N05-Merge-Toggle-With-Content"
     },
     {
       "parameters": {
@@ -186,11 +186,11 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1936,
+        1712,
         -288
       ],
       "id": "loop-over-items",
-      "name": "Loop Over Items"
+      "name": "N06-Loop-Over-Items"
     },
     {
       "parameters": {
@@ -199,11 +199,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2160,
-        -360
+        1936,
+        -368
       ],
       "id": "prepare-block-data",
-      "name": "Prepare Block Data"
+      "name": "N07-Prepare-Block-Data"
     },
     {
       "parameters": {
@@ -228,11 +228,11 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2384,
-        -360
+        2160,
+        -368
       ],
       "id": "n07-append-inside-toggle",
-      "name": "N07-Append-Inside-Toggle",
+      "name": "N08-Append-Inside-Toggle",
       "credentials": {
         "notionApi": {
           "id": "MlSLKQmPnMyqW0ii",
@@ -247,11 +247,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2608,
+        2384,
         -288
       ],
       "id": "capture-block-id",
-      "name": "Capture Block ID"
+      "name": "N09-Capture-Block-ID"
     },
     {
       "parameters": {
@@ -266,19 +266,19 @@
             {
               "id": "214dfd15-50b6-46a0-8993-6b48e829fc35",
               "name": "canonical_text",
-              "value": "={{ $('Start').item.json.canonical_text }}",
+              "value": "={{ $json.canonical_text }}",
               "type": "string"
             },
             {
               "id": "0ccd39cd-47ec-41ad-80ef-f333b2ca6f77",
               "name": "canonical_prompt",
-              "value": "={{ $('Start').item.json.canonical_prompt }}",
+              "value": "={{ $json.canonical_prompt }}",
               "type": "string"
             },
             {
               "id": "ec7ba01d-2fb4-4450-836a-7e134bcbbb6d",
               "name": "canonical_timestamp",
-              "value": "={{ $('Start').item.json.canonical_timestamp }}",
+              "value": "={{ $json.canonical_timestamp }}",
               "type": "string"
             }
           ]
@@ -292,7 +292,7 @@
         -288
       ],
       "id": "7ca9b868-e871-4682-9927-37d6c7f3cbf7",
-      "name": "Edit Fields"
+      "name": "N02-Set-Canonical-Fields"
     },
     {
       "parameters": {
@@ -314,11 +314,11 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        1264,
+        1040,
         -384
       ],
       "id": "n04a-create-toggle",
-      "name": "N04a-Toggle.Transcript.MD",
+      "name": "N03a-Create-Toggle",
       "credentials": {
         "notionApi": {
           "id": "MlSLKQmPnMyqW0ii",
@@ -343,11 +343,11 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1488,
+        1264,
         -384
       ],
       "id": "n04b-extract-toggle-id",
-      "name": "N04b-Extract.Toggle.ID"
+      "name": "N03b-Extract-Toggle-ID"
     },
     {
       "parameters": {
@@ -374,7 +374,7 @@
       },
       "id": "1893f73c-4f1c-46ad-b7df-5b9745464d0c",
       "typeVersion": 1.1,
-      "name": "Start",
+      "name": "N00-Start",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "position": [
         592,
@@ -383,13 +383,13 @@
     }
   ],
   "pinData": {
-    "Start": [
+    "N00-Start": [
       {
         "json": {
-          "text": "# 1 Overview\n\n**Performance Max** has long felt like a black box—full of potential conversions and new sales, yet often just a source of wasted ad spend. The good news is that **Google has finally released new reporting updates** that will soon appear directly in the Google Ads dashboard. With these updates you'll get extra data about your Performance Max campaigns without the hassle of external scripts or API calls.\n\n# 1.1 New Reporting Features\n\n## 1.1.1 Performance Max Data in Ads Dashboard\n\nThe new data lets you view key metrics for each Performance Max campaign directly in the dashboard. No more hunting for insights elsewhere.  \n**Key point:** All relevant data is now **within the Google Ads interface**.",
+          "text": "# 1 Introduction\n\n**Performance Max** has long been perceived as a mysterious black box—full of potential conversions and sales, yet sometimes just a drain on ad spend.  \nGoogle has finally released new reporting updates that will be available directly within the Google Ads dashboard, eliminating the need for external scripts or APIs.\n\n# 1.1 Performance Max as a Black Box\n\nMany advertisers have felt the frustration of trying to decipher how their Performance Max campaigns truly perform.  \nThis new update promises clearer insight and a path toward better decision‑making.\n\n# 1.2 New Reporting Updates\n\n## 1.2.1 Data Availability\n\nYou can now access additional performance metrics for your campaigns *right inside* Google Ads.  \nNo extra code, no external services—just the data you need at your fingertips.\n\n## 1.2.2 Data Usage\n\nThese insights are designed to help you optimize your account by focusing on real performance indicators, not just surface‑level impressions.\n\n# 1.3 Theories About the Delayed Release\n\nWhile the release came a bit late, we’re not diving into speculation.  \nThe key point: **better late than never**.\n\n# 1.4 Positive Announcement\n\nThis is a **positive milestone**—Google is finally sharing the information that advertisers have been waiting for.  \nWe applaud the move and the transparency it brings.\n\n# 1.5 Three Major Updates Coming Soon\n\nBelow are the three core updates you’ll soon see in the dashboard.  \nDepending on when you view this content, you may already have the first update, while the other two will arrive shortly.\n\n## 1.5.1 Update One\n\n*Details on the first new metric, including how it aligns with your existing reporting structure.*\n\n## 1.5.2 Update Two\n\n*Second update description—focus on actionable data and how it feeds into optimization strategies.*\n\n## 1.5.3 Update Three\n\n*Third update—additional dimensions for deeper analysis and conversion tracking.*\n\n# 1.6 Using Insights to Improve Performance\n\nThe ultimate goal of Google Ads is to drive **more conversions and sales** for your business or your clients.  \nWith these fresh reporting tools, you can refine targeting, adjust budgets, and craft smarter creatives based on hard data, turning every dollar spent into measurable impact.",
           "canonical_text": "If you've ever felt like Performance Max was a black box of secrets where you hoped there was conversions and new sales inside, but sometimes it was just wasted ad spend, you're in luck because the good news is is that Google has finally released some reporting updates which is going to become available inside of the Google Ads dashboard. So, you can now get some extra data about your performance max campaigns without having to run external scripts or run any other APIs to find this data. Now, should Google Ads have released this data earlier? Yes. Do I know why they haven't? Got my theories, but we don't want to go down that path because it is a very dark path because what I want to do right now is I want to focus on this being a positive announcement because this is some great data which Google is giving us. And you know, hats off, where hats due. While I think they should have released it a lot earlier, hey, better late than never. So, what I want to focus on is that there's really three major updates in regards to the reporting that we're going to be seeing very, very soon. One of these you should already have. Depending on when you watch this video, you may or may not have these other two data inputs. What I wanted to focus on is how you can actually use these reporting insights to improve the performance of your account cuz ultimately that's why we run Google Ads cuz we want to see more conversions and more sales for our own businesses or our clients businesses.",
           "canonical_prompt": "Markdown text into heading 1, heading 2, heading 3, paragraphs and bolds. Do not create tables, lists and do not nest items more than 1 child deep. Number each heading with decimal system 1, 1.1, 1.2, 1.2.1, 1.2.2, etc.",
-          "canonical_timestamp": "2025-08-23T17:24:48.766Z"
+          "canonical_timestamp": "2025-08-23T20:00:12.511Z"
         }
       }
     ]
@@ -400,9 +400,13 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": null,
+  "staticData": {
+    "global": {
+      "previousBlockId": "2581db9b-a441-8143-8cf6-f3c97ae73db1"
+    }
+  },
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-23T19:40:38.000Z",
-  "versionId": "2f5fb0a7-3f5a-497a-b9d9-a9cc9598b19d"
+  "updatedAt": "2025-08-23T20:20:00.000Z",
+  "versionId": "c442b870-e6bd-4aaf-87c6-4e2a8370e760"
 }
