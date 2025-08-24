@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "N01 Fetch YouTube Video": {
       "main": [
@@ -109,7 +109,7 @@
   "id": "2vCtR1xtom0MtooP",
   "isArchived": false,
   "meta": null,
-  "name": "Research Video v20250823-191947",
+  "name": "Research Video v20250823-205324",
   "nodes": [
     {
       "parameters": {
@@ -298,7 +298,7 @@
         "httpMethod": [
           "POST"
         ],
-        "path": "39ea85ca-398d-4d46-b8b3-fbe319421474",
+        "path": "research-video",
         "options": {}
       },
       "type": "n8n-nodes-base.webhook",
@@ -319,7 +319,7 @@
         "operation": "update",
         "pageId": {
           "__rl": true,
-          "value": "={{ $('N02 Set Canonical Fields').item.json.PageId }}",
+          "value": "={{ $('N02 Set Canonical Fields').first().json.PageId }}",
           "mode": "id"
         },
         "simple": false,
@@ -892,6 +892,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-24T00:40:50.000Z",
-  "versionId": "2f47f56d-7f43-483d-a533-09158cba3d76"
+  "updatedAt": "2025-08-24T01:11:32.000Z",
+  "versionId": "73958c0b-aa43-4abb-bff9-7b2d01ca7b3c"
 }
