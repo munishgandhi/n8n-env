@@ -133,7 +133,7 @@
   "id": "djCCWdvV9VVzqqRb",
   "isArchived": false,
   "meta": null,
-  "name": "AddMDtoNotion v20250823-161549",
+  "name": "Video MD to Notion v20250823-161549",
   "nodes": [
     {
       "parameters": {
@@ -422,11 +422,11 @@
   },
   "staticData": {
     "global": {
-      "previousBlockId": "2591db9b-a441-81d8-9a4a-c88d6b893724"
+      "previousBlockId": "2591db9b-a441-8186-8daf-da2e635ab369"
     }
   },
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-24T00:04:57.000Z",
-  "versionId": "cbef3b4e-9213-4ad2-9c29-c97fc59b8084"
+  "updatedAt": "2025-08-24T01:13:00.000Z",
+  "versionId": "d0c9a02a-468a-4838-8ac5-9ce8fef5c6b8"
 }
