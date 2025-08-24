@@ -1,5 +1,5 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
     "N01: Fetch YouTube Video": {
       "main": [
@@ -145,7 +145,7 @@
   },
   "createdAt": "2025-08-16T05:23:37.742Z",
   "id": "m9VOQWCFffFQClW9",
-  "isArchived": false,
+  "isArchived": true,
   "meta": null,
   "name": "Transcribe Video v20250817-185830",
   "nodes": [
@@ -926,6 +926,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-17T22:58:30.000Z",
-  "versionId": "8b10f172-f9b4-46f8-bdc6-1ff1988cf06d"
+  "updatedAt": "2025-08-24T02:29:28.000Z",
+  "versionId": "920c0ca9-e7f8-471c-a0d6-3bc43677d168"
 }
