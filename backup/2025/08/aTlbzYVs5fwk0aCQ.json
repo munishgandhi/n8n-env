@@ -145,7 +145,7 @@
   },
   "createdAt": "2025-08-18T00:21:11.215Z",
   "id": "aTlbzYVs5fwk0aCQ",
-  "isArchived": false,
+  "isArchived": true,
   "meta": null,
   "name": "Restructure Transcript",
   "nodes": [
@@ -934,6 +934,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-08-18T00:21:34.000Z",
-  "versionId": "f2d7840e-f6a3-474e-b649-b8c5b9c22e9c"
+  "updatedAt": "2025-08-24T02:26:16.000Z",
+  "versionId": "f9c28d72-15d9-4e47-b0e4-c7bb69611816"
 }
