@@ -280,6 +280,18 @@
               "name": "canonical_timestamp",
               "value": "={{ $json.canonical_timestamp }}",
               "type": "string"
+            },
+            {
+              "id": "e6e248df-98c8-4dec-97ea-a854c545f990",
+              "name": "canonical_page_id",
+              "value": "={{ $json.canonical_page_id }}",
+              "type": "string"
+            },
+            {
+              "id": "f369ad15-0199-4301-b926-5e8ac55bcf71",
+              "name": "canonical_yt_id",
+              "value": "={{ $json.canonical_yt_id }}",
+              "type": "string"
             }
           ]
         },
@@ -299,14 +311,14 @@
         "resource": "block",
         "blockId": {
           "__rl": true,
-          "mode": "id",
-          "value": "2551db9ba441805e9bd0fe21a317c8f0"
+          "value": "={{ $json.canonical_page_id }}",
+          "mode": "id"
         },
         "blockUi": {
           "blockValues": [
             {
               "type": "toggle",
-              "textContent": "=Markdown - Performance Max Guide {{ $now.format('(yyyy-MM-dd-HH:mm:ss)') }}"
+              "textContent": "=Transcript Markdown {{ $now.format('(yyyy-MM-dd-HH:mm:ss)') }}"
             }
           ]
         }
@@ -395,7 +407,9 @@
           "canonical_md": "# 1 Introduction\n\n**Performance Max** has long been perceived as a mysterious black box—full of potential conversions and sales, yet sometimes just a drain on ad spend.  \nGoogle has finally released new reporting updates that will be available directly within the Google Ads dashboard, eliminating the need for external scripts or APIs.\n\n# 1.1 Performance Max as a Black Box\n\nMany advertisers have felt the frustration of trying to decipher how their Performance Max campaigns truly perform.  \nThis new update promises clearer insight and a path toward better decision‑making.\n\n# 1.2 New Reporting Updates\n\n## 1.2.1 Data Availability\n\nYou can now access additional performance metrics for your campaigns *right inside* Google Ads.  \nNo extra code, no external services—just the data you need at your fingertips.\n\n## 1.2.2 Data Usage\n\nThese insights are designed to help you optimize your account by focusing on real performance indicators, not just surface‑level impressions.\n\n# 1.3 Theories About the Delayed Release\n\nWhile the release came a bit late, we’re not diving into speculation.  \nThe key point: **better late than never**.\n\n# 1.4 Positive Announcement\n\nThis is a **positive milestone**—Google is finally sharing the information that advertisers have been waiting for.  \nWe applaud the move and the transparency it brings.\n\n# 1.5 Three Major Updates Coming Soon\n\nBelow are the three core updates you’ll soon see in the dashboard.  \nDepending on when you view this content, you may already have the first update, while the other two will arrive shortly.\n\n## 1.5.1 Update One\n\n*Details on the first new metric, including how it aligns with your existing reporting structure.*\n\n## 1.5.2 Update Two\n\n*Second update description—focus on actionable data and how it feeds into optimization strategies.*\n\n## 1.5.3 Update Three\n\n*Third update—additional dimensions for deeper analysis and conversion tracking.*\n\n# 1.6 Using Insights to Improve Performance\n\nThe ultimate goal of Google Ads is to drive **more conversions and sales** for your business or your clients.  \nWith these fresh reporting tools, you can refine targeting, adjust budgets, and craft smarter creatives based on hard data, turning every dollar spent into measurable impact.",
           "canonical_text": "If you've ever felt like Performance Max was a black box of secrets where you hoped there was conversions and new sales inside, but sometimes it was just wasted ad spend, you're in luck because the good news is is that Google has finally released some reporting updates which is going to become available inside of the Google Ads dashboard. So, you can now get some extra data about your performance max campaigns without having to run external scripts or run any other APIs to find this data. Now, should Google Ads have released this data earlier? Yes. Do I know why they haven't? Got my theories, but we don't want to go down that path because it is a very dark path because what I want to do right now is I want to focus on this being a positive announcement because this is some great data which Google is giving us. And you know, hats off, where hats due. While I think they should have released it a lot earlier, hey, better late than never. So, what I want to focus on is that there's really three major updates in regards to the reporting that we're going to be seeing very, very soon. One of these you should already have. Depending on when you watch this video, you may or may not have these other two data inputs. What I wanted to focus on is how you can actually use these reporting insights to improve the performance of your account cuz ultimately that's why we run Google Ads cuz we want to see more conversions and more sales for our own businesses or our clients businesses.",
           "canonical_prompt": "Markdown text into heading 1, heading 2, heading 3, paragraphs and bolds. Do not create tables, lists and do not nest items more than 1 child deep. Number each heading with decimal system 1, 1.1, 1.2, 1.2.1, 1.2.2, etc.",
-          "canonical_timestamp": "2025-08-23T20:00:12.511Z"
+          "canonical_timestamp": "2025-08-23T20:00:12.511Z",
+          "canonical_page_id": "2501db9b-a441-8004-bae6-d06a6db447e9",
+          "canonical_yt_id": "QhaiqGPlY2Y"
         }
       }
     ]
@@ -408,11 +422,11 @@
   },
   "staticData": {
     "global": {
-      "previousBlockId": "2581db9b-a441-811f-b3d8-f8d93b237022"
+      "previousBlockId": "2591db9b-a441-81d8-9a4a-c88d6b893724"
     }
   },
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-23T23:48:30.000Z",
-  "versionId": "e0fda2ad-7b2d-4d12-9cdd-8f7750b05134"
+  "updatedAt": "2025-08-24T00:04:57.000Z",
+  "versionId": "cbef3b4e-9213-4ad2-9c29-c97fc59b8084"
 }
