@@ -372,7 +372,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmOllama",
       "typeVersion": 1,
       "position": [
-        2112,
+        2104,
         -864
       ],
       "id": "6bb8f6e8-28a3-43b4-8d6f-5b6faab9f405",
@@ -892,6 +892,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-24T01:11:32.000Z",
-  "versionId": "73958c0b-aa43-4abb-bff9-7b2d01ca7b3c"
+  "updatedAt": "2025-08-24T02:38:01.000Z",
+  "versionId": "5e4b8b1c-13b3-4652-a37d-5cb541021f12"
 }
