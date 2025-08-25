@@ -1,0 +1,473 @@
+{
+  "active": true,
+  "connections": {
+    "N00 Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "N01 Set Canonical Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "N01 Set Canonical Fields": {
+      "main": [
+        [
+          {
+            "node": "N02 Update n8n Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-08-25T04:17:47.579Z",
+  "id": "IaxdtutZrdNRitl1",
+  "isArchived": false,
+  "meta": null,
+  "name": "Jobs.QA.Applicants Starter",
+  "nodes": [
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "httpMethod": [
+          "POST"
+        ],
+        "path": "jobs-qa-applicants",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        400,
+        400
+      ],
+      "id": "4d11f644-2910-46d3-8fd1-52064f80a1cf",
+      "name": "N00 Webhook Trigger",
+      "webhookId": "66af1cc3-56a0-4758-9891-66ff5c01533e",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "notion-page-id",
+              "name": "notion_page_id",
+              "value": "={{ $json.body.data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "notion-database-id",
+              "name": "notion_database_id",
+              "value": "={{ $json.body.data.parent.database_id }}",
+              "type": "string"
+            },
+            {
+              "id": "a03236e7-db52-4780-ba02-332be25809c2",
+              "name": "notion___deep_thinking",
+              "value": "={{ $json.body.data.properties[\" 📊Deep Thinking\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "13ba58cb-7018-4290-945e-5e0bc9549e0a",
+              "name": "notion_bachelor_s_degree",
+              "value": "={{ $json.body.data.properties[\"Bachelor's Degree\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "638663a1-934b-4cba-af41-4e3fff0b75ac",
+              "name": "notion_bachelor_s_gpa",
+              "value": "={{ $json.body.data.properties[\"Bachelor's GPA\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "6ce589d5-e1e7-4d76-8bf2-8779ce8e57f6",
+              "name": "notion_bachelor_s_year",
+              "value": "={{ $json.body.data.properties[\"Bachelor's Year\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "90ca52e4-8d54-4e95-9082-f5a6dac53371",
+              "name": "notion_check_requirements",
+              "value": "={{ $json.body.data.properties[\"Check Requirements\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "ebd5a8eb-ef77-4405-b766-39605d2d0571",
+              "name": "notion_created_by",
+              "value": "={{ $json.body.data.properties[\"Created by\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "a68e5bed-371a-4d83-b097-815a744b3a63",
+              "name": "notion_created_time",
+              "value": "={{ $json.body.data.properties[\"Created time\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "46f0eeaa-92d0-4d72-a762-60df23b45aed",
+              "name": "notion_current_salary_us_",
+              "value": "={{ $json.body.data.properties[\"Current Salary US$\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "05244478-8373-48fa-a4aa-ed61d8af8b38",
+              "name": "notion_days_to_join",
+              "value": "={{ $json.body.data.properties[\"Days to Join\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "6a222bde-d63a-45d5-b80d-6e97abf49e30",
+              "name": "notion_deprecated_hiringnotes",
+              "value": "={{ $json.body.data.properties[\"Deprecated:HiringNotes\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "57cb378c-bd9b-4376-99ad-6d7c8257dec2",
+              "name": "notion_educational_degree",
+              "value": "={{ $json.body.data.properties[\"Educational Degree\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "5bad184f-fcc8-4e9f-a466-73f090f5148f",
+              "name": "notion_email_address",
+              "value": "={{ $json.body.data.properties[\"Email Address\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "f140e3f8-8f41-4b61-83fb-e25a3e09e7e7",
+              "name": "notion_expa_gpt_",
+              "value": "={{ $json.body.data.properties[\"ExpA GPT%\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "8b0befba-8957-4bbe-af22-22cc4c9e6158",
+              "name": "notion_expa_months",
+              "value": "={{ $json.body.data.properties[\"ExpA Months\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "4cc3b1e4-f146-46f5-906e-d1794b9b99b4",
+              "name": "notion_expa_name",
+              "value": "={{ $json.body.data.properties[\"ExpA Name\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "4e2ba971-82bb-470b-a9e1-57a7102e050f",
+              "name": "notion_expa_project",
+              "value": "={{ $json.body.data.properties[\"ExpA Project\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "a1e70d2f-003a-4a6a-9ae2-fe2a4e412279",
+              "name": "notion_expb_gpt__",
+              "value": "={{ $json.body.data.properties[\"ExpB GPT %\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "bf9473c2-5454-4731-80e8-6365631142fa",
+              "name": "notion_expb_months",
+              "value": "={{ $json.body.data.properties[\"ExpB Months\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "18bd145b-0e48-43f2-a5cd-ad54b36eb479",
+              "name": "notion_expb_name_",
+              "value": "={{ $json.body.data.properties[\"ExpB Name \"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "3e963cdb-ec2d-413f-8534-5d9cc6b5d41c",
+              "name": "notion_expb_project",
+              "value": "={{ $json.body.data.properties[\"ExpB Project\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "96b86f8e-2884-4e41-9176-4ac103c9fdca",
+              "name": "notion_expc_gpt_",
+              "value": "={{ $json.body.data.properties[\"ExpC GPT%\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "c87f10dd-178c-45ae-b267-71743aa33ed7",
+              "name": "notion_expc_months",
+              "value": "={{ $json.body.data.properties[\"ExpC Months\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "f4244dff-572c-498c-a926-7d4d9f716826",
+              "name": "notion_expc_name",
+              "value": "={{ $json.body.data.properties[\"ExpC Name\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "49471d4d-b117-4831-bd56-329b1dbea46d",
+              "name": "notion_expc_project",
+              "value": "={{ $json.body.data.properties[\"ExpC Project\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "7fcc5131-6303-459f-a444-6830fd16964e",
+              "name": "notion_expd_gpt_",
+              "value": "={{ $json.body.data.properties[\"ExpD GPT%\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "fda83de5-9cac-4fc2-af3d-b1aaceda4dcb",
+              "name": "notion_expd_months",
+              "value": "={{ $json.body.data.properties[\"ExpD Months\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "38b7c04b-e96e-49db-9a34-e1244d1447c3",
+              "name": "notion_expd_name",
+              "value": "={{ $json.body.data.properties[\"ExpD Name\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "84d4343b-e6cf-4895-afb6-ce17ef6dd3af",
+              "name": "notion_expd_project",
+              "value": "={{ $json.body.data.properties[\"ExpD Project\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "cc3d42b6-4342-446c-bced-c10a1a09f1c1",
+              "name": "notion_expected_salary_us_",
+              "value": "={{ $json.body.data.properties[\"Expected Salary US$\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "da6428b8-2ec6-4b19-a661-43eda625962d",
+              "name": "notion_final_thoughts",
+              "value": "={{ $json.body.data.properties[\"Final thoughts\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "9d107181-6a7f-4cc5-9494-592ae5b11610",
+              "name": "notion_hm_z15screening",
+              "value": "={{ $json.body.data.properties[\"HM:Z15Screening\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "3aec6e48-d270-4889-adef-4834eb26b183",
+              "name": "notion_hm_z50idcheck",
+              "value": "={{ $json.body.data.properties[\"HM:Z50IDCheck\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "3d4429f7-0d3a-45b5-ae61-a4974d8d6312",
+              "name": "notion_hm_z50recommendation",
+              "value": "={{ $json.body.data.properties[\"HM:Z50Recommendation\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "acf5fa6f-ce8c-4e6d-a275-a3f2716b468b",
+              "name": "notion_hm_z50rejection",
+              "value": "={{ $json.body.data.properties[\"HM:Z50Rejection\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "e67523d6-5295-4594-8b32-36013197685b",
+              "name": "notion_hr_z15idcheck",
+              "value": "={{ $json.body.data.properties[\"HR:Z15IDCheck\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "36dd4c3a-26fc-4827-bb68-1862a56577d3",
+              "name": "notion_hr_z15screening",
+              "value": "={{ $json.body.data.properties[\"HR:Z15Screening\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "4aaf354f-7532-4a3e-9118-6e51ba04336b",
+              "name": "notion_hiring_status",
+              "value": "={{ $json.body.data.properties[\"Hiring Status\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "f75cac38-869d-4170-9cd2-eec68e3bf036",
+              "name": "notion_interview_time",
+              "value": "={{ $json.body.data.properties[\"Interview Time\"].date }}",
+              "type": "string"
+            },
+            {
+              "id": "3bce7eb4-b19d-4295-bb6d-0bdb00953c3f",
+              "name": "notion_interviews",
+              "value": "={{ $json.body.data.properties[\"Interviews\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "1b9510b0-d2d3-499c-9c45-0760eeed8817",
+              "name": "notion_job_hopper",
+              "value": "={{ $json.body.data.properties[\"Job Hopper\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "d4444a8f-4c1c-4a22-a8d1-39f443cbfc2f",
+              "name": "notion_last_edited_by",
+              "value": "={{ $json.body.data.properties[\"Last edited by\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "afcab814-5a8d-412f-a577-ddc87686ed83",
+              "name": "notion_last_edited_time",
+              "value": "={{ $json.body.data.properties[\"Last edited time\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "152b4930-644e-4a81-b5b3-438a98023b56",
+              "name": "notion_linkedin",
+              "value": "={{ $json.body.data.properties[\"LinkedIn\"].url }}",
+              "type": "string"
+            },
+            {
+              "id": "03f9f100-6d5b-4607-ba4b-8424da3d639e",
+              "name": "notion_master_s_degree",
+              "value": "={{ $json.body.data.properties[\"Master's Degree\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "fd71175d-5ae3-4d12-b953-a6ce26af45fc",
+              "name": "notion_name",
+              "value": "={{ $json.body.data.properties[\"Name\"].title[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "367c6e17-eebd-4dec-9e7e-f10620b7c912",
+              "name": "notion_next_step_owner",
+              "value": "={{ $json.body.data.properties[\"Next Step Owner\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "4e63c0a7-b8c9-4fe3-a8ca-d827a4ff1e8b",
+              "name": "notion_operations_requirements",
+              "value": "={{ $json.body.data.properties[\"Operations Requirements\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "ae8d2e21-a02c-4511-abeb-08a7e161a384",
+              "name": "notion_phd",
+              "value": "={{ $json.body.data.properties[\"PhD\"].rich_text[0].plain_text }}",
+              "type": "string"
+            },
+            {
+              "id": "ebe05e97-962c-4a88-a335-419136abd926",
+              "name": "notion_please_add_your_latest_picture",
+              "value": "={{ $json.body.data.properties[\"Please add your latest picture\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "9d3e291e-03b4-4c92-b763-e7ea4b2dac72",
+              "name": "notion_please_upload_your_id__passport",
+              "value": "={{ $json.body.data.properties[\"Please upload your ID/ Passport\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "2c8b5caf-62a2-44d2-beaa-456c90805b5f",
+              "name": "notion_position",
+              "value": "={{ $json.body.data.properties[\"Position\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "cf3c0789-fd8b-4e16-a461-ae5e420faffa",
+              "name": "notion_resume",
+              "value": "={{ $json.body.data.properties[\"Resume\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "f602c687-5cc2-4e58-b766-6a5da3cd9175",
+              "name": "notion_n8n_status",
+              "value": "={{ $json.body.data.properties[\"n8n Status\"].status.name }}",
+              "type": "string"
+            },
+            {
+              "id": "1918f415-3dc7-45d7-8580-26fff77d27fa",
+              "name": "notion__experience___skills",
+              "value": "={{ $json.body.data.properties[\"📊Experience & Skills\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "f658691d-721a-402d-bea7-ba39ed4703fb",
+              "name": "notion__persistence",
+              "value": "={{ $json.body.data.properties[\"📊Persistence\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "3ce424ea-eb86-4e10-a468-1207764850e3",
+              "name": "notion__score",
+              "value": "={{ $json.body.data.properties[\"📊Score\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "9e3e7264-2e71-489d-a209-9addb4288291",
+              "name": "notion__team_fit",
+              "value": "={{ $json.body.data.properties[\"📊Team Fit\"] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        640,
+        400
+      ],
+      "id": "bd2bc2f2-cc47-4fa7-a43d-ff0b105a4bcb",
+      "name": "N01 Set Canonical Fields"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.notion_page_id }}",
+          "mode": "id"
+        },
+        "simple": false,
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "n8n Status|status",
+              "statusValue": "n8n Done"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        400
+      ],
+      "id": "36e19e3f-f4f5-4588-8437-e6b3bea149f2",
+      "name": "N02 Update n8n Status",
+      "credentials": {
+        "notionApi": {
+          "id": "MlSLKQmPnMyqW0ii",
+          "name": "Notion account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "repo_name": "n8n-env",
+  "repo_owner": "munishgandhi",
+  "repo_path": "backup/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-08-25T04:34:50.000Z",
+  "versionId": "c769c03d-4c99-4a6a-b749-db74d1a756f6"
+}
