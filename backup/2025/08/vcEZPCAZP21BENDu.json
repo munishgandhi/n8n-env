@@ -17,7 +17,7 @@
   "id": "vcEZPCAZP21BENDu",
   "isArchived": false,
   "meta": null,
-  "name": "Test.MCP v20250824-003144",
+  "name": "Test.Workflow v20250824-003144",
   "nodes": [
     {
       "parameters": {},
@@ -54,6 +54,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-24T04:31:52.582Z",
-  "versionId": "cf9bef0b-c14d-41bd-94f9-3d6dc3b4b928"
+  "updatedAt": "2025-08-25T19:24:29.000Z",
+  "versionId": "ad12ce7d-ce9d-4eed-bee2-cd1d3f6648ff"
 }
