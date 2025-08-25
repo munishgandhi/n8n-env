@@ -16,7 +16,80 @@
       "main": [
         [
           {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Call Subflow 10",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call Subflow 20",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Subflow 10": {
+      "main": [
+        [
+          {
             "node": "N02 Update n8n Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Subflow 20": {
+      "main": [
+        [
+          {
+            "node": "N02 Update n8n Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Return",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Return1",
             "type": "main",
             "index": 0
           }
@@ -37,8 +110,6 @@
           "POST"
         ],
         "path": "jobs-qa-applicants",
-        "respond": "whenLastNodeFinishes",
-        "responseCode": 200,
         "options": {
           "noResponseBody": false,
           "responseData": "firstEntryJson"
@@ -48,7 +119,7 @@
       "typeVersion": 2.1,
       "position": [
         400,
-        400
+        80
       ],
       "id": "893969fe-da6c-455f-b459-06b56a12bd6a",
       "name": "N00 Webhook Trigger",
@@ -420,8 +491,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        640,
-        400
+        624,
+        80
       ],
       "id": "d9caa614-31d2-4192-997e-8418de8dfac5",
       "name": "N01 Set Canonical Fields"
@@ -449,8 +520,8 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        880,
-        400
+        1296,
+        80
       ],
       "id": "d3971964-9a7b-46cc-8d91-e28cf4352bdb",
       "name": "N02 Update n8n Status",
@@ -460,9 +531,795 @@
           "name": "Notion account"
         }
       }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.notion_n8n_status }}",
+                    "rightValue": "n8n 10",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "cf50f48d-c724-4bba-8fe6-6bd7a62ef567"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "subflow 1"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "059ac672-4076-4672-b8da-35b7bf9cf66d",
+                    "leftValue": "={{ $json.notion_n8n_status }}",
+                    "rightValue": "n8n 11",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "subflow 2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        848,
+        80
+      ],
+      "id": "3ee2cde2-cd68-43d6-9526-a1dc34ae8160",
+      "name": "Switch",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "CZdLhEPrmH0NZLT3",
+          "mode": "list"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1072,
+        -16
+      ],
+      "name": "Call Subflow 10",
+      "id": "584eec61-ac60-4479-9380-dac9907bd344"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ob76B9qNsFkElVP8",
+          "mode": "list"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1072,
+        176
+      ],
+      "name": "Call Subflow 20",
+      "id": "b5fa1e7b-d989-4bb5-b36e-d47c77466865"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { notion_n8n_updated_status: \"n8n-20-xxx\" } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        992,
+        448
+      ],
+      "id": "c099afd3-7d74-4a8a-adc1-a7c5f1297fbe",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1980dc95-5360-4ad4-8da5-77a07120879b",
+              "name": "notion_page_id",
+              "value": "={{ $json.notion_page_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1200,
+        448
+      ],
+      "id": "6daf53b2-cc62-43d4-8cc7-743cbf006834",
+      "name": "Return"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "a87e7a3d-686a-4e85-840b-b7d008cf3530",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        784,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { notion_n8n_updated_status: \"n8n Done\" } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        752,
+        -288
+      ],
+      "id": "83a0fab6-0028-4938-bd87-cb575759eaa1",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6d0228c3-233b-47be-82b4-dfcc2758902f",
+              "name": "notion_page_id",
+              "value": "={{ $json.notion_page_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        960,
+        -288
+      ],
+      "id": "6a37bf29-9674-45dd-935a-bedd671c35c9",
+      "name": "Return1"
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "N00 Webhook Trigger": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.hyly.ai",
+            "user-agent": "NotionAutomation",
+            "content-length": "7780",
+            "baggage": "sentry-environment=production,sentry-release=0.0.4336,sentry-public_key=529a6d1990e5471d874257842c4f4ad8,sentry-trace_id=fb66263ab4e24459bcc6e309b8d98534",
+            "content-type": "application/json",
+            "sentry-trace": "fb66263ab4e24459bcc6e309b8d98534-a5ad7de18cf24a89",
+            "traceparent": "00-de90ab492fa7a0ead158cc4084d7d8f4-c1f14d784654ba91-00",
+            "x-forwarded-for": "44.241.75.17",
+            "x-forwarded-host": "n8n.hyly.ai",
+            "x-forwarded-proto": "https",
+            "accept-encoding": "gzip"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "source": {
+              "type": "automation",
+              "automation_id": "25a1db9b-a441-8093-9bf2-004d93f77554",
+              "action_id": "25a1db9b-a441-8055-9a25-005a1a174a7e",
+              "event_id": "dc7fbbfb-1acb-47d9-9334-4412b713434a",
+              "attempt": 1
+            },
+            "data": {
+              "object": "page",
+              "id": "25a1db9b-a441-8053-8401-c0fc808a7711",
+              "created_time": "2025-08-25T04:22:00.000Z",
+              "last_edited_time": "2025-08-25T05:28:00.000Z",
+              "created_by": {
+                "object": "user",
+                "id": "ffa8346a-444c-48dd-ac88-b87aa4c3a84f"
+              },
+              "last_edited_by": {
+                "object": "user",
+                "id": "ffa8346a-444c-48dd-ac88-b87aa4c3a84f"
+              },
+              "cover": null,
+              "icon": null,
+              "parent": {
+                "type": "database_id",
+                "database_id": "25a1db9b-a441-801c-aefe-ef8f73d81e0d"
+              },
+              "archived": false,
+              "in_trash": false,
+              "properties": {
+                "HR:Z15Screening": {
+                  "id": "%3BCgT",
+                  "type": "rich_text",
+                  "rich_text": []
+                },
+                "Bachelor's GPA": {
+                  "id": "BXaI",
+                  "type": "rich_text",
+                  "rich_text": []
+                },
+                "ExpD Name": {
+                  "id": "B%5Dmy",
+                  "type": "rich_text",
+                  "rich_text": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "Value ExpD Name",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "Value ExpD Name",
+                      "href": null
+                    }
+                  ]
+                },
+                "Position": {
+                  "id": "CrjJ",
+                  "type": "select",
+                  "select": {
+                    "id": "BWB`",
+                    "name": "SEM Manager",
+                    "color": "yellow"
+                  }
+                },
+                "Please add your latest picture": {
+                  "id": "DIBh",
+                  "type": "files",
+                  "files": []
+                },
+                "Final thoughts": {
+                  "id": "DRcq",
+                  "type": "rich_text",
+                  "rich_text": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "Value Final Thoughts",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "Value Final Thoughts",
+                      "href": null
+                    }
+                  ]
+                },
+                "HM:Z50IDCheck": {
+                  "id": "D%5B%3A%7D",
+                  "type": "select",
+                  "select": null
+                },
+                "ExpA Project": {
+                  "id": "DoUD",
+                  "type": "rich_text",
+                  "rich_text": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "Value ExpA Project",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "Value ExpA Project",
+                      "href": null
+                    }
+                  ]
+                },
+                "Interview Time": {
+                  "id": "G%3AmA",
+                  "type": "date",
+                  "date": null
+                },
+                "ExpA Name": {
+                  "id": "Ib%7Bx",
+                  "type": "rich_text",
+                  "rich_text": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "Value ExpA Name ",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "Value ExpA Name ",
+                      "href": null
+                    }
+                  ]
+                },
+                "ExpB Months": {
+                  "id": "J%3DUC",
+                  "type": "select",
+                  "select": {
+                    "id": "j{lh",
+                    "name": "6-12 Months",
+                    "color": "blue"
+                  }
+                },
+                "ExpC Project": {
+                  "id": "JT~U",
+                  "type": "rich_text",
+                  "rich_text": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "Value ExpC Project",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "Value ExpC Project",
+                      "href": null
+                    }
+                  ]
+                },
+                "Deprecated:HiringNotes": {
+                  "id": "LE%60r",
+                  "type": "rich_text",
+                  "rich_text": []
+                },
+                "Interviews": {
+                  "id": "MBZb",
+                  "type": "relation",
+                  "relation": [],
+                  "has_more": false
+                },
+                "📊Team Fit": {
+                  "id": "M~AP",
+                  "type": "select",
+                  "select": null
+                },
+                "ExpC Months": {
+                  "id": "OmiM",
+                  "type": "select",
+                  "select": {
+                    "id": "C?mX",
+                    "name": "13-24 Months",
+                    "color": "blue"
+                  }
+                },
+                "ExpC GPT%": {
+                  "id": "Oncs",
+                  "type": "number",
+                  "number": null
+                },
+                "ExpD Months": {
+                  "id": "Q%5EKd",
+                  "type": "select",
+                  "select": {
+                    "id": "yjtU",
+                    "name": "25+ Months",
+                    "color": "blue"
+                  }
+                },
+                "Created time": {
+                  "id": "Q%5E%5DN",
+                  "type": "created_time",
+                  "created_time": "2025-08-25T04:22:00.000Z"
+                },
+                "Created by": {
+                  "id": "Tilc",
+                  "type": "created_by",
+                  "created_by": {
+                    "object": "user",
+                    "id": "ffa8346a-444c-48dd-ac88-b87aa4c3a84f",
+                    "name": "Munish Gandhi",
+                    "avatar_url": "https://lh3.googleusercontent.com/a-/AFdZucpYC1BE17uhNBb56b1XPZ7vsol2k5BIQsr_rfa3cKY=s100",
+                    "type": "person",
+                    "person": {
+                      "email": "mg@hy.ly"
+                    }
+                  }
+                },
+                "Bachelor's Degree": {
+                  "id": "U%60_J",
+                  "type": "rich_text",
+                  "rich_text": []
+                },
+                "Educational Degree": {
+                  "id": "VKEK",
+                  "type": "files",
+                  "files": []
+                },
+                " 📊Deep Thinking": {
+                  "id": "V%5CAF",
+                  "type": "select",
+                  "select": null
+                },
+                "Job Hopper": {
+                  "id": "Vdbu",
+                  "type": "select",
+                  "select": null
+                },
+                "ExpB Project": {
+                  "id": "YCM%40",
+                  "type": "rich_text",
+                  "rich_text": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "Value ExpB Project",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "Value ExpB Project",
+                      "href": null
+                    }
+                  ]
+                },
+                "Email Address": {
+                  "id": "Y%7BQr",
+                  "type": "email",
+                  "email": null
+                },
+                "LinkedIn": {
+                  "id": "ZN%60%60",
+                  "type": "url",
+                  "url": null
+                },
+                "PhD": {
+                  "id": "ZaLN",
+                  "type": "rich_text",
+                  "rich_text": []
+                },
+                "Please upload your ID/ Passport": {
+                  "id": "%5B%3Dee",
+                  "type": "files",
+                  "files": []
+                },
+                "Hiring Status": {
+                  "id": "%5Bt%3E%3B",
+                  "type": "select",
+                  "select": null
+                },
+                "Bachelor's Year": {
+                  "id": "%5C%5DTR",
+                  "type": "select",
+                  "select": null
+                },
+                "📊Persistence": {
+                  "id": "%5Egk%3E",
+                  "type": "select",
+                  "select": null
+                },
+                "ExpD GPT%": {
+                  "id": "%60LpQ",
+                  "type": "number",
+                  "number": null
+                },
+                "Last edited time": {
+                  "id": "af%60P",
+                  "type": "last_edited_time",
+                  "last_edited_time": "2025-08-25T05:28:00.000Z"
+                },
+                "ExpC Name": {
+                  "id": "cO~X",
+                  "type": "rich_text",
+                  "rich_text": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "Value ExpC Name",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "Value ExpC Name",
+                      "href": null
+                    }
+                  ]
+                },
+                "HM:Z50Recommendation": {
+                  "id": "dXa%40",
+                  "type": "rich_text",
+                  "rich_text": []
+                },
+                "📊Experience & Skills": {
+                  "id": "gRqb",
+                  "type": "select",
+                  "select": null
+                },
+                "Check Requirements": {
+                  "id": "gXpE",
+                  "type": "multi_select",
+                  "multi_select": []
+                },
+                "Master's Degree": {
+                  "id": "p%7By~",
+                  "type": "rich_text",
+                  "rich_text": []
+                },
+                "Next Step Owner": {
+                  "id": "qlUm",
+                  "type": "people",
+                  "people": [
+                    {
+                      "object": "user",
+                      "id": "ffa8346a-444c-48dd-ac88-b87aa4c3a84f",
+                      "name": "Munish Gandhi",
+                      "avatar_url": "https://lh3.googleusercontent.com/a-/AFdZucpYC1BE17uhNBb56b1XPZ7vsol2k5BIQsr_rfa3cKY=s100",
+                      "type": "person",
+                      "person": {
+                        "email": "mg@hy.ly"
+                      }
+                    }
+                  ]
+                },
+                "ExpB GPT %": {
+                  "id": "rwFg",
+                  "type": "number",
+                  "number": null
+                },
+                "Current Salary US$": {
+                  "id": "s%3Do%7C",
+                  "type": "number",
+                  "number": null
+                },
+                "Resume": {
+                  "id": "t%7DAX",
+                  "type": "files",
+                  "files": []
+                },
+                "HM:Z15Screening": {
+                  "id": "uzrk",
+                  "type": "rich_text",
+                  "rich_text": []
+                },
+                "ExpA GPT%": {
+                  "id": "u~%3A%3F",
+                  "type": "number",
+                  "number": null
+                },
+                "HR:Z15IDCheck": {
+                  "id": "wVGs",
+                  "type": "select",
+                  "select": null
+                },
+                "ExpA Months": {
+                  "id": "xD%7Di",
+                  "type": "select",
+                  "select": {
+                    "id": "K^i~",
+                    "name": "0-5 Months",
+                    "color": "red"
+                  }
+                },
+                "HM:Z50Rejection": {
+                  "id": "yOx%5D",
+                  "type": "rich_text",
+                  "rich_text": []
+                },
+                "📊Score": {
+                  "id": "%7B%3ADJ",
+                  "type": "formula",
+                  "formula": {
+                    "type": "number",
+                    "number": 0
+                  }
+                },
+                "Last edited by": {
+                  "id": "%7C%5DYb",
+                  "type": "last_edited_by",
+                  "last_edited_by": {
+                    "object": "user",
+                    "id": "ffa8346a-444c-48dd-ac88-b87aa4c3a84f",
+                    "name": "Munish Gandhi",
+                    "avatar_url": "https://lh3.googleusercontent.com/a-/AFdZucpYC1BE17uhNBb56b1XPZ7vsol2k5BIQsr_rfa3cKY=s100",
+                    "type": "person",
+                    "person": {
+                      "email": "mg@hy.ly"
+                    }
+                  }
+                },
+                "Operations Requirements": {
+                  "id": "%7Chsx",
+                  "type": "multi_select",
+                  "multi_select": []
+                },
+                "ExpB Name ": {
+                  "id": "%7C%7B%3A%3A",
+                  "type": "rich_text",
+                  "rich_text": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "Value ExpB Name",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "Value ExpB Name",
+                      "href": null
+                    }
+                  ]
+                },
+                "ExpD Project": {
+                  "id": "~IOn",
+                  "type": "rich_text",
+                  "rich_text": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "Value ExpD Project",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "Value ExpD Project",
+                      "href": null
+                    }
+                  ]
+                },
+                "Days to Join": {
+                  "id": "~%5Db%7B",
+                  "type": "select",
+                  "select": null
+                },
+                "Expected Salary US$": {
+                  "id": "~frL",
+                  "type": "number",
+                  "number": null
+                },
+                "Name": {
+                  "id": "title",
+                  "type": "title",
+                  "title": [
+                    {
+                      "type": "text",
+                      "text": {
+                        "content": "MG Test Name",
+                        "link": null
+                      },
+                      "annotations": {
+                        "bold": false,
+                        "italic": false,
+                        "strikethrough": false,
+                        "underline": false,
+                        "code": false,
+                        "color": "default"
+                      },
+                      "plain_text": "MG Test Name",
+                      "href": null
+                    }
+                  ]
+                },
+                "n8n Status": {
+                  "id": "%3CKgx",
+                  "type": "status",
+                  "status": {
+                    "id": "doF|",
+                    "name": "n8n Start",
+                    "color": "blue"
+                  }
+                }
+              },
+              "url": "https://www.notion.so/MG-Test-Name-25a1db9ba44180538401c0fc808a7711",
+              "public_url": null,
+              "request_id": "ece6b0e1-075b-4e66-ab56-6ae5ee1ccabd"
+            }
+          },
+          "webhookUrl": "http://localhost:5678/webhook/jobs-qa-applicants",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
   "repo_name": "n8n-env",
   "repo_owner": "munishgandhi",
   "repo_path": "backup/",
@@ -472,6 +1329,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-25T05:27:20.000Z",
-  "versionId": "c769c03d-4c99-4a6a-b749-db74d1a756f6"
+  "updatedAt": "2025-08-25T16:47:03.000Z",
+  "versionId": "b4ea2fd4-ca6b-45c1-896f-dea0bcecfe24"
 }
