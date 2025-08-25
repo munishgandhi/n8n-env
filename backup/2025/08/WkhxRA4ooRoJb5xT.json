@@ -6,7 +6,19 @@
   "isArchived": false,
   "meta": null,
   "name": "Design with AI - Test",
-  "nodes": [],
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "98866377-dc6e-4eb8-9ea5-9b78c6a78462",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
   "pinData": {},
   "repo_name": "n8n-env",
   "repo_owner": "munishgandhi",
@@ -17,6 +29,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-19T13:29:42.000Z",
-  "versionId": "db24dbef-1b37-42c4-8fb3-d631ccd516cf"
+  "updatedAt": "2025-08-25T11:45:02.000Z",
+  "versionId": "66560117-6c65-4f8e-a346-c85ae4bcee46"
 }
