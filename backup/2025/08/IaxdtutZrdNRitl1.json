@@ -62,39 +62,6 @@
           }
         ]
       ]
-    },
-    "Code1": {
-      "main": [
-        [
-          {
-            "node": "Return",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Start": {
-      "main": [
-        [
-          {
-            "node": "Code1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code": {
-      "main": [
-        [
-          {
-            "node": "Return1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "createdAt": "2025-08-25T04:17:47.579Z",
@@ -604,7 +571,8 @@
         "workflowId": {
           "__rl": true,
           "value": "CZdLhEPrmH0NZLT3",
-          "mode": "list"
+          "mode": "list",
+          "cachedResultName": "Subflow 10"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -630,7 +598,8 @@
         "workflowId": {
           "__rl": true,
           "value": "ob76B9qNsFkElVP8",
-          "mode": "list"
+          "mode": "list",
+          "cachedResultName": "Subflow 20"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -640,7 +609,10 @@
           "attemptToConvertTypes": false,
           "convertFieldsToString": true
         },
-        "options": {}
+        "mode": "each",
+        "options": {
+          "waitForSubWorkflow": false
+        }
       },
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -650,91 +622,6 @@
       ],
       "name": "Call Subflow 20",
       "id": "b5fa1e7b-d989-4bb5-b36e-d47c77466865"
-    },
-    {
-      "parameters": {
-        "jsCode": "return [{ json: { notion_n8n_updated_status: \"n8n-20-xxx\" } }];\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        992,
-        448
-      ],
-      "id": "c099afd3-7d74-4a8a-adc1-a7c5f1297fbe",
-      "name": "Code1"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "1980dc95-5360-4ad4-8da5-77a07120879b",
-              "name": "notion_page_id",
-              "value": "={{ $json.notion_page_id }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1200,
-        448
-      ],
-      "id": "6daf53b2-cc62-43d4-8cc7-743cbf006834",
-      "name": "Return"
-    },
-    {
-      "parameters": {
-        "inputSource": "passthrough"
-      },
-      "id": "a87e7a3d-686a-4e85-840b-b7d008cf3530",
-      "typeVersion": 1.1,
-      "name": "Start",
-      "type": "n8n-nodes-base.executeWorkflowTrigger",
-      "position": [
-        784,
-        448
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "return [{ json: { notion_n8n_updated_status: \"n8n Done\" } }];\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        752,
-        -288
-      ],
-      "id": "83a0fab6-0028-4938-bd87-cb575759eaa1",
-      "name": "Code"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "6d0228c3-233b-47be-82b4-dfcc2758902f",
-              "name": "notion_page_id",
-              "value": "={{ $json.notion_page_id }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        960,
-        -288
-      ],
-      "id": "6a37bf29-9674-45dd-935a-bedd671c35c9",
-      "name": "Return1"
     }
   ],
   "pinData": {
@@ -1329,6 +1216,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-25T16:47:03.000Z",
-  "versionId": "b4ea2fd4-ca6b-45c1-896f-dea0bcecfe24"
+  "updatedAt": "2025-08-25T17:13:34.000Z",
+  "versionId": "9c267bca-4e53-466d-9ab7-1e31705b9e91"
 }
