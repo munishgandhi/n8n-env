@@ -28,9 +28,12 @@
   "id": "ob76B9qNsFkElVP8",
   "isArchived": false,
   "meta": null,
-  "name": "Subflow 20",
+  "name": "Subflow 02",
   "nodes": [
     {
+      "parameters": {
+        "jsCode": "return [{ json: { notion_n8n_updated_status: \"n8n Done\" } }];\n"
+      },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -38,14 +41,7 @@
         176
       ],
       "id": "c3e18640-9962-4133-82eb-4e307b1d5bb6",
-      "name": "Code",
-      "disabled": false,
-      "parameters": {
-        "mode": "runOnceForAllItems",
-        "language": "javaScript",
-        "jsCode": "return [{ json: { notion_n8n_updated_status: \"n8n Done\" } }];\n",
-        "notice": ""
-      }
+      "name": "Code"
     },
     {
       "parameters": {
@@ -71,6 +67,9 @@
       "name": "Return"
     },
     {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
       "id": "386e0897-77ad-45eb-9a3d-da6ad8343abb",
       "typeVersion": 1.1,
       "name": "Start",
@@ -78,13 +77,10 @@
       "position": [
         864,
         176
-      ],
-      "parameters": {
-        "inputSource": "passthrough"
-      }
+      ]
     }
   ],
-  "pinData": null,
+  "pinData": {},
   "repo_name": "n8n-env",
   "repo_owner": "munishgandhi",
   "repo_path": "backup/",
@@ -94,6 +90,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-25T16:42:56.534Z",
-  "versionId": "59196b27-70f3-41a8-840b-9d67f9f02451"
+  "updatedAt": "2025-08-25T18:21:05.000Z",
+  "versionId": "3d4d7234-5ecd-4b36-af5d-1c76b228992f"
 }
