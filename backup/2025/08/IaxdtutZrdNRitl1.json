@@ -16,47 +16,47 @@
       "main": [
         [
           {
-            "node": "Switch",
+            "node": "Subflow Router",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Switch": {
+    "Call 01 Subflow": {
       "main": [
         [
           {
-            "node": "Call Subflow 10",
+            "node": "N02 Update n8n Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 02 Subflow": {
+      "main": [
+        [
+          {
+            "node": "N02 Update n8n Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Subflow Router": {
+      "main": [
+        [
+          {
+            "node": "Call 01 Subflow",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Call Subflow 20",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Call Subflow 10": {
-      "main": [
-        [
-          {
-            "node": "N02 Update n8n Status",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Call Subflow 20": {
-      "main": [
-        [
-          {
-            "node": "N02 Update n8n Status",
+            "node": "Call 02 Subflow",
             "type": "main",
             "index": 0
           }
@@ -470,15 +470,15 @@
         "operation": "update",
         "pageId": {
           "__rl": true,
-          "value": "={{ $json.notion_page_id }}",
+          "value": "={{ $('N01 Set Canonical Fields').item.json.notion_page_id }}",
           "mode": "id"
         },
         "simple": false,
         "propertiesUi": {
           "propertyValues": [
             {
-              "key": "n8n Status|status",
-              "statusValue": "n8n Done"
+              "key": "n8n Status|select",
+              "selectValue": "n8n Done"
             }
           ]
         },
@@ -501,78 +501,11 @@
     },
     {
       "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.notion_n8n_status }}",
-                    "rightValue": "n8n 10",
-                    "operator": {
-                      "type": "string",
-                      "operation": "contains"
-                    },
-                    "id": "cf50f48d-c724-4bba-8fe6-6bd7a62ef567"
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "subflow 1"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "059ac672-4076-4672-b8da-35b7bf9cf66d",
-                    "leftValue": "={{ $json.notion_n8n_status }}",
-                    "rightValue": "n8n 11",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "subflow 2"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.2,
-      "position": [
-        848,
-        80
-      ],
-      "id": "3ee2cde2-cd68-43d6-9526-a1dc34ae8160",
-      "name": "Switch",
-      "alwaysOutputData": true
-    },
-    {
-      "parameters": {
         "workflowId": {
           "__rl": true,
           "value": "CZdLhEPrmH0NZLT3",
           "mode": "list",
-          "cachedResultName": "Subflow 10"
+          "cachedResultName": "Subflow 01"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -582,6 +515,7 @@
           "attemptToConvertTypes": false,
           "convertFieldsToString": true
         },
+        "mode": "each",
         "options": {}
       },
       "type": "n8n-nodes-base.executeWorkflow",
@@ -590,7 +524,7 @@
         1072,
         -16
       ],
-      "name": "Call Subflow 10",
+      "name": "Call 01 Subflow",
       "id": "584eec61-ac60-4479-9380-dac9907bd344"
     },
     {
@@ -599,7 +533,7 @@
           "__rl": true,
           "value": "ob76B9qNsFkElVP8",
           "mode": "list",
-          "cachedResultName": "Subflow 20"
+          "cachedResultName": "Subflow 02"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -620,8 +554,75 @@
         1072,
         176
       ],
-      "name": "Call Subflow 20",
+      "name": "Call 02 Subflow",
       "id": "b5fa1e7b-d989-4bb5-b36e-d47c77466865"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.notion_n8n_status }}",
+                    "rightValue": "n8n 01 Subflow",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "cf50f48d-c724-4bba-8fe6-6bd7a62ef567"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "01 Subflow  "
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "059ac672-4076-4672-b8da-35b7bf9cf66d",
+                    "leftValue": "={{ $json.notion_n8n_status }}",
+                    "rightValue": "n8n 02 Subflow",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "02 Subflow"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        848,
+        80
+      ],
+      "id": "3ee2cde2-cd68-43d6-9526-a1dc34ae8160",
+      "name": "Subflow Router",
+      "alwaysOutputData": true
     }
   ],
   "pinData": {
@@ -1216,6 +1217,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-08-25T17:13:34.000Z",
-  "versionId": "9c267bca-4e53-466d-9ab7-1e31705b9e91"
+  "updatedAt": "2025-08-25T18:45:31.000Z",
+  "versionId": "867c6888-868a-443a-8b00-2a09cb14499c"
 }
