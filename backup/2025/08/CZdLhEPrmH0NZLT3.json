@@ -1,0 +1,99 @@
+{
+  "active": false,
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Return",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-08-25T16:42:17.202Z",
+  "id": "CZdLhEPrmH0NZLT3",
+  "isArchived": false,
+  "meta": null,
+  "name": "Subflow 10",
+  "nodes": [
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1072,
+        -16
+      ],
+      "id": "6a142167-d77c-4b85-8757-8ccd63410023",
+      "name": "Code1",
+      "disabled": false,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "return [{ json: { notion_n8n_updated_status: \"n8n-20-xxx\" } }];\n",
+        "notice": ""
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1980dc95-5360-4ad4-8da5-77a07120879b",
+              "name": "notion_page_id",
+              "value": "={{ $json.notion_page_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1280,
+        -16
+      ],
+      "id": "276283a4-1db6-4519-b3a0-86c890d57ad7",
+      "name": "Return"
+    },
+    {
+      "id": "ecc1e8d3-0525-4880-8f10-fd69846b6158",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        864,
+        -16
+      ],
+      "parameters": {
+        "inputSource": "passthrough"
+      }
+    }
+  ],
+  "pinData": null,
+  "repo_name": "n8n-env",
+  "repo_owner": "munishgandhi",
+  "repo_path": "backup/",
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-08-25T16:42:17.202Z",
+  "versionId": "5c298c34-e49e-44ed-a94e-f9246ed05201"
+}
