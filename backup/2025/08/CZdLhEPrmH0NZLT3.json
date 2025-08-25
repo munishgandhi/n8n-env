@@ -28,9 +28,12 @@
   "id": "CZdLhEPrmH0NZLT3",
   "isArchived": false,
   "meta": null,
-  "name": "Subflow 10",
+  "name": "Subflow 01",
   "nodes": [
     {
+      "parameters": {
+        "jsCode": "return [{ json: { notion_n8n_updated_status: \"n8n-20-xxx\" } }];\n"
+      },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -38,14 +41,7 @@
         -16
       ],
       "id": "6a142167-d77c-4b85-8757-8ccd63410023",
-      "name": "Code1",
-      "disabled": false,
-      "parameters": {
-        "mode": "runOnceForAllItems",
-        "language": "javaScript",
-        "jsCode": "return [{ json: { notion_n8n_updated_status: \"n8n-20-xxx\" } }];\n",
-        "notice": ""
-      }
+      "name": "Code1"
     },
     {
       "parameters": {
@@ -55,6 +51,12 @@
               "id": "1980dc95-5360-4ad4-8da5-77a07120879b",
               "name": "notion_page_id",
               "value": "={{ $json.notion_page_id }}",
+              "type": "string"
+            },
+            {
+              "id": "0d03abd5-7ed2-4c8b-9f2b-785ce2a5fed0",
+              "name": "={{ $json.notion_status_new }}",
+              "value": "n8n 20 subflow",
               "type": "string"
             }
           ]
@@ -71,6 +73,9 @@
       "name": "Return"
     },
     {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
       "id": "ecc1e8d3-0525-4880-8f10-fd69846b6158",
       "typeVersion": 1.1,
       "name": "Start",
@@ -78,13 +83,10 @@
       "position": [
         864,
         -16
-      ],
-      "parameters": {
-        "inputSource": "passthrough"
-      }
+      ]
     }
   ],
-  "pinData": null,
+  "pinData": {},
   "repo_name": "n8n-env",
   "repo_owner": "munishgandhi",
   "repo_path": "backup/",
@@ -94,6 +96,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-08-25T16:42:17.202Z",
-  "versionId": "5c298c34-e49e-44ed-a94e-f9246ed05201"
+  "updatedAt": "2025-08-25T18:20:55.000Z",
+  "versionId": "5c9bfa7a-74ce-433b-83a6-8e5743119a00"
 }
